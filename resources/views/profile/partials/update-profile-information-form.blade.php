@@ -47,6 +47,16 @@
             @endif
         </div>
 
+        @if ($user->stafProfile)
+            <div>
+                <x-input-label for="no_hp" value="Nomor HP" />
+                <x-text-input id="no_hp" name="no_hp" type="text" class="mt-1 block w-full" :value="old('no_hp', $user->stafProfile?->no_hp)" autocomplete="tel" />
+                <x-input-error class="mt-2" :messages="$errors->get('no_hp')" />
+            </div>
+        @else
+            <p class="text-sm text-gray-500">Nomor HP hanya untuk akun staf.</p>
+        @endif
+
         <div class="flex items-center gap-4">
             <x-primary-button>Simpan</x-primary-button>
 

@@ -16,7 +16,7 @@ class ProfileController extends Controller
     public function edit(Request $request): View
     {
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $request->user()->load('stafProfile.bidang'),
         ]);
     }
 
@@ -25,13 +25,21 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $user->fill($request->safe()->only(['name', 'email']));
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
+
+        // Nomor HP staf disimpan pada profil staf, bukan pada tabel user.
+        $profil = $user->stafProfile;
+
+        if ($profil !== null && $request->has('no_hp')) {
+            $profil->update(['no_hp' => $request->input('no_hp')]);
+        }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

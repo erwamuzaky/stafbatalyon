@@ -11,11 +11,11 @@ use App\Http\Controllers\Admin\ProposalController;
 use App\Http\Controllers\Admin\StafController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Staf\DashboardController as StafDashboardController;
+use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Halaman depan: profil Staf Batalyon untuk umum.
+Route::get('/', WelcomeController::class);
 
 // /dashboard bawaan Breeze diarahkan ke dashboard sesuai role.
 Route::get('/dashboard', function () {

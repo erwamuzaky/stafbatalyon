@@ -1,7 +1,7 @@
-<x-admin-layout title="Edit Data Staf">
+<x-admin-layout title="Ubah Data Staf">
     <div class="rounded-lg bg-white p-4 shadow-sm sm:p-6">
         <div class="max-w-xl">
-            <h2 class="text-base font-semibold text-gray-800">Edit Data Staf</h2>
+            <h2 class="text-base font-semibold text-gray-800">Ubah Data Staf</h2>
 
             <div class="mt-3 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-700">
                 <p><span class="font-medium">Nama:</span> {{ $user->name }}</p>

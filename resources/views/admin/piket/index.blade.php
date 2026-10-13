@@ -82,7 +82,7 @@
                                                 <div class="flex items-center gap-2">
                                                     <a href="{{ route('admin.piket.edit', $baris) }}"
                                                        class="inline-flex items-center rounded-md border border-gray-300 px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">
-                                                        Edit
+                                                        Ubah
                                                     </a>
 
                                                     <x-konfirmasi-hapus :action="route('admin.piket.destroy', $baris)"

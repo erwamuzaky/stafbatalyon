@@ -1,7 +1,7 @@
-<x-admin-layout title="Edit Bidang">
+<x-admin-layout title="Ubah Bidang">
     <div class="rounded-lg bg-white p-4 shadow-sm sm:p-6">
         <div class="max-w-xl">
-            <h2 class="text-base font-semibold text-gray-800">Edit Bidang</h2>
+            <h2 class="text-base font-semibold text-gray-800">Ubah Bidang</h2>
 
             <form method="POST" action="{{ route('admin.bidang.update', $bidang) }}" class="mt-6 space-y-5">
                 @csrf

@@ -29,14 +29,14 @@
             a {
                 display: inline-block;
                 margin-top: 20px;
-                background: #1f2937;
+                background: #4f46e5;
                 color: #ffffff;
                 padding: 10px 16px;
                 border-radius: 8px;
                 font-size: 0.9rem;
                 text-decoration: none;
             }
-            a:hover { background: #374151; }
+            a:hover { background: #4338ca; }
         </style>
     </head>
     <body>
