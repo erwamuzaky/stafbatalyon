@@ -125,15 +125,9 @@
                                         Edit
                                     </a>
 
-                                    <form method="POST" action="{{ route('admin.event.destroy', $event) }}"
-                                          onsubmit="return confirm('Hapus kegiatan {{ $event->nama }}? Semua proposal dan berkasnya ikut terhapus.')">
-                                        @csrf
-                                        @method('delete')
-                                        <button type="submit"
-                                                class="inline-flex items-center rounded-md border border-red-300 px-2.5 py-1.5 text-xs font-medium text-red-700 hover:bg-red-50">
-                                            Hapus
-                                        </button>
-                                    </form>
+                                    <x-konfirmasi-hapus :action="route('admin.event.destroy', $event)"
+                                                        :judul="'kegiatan '.$event->nama"
+                                                        pesan="Semua proposal dan berkasnya di kegiatan ini ikut terhapus." />
                                 </div>
                             </td>
                         </tr>

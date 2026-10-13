@@ -15,13 +15,15 @@ class DashboardController extends Controller
      */
     public function index(): View
     {
+        $mulaiMinggu = now()->startOfWeek();
+
         return view('admin.dashboard', [
             'jumlahStaf' => User::where('role', 'staf')->where('status', 'approved')->count(),
             'jumlahPending' => User::where('status', 'pending')->count(),
             'jumlahEvent' => Event::count(),
             'jumlahPiketMingguIni' => PiketGerbang::whereBetween('tanggal', [
-                now()->startOfWeek()->toDateString(),
-                now()->endOfWeek()->toDateString(),
+                $mulaiMinggu->copy()->startOfDay(),
+                $mulaiMinggu->copy()->addDays(5)->endOfDay(),
             ])->count(),
         ]);
     }

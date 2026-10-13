@@ -30,11 +30,14 @@
         </a>
 
         {{-- Piket minggu ini --}}
-        <div class="rounded-lg bg-white p-5 shadow-sm">
+        <a href="{{ route('admin.piket.index') }}"
+           class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-transparent transition hover:ring-indigo-300">
             <p class="text-sm font-medium text-gray-500">Piket Minggu Ini</p>
             <p class="mt-2 text-3xl font-semibold text-gray-800">{{ $jumlahPiketMingguIni }}</p>
-            <p class="mt-1 text-xs text-gray-500">Jadwal piket gerbang minggu ini.</p>
-        </div>
+            <p class="mt-1 text-xs font-medium text-indigo-600">
+                Atur pembagian piket gerbang &rarr;
+            </p>
+        </a>
     </div>
 
     <div class="mt-6 rounded-lg bg-white p-6 shadow-sm">
@@ -61,13 +64,13 @@
                 <a href="{{ route('admin.event.index') }}" class="font-medium text-indigo-600 hover:underline">Event</a>.
             </li>
             <li>
+                &bull; Bagi jadwal piket gerbang di
+                <a href="{{ route('admin.piket.index') }}" class="font-medium text-indigo-600 hover:underline">Piket Gerbang</a>.
+            </li>
+            <li>
                 &bull; Cari proposal lama di
                 <a href="{{ route('admin.arsip.index') }}" class="font-medium text-indigo-600 hover:underline">Arsip Proposal</a>.
             </li>
         </ul>
-
-        <p class="mt-4 rounded-md bg-gray-50 px-3 py-2 text-xs text-gray-500">
-            Catatan: kartu Piket Minggu Ini masih menampilkan 0 karena datanya baru diisi pada Fase 5.
-        </p>
     </div>
 </x-admin-layout>
