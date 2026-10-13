@@ -4,8 +4,9 @@ Web profil dan manajemen Staf Batalyon (setara OSIS) SMKN 3 Pariaman.
 Bahasa antarmuka: Bahasa Indonesia. Timezone: Asia/Jakarta.
 
 ## Stack
-- Laravel 12, PHP 8.3+, MySQL
-- Blade + Tailwind (Laravel Breeze, varian blade)
+- Laravel 12, PHP 8.2 (jangan pakai fitur/paket yang mewajibkan PHP 8.3+)
+- MySQL
+- Blade + Tailwind v3 (Laravel Breeze, varian blade)
 - barryvdh/laravel-dompdf untuk cetak absensi
 - Upload file lewat Storage Laravel (disk `public`)
 
