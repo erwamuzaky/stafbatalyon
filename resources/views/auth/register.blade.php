@@ -15,7 +15,7 @@
                 <span class="h-px flex-1 bg-laut-100" aria-hidden="true"></span>
             </legend>
 
-            <div class="mt-4 space-y-4">
+            <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                     <x-input-label for="name" value="Nama Lengkap" />
                     <x-text-input id="name" class="mt-1 block w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
@@ -49,13 +49,13 @@
         </fieldset>
 
         {{-- Bidang dan kontak --}}
-        <fieldset>
+        <fieldset class="mt-6">
             <legend class="flex w-full items-center gap-3">
                 <span class="font-judul text-sm font-semibold text-laut-800">Bidang dan kontak</span>
                 <span class="h-px flex-1 bg-laut-100" aria-hidden="true"></span>
             </legend>
 
-            <div class="mt-4 space-y-4">
+            <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                     <x-input-label for="bidang_id" value="Bidang" />
                     <select id="bidang_id" name="bidang_id" required class="input-baku mt-1 block w-full">
