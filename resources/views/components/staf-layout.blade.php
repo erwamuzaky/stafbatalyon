@@ -5,14 +5,14 @@
         [
             'label' => 'Dashboard',
             'rute' => 'staf.dashboard',
-            'aktif' => request()->routeIs('staf.*'),
-            'ikon' => 'M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75',
+            'aktif' => request()->routeIs('staf.dashboard'),
+            'ikon' => 'dashboard',
         ],
         [
             'label' => 'Profil Saya',
             'rute' => 'profile.edit',
             'aktif' => request()->routeIs('profile.*'),
-            'ikon' => 'M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z',
+            'ikon' => 'profil',
         ],
     ];
 @endphp
@@ -36,19 +36,19 @@
             {{-- Menu samping --}}
             <aside x-cloak
                    :class="sidebar ? 'translate-x-0' : '-translate-x-full'"
-                   class="fixed inset-y-0 left-0 z-40 flex w-64 transform flex-col bg-laut-900 text-laut-100 transition-transform duration-200 ease-in-out lg:translate-x-0">
-                <div class="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-laut-800 px-4">
+                   class="fixed inset-y-0 left-0 z-40 flex w-64 transform flex-col bg-white border-r border-gray-100 transition-transform duration-200 ease-in-out lg:translate-x-0">
+                <div class="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-gray-100 px-4">
                     <a href="{{ route('staf.dashboard') }}" class="flex min-w-0 items-center gap-3">
                         <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon"
-                             class="h-8 w-8 shrink-0 rounded-full border border-white/40 object-cover">
+                             class="h-8 w-8 shrink-0 rounded-full border border-gray-100 object-cover">
                         <span class="min-w-0 leading-tight">
-                            <span class="block truncate font-judul text-base font-semibold tracking-wide text-white">Staf Batalyon</span>
-                            <span class="block text-xs text-laut-300">SMKN 3 Pariaman &middot; Staf</span>
+                            <span class="block truncate font-judul text-base font-semibold tracking-wide text-gray-900">Staf Batalyon</span>
+                            <span class="block text-xs text-gray-500">SMKN 3 Pariaman &middot; Staf</span>
                         </span>
                     </a>
 
                     <button type="button" @click="sidebar = false"
-                            class="rounded-md p-1 text-laut-300 hover:bg-laut-800 hover:text-white lg:hidden">
+                            class="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 lg:hidden">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -59,27 +59,31 @@
                 <nav class="flex-1 space-y-1 overflow-y-auto px-2 py-4">
                     @foreach ($menu as $item)
                         <a href="{{ route($item['rute']) }}"
-                           class="flex items-center gap-3 border-l-[3px] px-3 py-2 text-sm font-medium transition {{ $item['aktif'] ? 'border-emas-500 bg-laut-800 text-white' : 'border-transparent text-laut-300 hover:bg-laut-800 hover:text-white' }}">
-                            <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="{{ $item['ikon'] }}" />
-                            </svg>
+                           class="group relative flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition {{ $item['aktif'] ? 'bg-laut-50 text-laut-800' : 'text-gray-600 hover:bg-gray-50' }}">
+                            @if ($item['aktif'])
+                                <span class="absolute left-0 h-8 w-1 rounded-r-full bg-emas-500"></span>
+                            @endif
+                            <x-icon :name="$item['ikon']" class="h-5 w-5 {{ $item['aktif'] ? 'text-laut-800' : 'text-gray-400 group-hover:text-gray-500' }}" />
                             {{ $item['label'] }}
                         </a>
                     @endforeach
                 </nav>
 
-                <div class="shrink-0 border-t border-laut-800 px-4 py-3 text-xs text-laut-300">
-                    <p>Masuk sebagai</p>
-                    <p class="mt-0.5 truncate font-medium text-white">{{ auth()->user()->name }}</p>
+                <div class="shrink-0 border-t border-gray-100 p-4">
+                    <div class="flex items-center gap-3">
+                        <x-avatar :name="auth()->user()->name" size="sm" />
+                        <div class="min-w-0 flex-1">
+                            <p class="truncate text-sm font-medium text-gray-900">{{ auth()->user()->name }}</p>
+                            <p class="truncate text-xs text-gray-500">{{ auth()->user()->email }}</p>
+                        </div>
+                    </div>
                 </div>
 
-                <form method="POST" action="{{ route('logout') }}" class="shrink-0 border-t border-laut-800 px-2 py-2">
+                <form method="POST" action="{{ route('logout') }}" class="shrink-0 border-t border-gray-100 p-2">
                     @csrf
                     <button type="submit"
-                            class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-laut-300 transition hover:bg-laut-800 hover:text-white">
-                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-                        </svg>
+                            class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition hover:bg-marun-50 hover:text-marun-700">
+                        <x-icon name="keluar" class="h-5 w-5 shrink-0 text-gray-400" />
                         Keluar
                     </button>
                 </form>
@@ -90,48 +94,50 @@
                  class="fixed inset-0 z-30 bg-laut-900/60 lg:hidden"></div>
 
             <div class="lg:pl-64">
-                <header class="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-laut-100 bg-white px-4 sm:px-6">
+                <header class="sticky top-0 z-20 flex min-h-16 items-center gap-3 border-b border-laut-100 bg-white px-4 py-3 sm:px-6">
                     <button type="button" @click="sidebar = true"
-                            class="rounded-md p-2 text-arang/60 hover:bg-laut-50 hover:text-laut-800 lg:hidden">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                        </svg>
+                            class="-ml-1 rounded-md p-2 text-arang/60 hover:bg-laut-50 hover:text-laut-800 lg:hidden">
+                        <x-icon name="menu" class="h-6 w-6" />
                         <span class="sr-only">Buka menu</span>
                     </button>
 
-                    <h1 class="font-judul text-lg font-semibold tracking-wide text-laut-900 sm:text-xl">{{ $title }}</h1>
+                    <x-page-header :title="$title" class="min-w-0 flex-1" />
                 </header>
 
-                <main class="px-4 py-6 sm:px-6">
+                <main id="konten-utama" class="px-4 py-6 pb-24 sm:px-6 lg:pb-6">
                     @if (session('success'))
-                        <div x-data="{ buka: true }" x-show="buka"
-                             class="mb-4 flex items-start justify-between gap-3 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
-                            <p>{{ session('success') }}</p>
-                            <button type="button" @click="buka = false"
-                                    class="shrink-0 rounded p-1 text-green-600 hover:bg-green-100" aria-label="Tutup">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
+                        <x-alert type="sukses" :auto-dismiss="5000" class="mb-4">{{ session('success') }}</x-alert>
                     @endif
 
                     @if (session('error'))
-                        <div x-data="{ buka: true }" x-show="buka"
-                             class="mb-4 flex items-start justify-between gap-3 rounded-lg border border-marun-200 bg-marun-50 px-4 py-3 text-sm text-marun-800">
-                            <p>{{ session('error') }}</p>
-                            <button type="button" @click="buka = false"
-                                    class="shrink-0 rounded p-1 text-marun-600 hover:bg-marun-100" aria-label="Tutup">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
+                        <x-alert type="error" class="mb-4">{{ session('error') }}</x-alert>
                     @endif
 
                     {{ $slot }}
                 </main>
             </div>
+
+            {{-- Navigasi bawah khusus HP: Dashboard, Piket, Profil --}}
+            <nav class="fixed inset-x-0 bottom-0 z-20 border-t border-laut-100 bg-white/95 backdrop-blur lg:hidden"
+                 aria-label="Navigasi bawah">
+                <div class="grid grid-cols-3">
+                    <a href="{{ route('staf.dashboard') }}"
+                       class="flex min-h-[3.5rem] flex-col items-center justify-center gap-1 py-2 text-xs font-medium {{ request()->routeIs('staf.dashboard') ? 'text-laut-800' : 'text-gray-500' }}">
+                        <x-icon name="dashboard" class="h-5 w-5" />
+                        Dashboard
+                    </a>
+                    <a href="{{ route('staf.dashboard') }}#piket"
+                       class="flex min-h-[3.5rem] flex-col items-center justify-center gap-1 py-2 text-xs font-medium text-gray-500">
+                        <x-icon name="piket" class="h-5 w-5" />
+                        Piket
+                    </a>
+                    <a href="{{ route('profile.edit') }}"
+                       class="flex min-h-[3.5rem] flex-col items-center justify-center gap-1 py-2 text-xs font-medium {{ request()->routeIs('profile.*') ? 'text-laut-800' : 'text-gray-500' }}">
+                        <x-icon name="profil" class="h-5 w-5" />
+                        Profil
+                    </a>
+                </div>
+            </nav>
         </div>
     </body>
 </html>

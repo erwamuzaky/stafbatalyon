@@ -1,11 +1,13 @@
 <x-admin-layout title="Arsip Proposal">
-    <div class="rounded-xl border border-laut-100 bg-white p-4 shadow-sm sm:p-6">
-        <h2 class="font-judul text-lg font-semibold text-laut-800">Arsip Proposal</h2>
-        <p class="mt-1 text-sm leading-relaxed text-gray-600">
-            Semua proposal dari seluruh kegiatan. Gunakan pencarian dan filter tahun untuk menemukannya.
-        </p>
+    <x-card>
+        <x-slot name="header">
+            <h3 class="font-judul text-lg font-semibold text-laut-800">Arsip Proposal</h3>
+            <p class="mt-1 text-sm text-gray-600">
+                Semua proposal dari seluruh kegiatan. Gunakan pencarian dan filter tahun untuk menemukannya.
+            </p>
+        </x-slot>
 
-        <form method="GET" action="{{ route('admin.arsip.index') }}" class="mt-4 flex flex-wrap items-end gap-3">
+        <form method="GET" action="{{ route('admin.arsip.index') }}" class="flex flex-wrap items-end gap-3">
             <div class="w-full sm:w-auto">
                 <x-input-label for="q" value="Cari" />
                 <x-text-input id="q" name="q" type="text" class="mt-1 block w-full sm:w-72"
@@ -14,8 +16,7 @@
 
             <div class="w-full sm:w-auto">
                 <x-input-label for="tahun" value="Tahun" />
-                <select id="tahun" name="tahun"
-                        class="input-baku mt-1 block w-full sm:w-40">
+                <select id="tahun" name="tahun" class="input-baku mt-1 block w-full sm:w-40">
                     <option value="">Semua tahun</option>
                     @foreach ($tahunPilihan as $pilihan)
                         <option value="{{ $pilihan }}" @selected((string) $tahun === (string) $pilihan)>
@@ -34,123 +35,71 @@
         </form>
 
         <p class="mt-4 text-sm text-gray-500">Menampilkan {{ $proposals->total() }} proposal.</p>
-    </div>
+    </x-card>
 
-    {{-- Tabel untuk layar sedang ke atas --}}
-    <div class="mt-4 hidden overflow-hidden rounded-xl border border-laut-100 bg-white shadow-sm sm:block">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-laut-50">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-laut-800">Judul Proposal</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-laut-800">Kegiatan</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-laut-800">Tahun</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-laut-800">Berdasarkan</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-laut-800">Diunggah</th>
-                        <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-laut-800">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 bg-white">
-                    @forelse ($proposals as $proposal)
-                        <tr class="transition-colors hover:bg-laut-50/60">
-                            <td class="px-4 py-3 text-sm">
-                                <span class="font-medium text-arang">{{ $proposal->judul }}</span>
-                                @if ($proposal->catatan)
-                                    <span class="block text-xs text-gray-500">{{ $proposal->catatan }}</span>
-                                @endif
-                            </td>
-
-                            <td class="px-4 py-3 text-sm text-gray-700">
+    @if ($proposals->isNotEmpty())
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            @foreach ($proposals as $proposal)
+                @php
+                    $ext = strtoupper(pathinfo($proposal->file_path, PATHINFO_EXTENSION)) ?: 'FILE';
+                    $tipe = match ($ext) {
+                        'PDF' => ['bg-bahaya-50 text-bahaya-700', 'dokumen'],
+                        'DOC', 'DOCX' => ['bg-info-50 text-info-700', 'dokumen'],
+                        default => ['bg-laut-50 text-laut-700', 'dokumen'],
+                    };
+                @endphp
+                <div class="flex flex-col rounded-2xl border border-laut-100 bg-white p-5 shadow-soft-sm">
+                    <div class="flex items-start gap-3">
+                        <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl {{ $tipe[0] }}">
+                            <x-icon name="dokumen" />
+                        </span>
+                        <div class="min-w-0 flex-1">
+                            <p class="truncate font-semibold text-arang" title="{{ $proposal->judul }}">{{ $proposal->judul }}</p>
+                            <p class="mt-0.5 text-xs text-gray-500">
                                 @if ($proposal->event)
                                     <a href="{{ route('admin.event.show', $proposal->event) }}"
-                                       class="font-medium text-laut-700 underline-offset-2 hover:text-laut-800 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-laut-500">
-                                        {{ $proposal->event->nama }}
-                                    </a>
+                                       class="text-laut-700 underline-offset-2 hover:text-laut-800 hover:underline">{{ $proposal->event->nama }}</a>
+                                    &middot; {{ $proposal->event->tahun }}
                                 @else
                                     -
                                 @endif
-                            </td>
+                            </p>
+                        </div>
+                        <span class="shrink-0 rounded-md bg-laut-50 px-2 py-0.5 text-[11px] font-semibold text-laut-700">{{ $ext }}</span>
+                    </div>
 
-                            <td class="px-4 py-3 text-sm text-gray-700">
-                                {{ $proposal->event?->tahun ?? '-' }}
-                            </td>
-
-                            <td class="px-4 py-3 text-sm text-gray-700">
-                                @if ($proposal->templateDari)
-                                    <span class="font-medium text-arang">{{ $proposal->templateDari->judul }}</span>
-                                    @if ($proposal->templateDari->event)
-                                        <span class="block text-xs text-gray-500">
-                                            kegiatan {{ $proposal->templateDari->event->nama }}
-                                        </span>
-                                    @endif
-                                @else
-                                    <span class="text-gray-400">-</span>
-                                @endif
-                            </td>
-
-                            <td class="px-4 py-3 text-sm text-gray-700">
-                                {{ $proposal->created_at->format('d/m/Y') }}
-                            </td>
-
-                            <td class="px-4 py-3 text-sm">
-                                <div class="flex justify-end">
-                                    <a href="{{ route('admin.arsip.unduh', $proposal) }}"
-                                       class="btn btn-sekunder px-2.5 py-1.5 text-xs">
-                                        Unduh
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="px-4 py-10 text-center text-sm text-gray-500">
-                                Belum ada proposal yang cocok.
-                                <span class="mt-1 block text-xs">Ubah kata kunci atau filter tahun di atas.</span>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    {{-- Daftar bertumpuk untuk layar HP --}}
-    <div class="mt-4 space-y-3 sm:hidden">
-        @forelse ($proposals as $proposal)
-            <div class="rounded-xl border border-laut-100 bg-white p-4 shadow-sm">
-                <p class="text-sm font-semibold text-arang">{{ $proposal->judul }}</p>
-                @if ($proposal->catatan)
-                    <p class="mt-0.5 text-xs text-gray-500">{{ $proposal->catatan }}</p>
-                @endif
-                <p class="mt-2 text-xs text-gray-600">
-                    Kegiatan:
-                    @if ($proposal->event)
-                        <span class="font-medium text-arang">{{ $proposal->event->nama }}</span>
-                        <span class="text-gray-500">({{ $proposal->event->tahun }})</span>
-                    @else
-                        -
+                    @if ($proposal->catatan)
+                        <p class="mt-3 line-clamp-2 text-xs text-gray-600">{{ $proposal->catatan }}</p>
                     @endif
-                </p>
-                <p class="mt-1 text-xs text-gray-600">
-                    Berdasarkan:
-                    @if ($proposal->templateDari)
-                        <span class="font-medium text-arang">{{ $proposal->templateDari->judul }}</span>
-                    @else
-                        -
-                    @endif
-                </p>
-                <p class="mt-1 text-xs text-gray-500">Diunggah {{ $proposal->created_at->format('d/m/Y') }}</p>
-                <div class="mt-3 border-t border-gray-100 pt-3">
-                    <a href="{{ route('admin.arsip.unduh', $proposal) }}" class="btn btn-sekunder px-2.5 py-1.5 text-xs">Unduh</a>
+
+                    <div class="mt-3 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                        <span>Diunggah {{ $proposal->created_at->format('d/m/Y') }}</span>
+                        @if ($proposal->templateDari)
+                            <span class="text-gray-400">&middot;</span>
+                            <span>Dasar: {{ $proposal->templateDari->judul }}</span>
+                        @endif
+                    </div>
+
+                    <div class="mt-4 flex items-center gap-2 border-t border-gray-100 pt-3">
+                        <a href="{{ route('admin.arsip.unduh', $proposal) }}" class="btn btn-sekunder flex-1 text-xs">
+                            <x-icon name="unduh" class="h-4 w-4" />
+                            Unduh
+                        </a>
+                        <a href="{{ route('admin.proposal.dasar.create', $proposal) }}"
+                           class="ikon-aksi" title="Gunakan sebagai dasar" aria-label="Gunakan sebagai dasar">
+                            <x-icon name="bintang" />
+                        </a>
+                    </div>
                 </div>
-            </div>
-        @empty
-            <div class="rounded-xl border border-laut-100 bg-white p-6 text-center shadow-sm">
-                <p class="text-sm text-gray-500">Belum ada proposal yang cocok.</p>
-                <p class="mt-1 text-xs text-gray-400">Ubah kata kunci atau filter tahun di atas.</p>
-            </div>
-        @endforelse
-    </div>
+            @endforeach
+        </div>
+    @else
+        <div class="mt-4">
+            <x-empty title="Belum ada proposal" ikon="dokumen">
+                Belum ada proposal yang cocok. Ubah kata kunci atau filter tahun di atas.
+            </x-empty>
+        </div>
+    @endif
 
     <div class="mt-4">
         {{ $proposals->links() }}

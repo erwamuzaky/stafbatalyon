@@ -1,6 +1,6 @@
 <x-guest-layout judul="Menunggu Persetujuan Admin">
     <div>
-        <span class="badge badge-menunggu">Menunggu Persetujuan Admin</span>
+        <x-badge status="menunggu" label="Menunggu Persetujuan Admin" />
 
         <h1 class="mt-3 text-2xl text-arang">Menunggu Persetujuan Admin</h1>
 

@@ -9,7 +9,8 @@
         </p>
     </header>
 
-    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6"
+          x-data="{ memproses: false }" @submit="memproses = true">
         @csrf
         @method('put')
 
@@ -32,7 +33,10 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>Simpan</x-primary-button>
+            <x-primary-button x-bind:disabled="memproses">
+                <span x-show="!memproses">Simpan kata sandi</span>
+                <span x-show="memproses" x-cloak>Menyimpan...</span>
+            </x-primary-button>
 
             @if (session('status') === 'password-updated')
                 <p

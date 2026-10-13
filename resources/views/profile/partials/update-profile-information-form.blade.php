@@ -13,7 +13,8 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-5">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-5"
+          x-data="{ memproses: false }" @submit="memproses = true">
         @csrf
         @method('patch')
 
@@ -39,7 +40,7 @@
                     </p>
 
                     @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 text-sm font-medium text-green-600">
+                        <p class="mt-2 text-sm font-medium text-sukses-600">
                             Tautan verifikasi baru sudah dikirim ke alamat email Anda.
                         </p>
                     @endif
@@ -58,7 +59,10 @@
         @endif
 
         <div class="flex flex-wrap items-center gap-4 pt-1">
-            <x-primary-button>Simpan</x-primary-button>
+            <x-primary-button x-bind:disabled="memproses">
+                <span x-show="!memproses">Simpan perubahan</span>
+                <span x-show="memproses" x-cloak>Menyimpan...</span>
+            </x-primary-button>
 
             @if (session('status') === 'profile-updated')
                 <p

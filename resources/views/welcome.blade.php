@@ -9,14 +9,6 @@
         <link rel="icon" href="{{ asset('images/logo-staf-batalyon.jpg') }}">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-        <style>
-            @keyframes sambut-naik {
-                from { opacity: 0; transform: translateY(14px); }
-                to { opacity: 1; transform: none; }
-            }
-            .animasi-muat { animation: sambut-naik .6s ease-out both; }
-        </style>
     </head>
     <body>
         {{-- Navbar --}}
@@ -48,7 +40,7 @@
         </nav>
 
         {{-- Hero: latar tulang + satu blok laut tegas --}}
-        <header class="relative overflow-hidden">
+        <header class="animasi-muat relative overflow-hidden">
             <div class="absolute inset-x-0 top-0 -z-10 h-full bg-gradient-to-b from-white via-tulang/70 to-tulang"></div>
             <div class="pointer-events-none absolute -top-16 right-[-20%] -z-10 h-72 w-72 rounded-full bg-laut-50 blur-3xl md:right-[10%]"></div>
             <div class="pointer-events-none absolute -bottom-20 left-[-10%] -z-10 h-64 w-64 rounded-full bg-emas-50 blur-3xl md:left-[5%]"></div>
@@ -111,9 +103,7 @@
 
                 @if ($daftarInti->isNotEmpty() && $pemimpin)
                     <div class="mx-auto mt-6 max-w-xl rounded-3xl border border-laut-100 bg-white px-6 py-8 text-center shadow-soft-md">
-                        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-laut-50 text-lg font-semibold text-laut-700">
-                            {{ Str::substr($pemimpin->name, 0, 2) }}
-                        </div>
+                        <x-avatar :name="$pemimpin->name" size="lg" class="mx-auto" />
                         <p class="mt-4 font-judul text-4xl font-bold leading-tight sm:text-5xl">{{ $pemimpin->stafProfile?->jabatan ?? '-' }}</p>
                         <p class="mt-3 text-lg font-semibold text-arang">{{ $pemimpin->name }}</p>
                         <span class="mt-2 inline-flex items-center rounded-full bg-info-50 px-3 py-1 text-xs font-medium text-info-700">
@@ -126,9 +116,7 @@
                             @foreach ($pengurus as $user)
                                 <div class="rounded-2xl border border-laut-100 bg-white px-5 py-4 shadow-soft-sm">
                                     <div class="flex items-start gap-3">
-                                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-laut-50 text-sm font-semibold text-laut-700">
-                                            {{ Str::substr($user->name, 0, 2) }}
-                                        </div>
+                                        <x-avatar :name="$user->name" size="md" />
                                         <div>
                                             <p class="font-judul text-2xl font-bold leading-tight text-laut-700">{{ $user->stafProfile?->jabatan ?? '-' }}</p>
                                             <p class="mt-1 text-base font-semibold text-arang">{{ $user->name }}</p>
@@ -142,9 +130,7 @@
                         </div>
                     @endif
                 @else
-                    <div class="empty-state mt-6">
-                        Belum ada data staf inti.
-                    </div>
+                    <x-empty title="Belum ada data staf inti" ikon="staf" class="mt-6" />
                 @endif
             </section>
 
@@ -158,18 +144,14 @@
                         @foreach (($bidang ?? collect()) as $item)
                             <div class="flex items-center gap-3 rounded-2xl border border-laut-100 bg-white px-4 py-3 shadow-soft-sm">
                                 <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-emas-50">
-                                    <svg class="h-5 w-5 text-emas-600" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
-                                    </svg>
+                                    <x-icon name="bidang" class="h-5 w-5 text-emas-600" />
                                 </span>
                                 <span class="text-base font-medium text-arang">{{ $item->nama ?? '-' }}</span>
                             </div>
                         @endforeach
                     </div>
                 @else
-                    <div class="empty-state mt-6 max-w-3xl">
-                        Belum ada data bidang.
-                    </div>
+                    <x-empty title="Belum ada data bidang" ikon="bidang" class="mt-6 max-w-3xl" />
                 @endif
             </section>
         </main>

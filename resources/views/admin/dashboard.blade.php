@@ -1,132 +1,112 @@
 <x-admin-layout title="Dashboard">
-    {{-- Angka ringkasan: kartu Menunggu ditonjolkan, sisanya tenang --}}
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="rounded-xl border border-laut-100 bg-white p-5 shadow-sm">
-            <p class="text-sm font-medium text-gray-500">Staf Aktif</p>
-            <p class="mt-2 font-judul text-4xl font-semibold text-laut-800">{{ $jumlahStaf }}</p>
-            <p class="mt-1 text-xs leading-relaxed text-gray-500">Staf biasa yang sudah disetujui admin.</p>
+    @php
+        $hariIni = now()->locale('id')->translatedFormat('l, j F Y');
+    @endphp
+
+    {{-- Banner sambutan --}}
+    <section class="relative overflow-hidden rounded-2xl bg-laut-700 px-5 py-6 text-white shadow-soft-md sm:px-7 sm:py-8">
+        <div class="relative z-10 max-w-xl">
+            <p class="font-judul text-xs font-semibold uppercase tracking-[0.18em] text-emas-300">Panel Admin</p>
+            <h2 class="mt-1.5 font-judul text-2xl font-bold sm:text-3xl">Selamat datang, {{ auth()->user()->name }}</h2>
+            <p class="mt-1.5 text-sm text-laut-100">{{ $hariIni }}</p>
         </div>
 
-        <a href="{{ route('admin.akun.index', ['status' => 'pending']) }}"
-           class="rounded-xl border-2 border-emas-500 bg-emas-50 p-5 shadow-sm transition-colors hover:bg-emas-100/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-laut-500">
-            <span class="flex items-center justify-between gap-2">
-                <span class="text-sm font-semibold text-arang">Menunggu Persetujuan</span>
-                @if ($jumlahPending > 0)
-                    <span class="badge bg-emas-500 text-white">Perlu dicek</span>
-                @else
-                    <span class="badge badge-disetujui">Aman</span>
-                @endif
-            </span>
-            <span class="mt-2 block font-judul text-4xl font-semibold {{ $jumlahPending > 0 ? 'text-laut-800' : 'text-gray-400' }}">{{ $jumlahPending }}</span>
-            <span class="mt-1 block text-xs font-medium leading-relaxed text-laut-700">
-                Buka Kelola Akun untuk memeriksa pendaftar
-            </span>
-        </a>
+        {{-- Pola bintang halus + aksen emas --}}
+        <svg class="pointer-events-none absolute -right-6 -top-8 h-56 w-56 text-white/10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/>
+        </svg>
+        <svg class="pointer-events-none absolute -right-16 bottom-[-3rem] h-40 w-40 text-emas-300/25" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/>
+        </svg>
+        <span class="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-emas-500"></span>
+    </section>
 
-        <a href="{{ route('admin.event.index') }}"
-           class="rounded-xl border border-laut-100 bg-white p-5 shadow-sm transition-colors hover:bg-laut-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-laut-500">
-            <p class="text-sm font-medium text-gray-500">Kegiatan (Event)</p>
-            <p class="mt-2 font-judul text-4xl font-semibold text-laut-800">{{ $jumlahEvent }}</p>
-            <p class="mt-1 text-xs font-medium leading-relaxed text-laut-700">
-                Lihat daftar kegiatan
-            </p>
-        </a>
+    {{-- Angka ringkasan --}}
+    <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <x-stat label="Staf Aktif" :value="$jumlahStaf" variant="sukses" ikon="staf"
+                deskripsi="Staf biasa yang sudah disetujui admin." />
 
-        <a href="{{ route('admin.piket.index') }}"
-           class="rounded-xl border border-laut-100 bg-white p-5 shadow-sm transition-colors hover:bg-laut-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-laut-500">
-            <p class="text-sm font-medium text-gray-500">Piket Minggu Ini</p>
-            <p class="mt-2 font-judul text-4xl font-semibold text-laut-800">{{ $jumlahPiketMingguIni }}</p>
-            <p class="mt-1 text-xs font-medium leading-relaxed text-laut-700">
-                Atur pembagian piket gerbang
-            </p>
-        </a>
-    </div>
+        <x-stat label="Menunggu Persetujuan" :value="$jumlahPending" variant="peringatan" ikon="akun"
+                :menonjol="true"
+                :href="route('admin.akun.index', ['status' => 'pending'])"
+                deskripsi="Buka Kelola Akun untuk memeriksa pendaftar." />
 
-    {{-- Dua panel pendek memakai angka yang sudah ada (tanpa query baru) --}}
-    <div class="mt-4 grid gap-4 lg:grid-cols-2">
-        <div class="rounded-xl border border-laut-100 bg-white p-5 shadow-sm sm:p-6">
-            <h2 class="font-judul text-lg font-semibold text-laut-800">Antrean persetujuan</h2>
-            @if ($jumlahPending > 0)
-                <p class="mt-2 text-sm leading-relaxed text-gray-600">
-                    Ada <span class="font-semibold text-arang">{{ $jumlahPending }} pendaftar</span> yang menunggu
-                    keputusan. Periksa data mereka, lalu setujui atau tolak supaya tidak menumpuk.
-                </p>
-            @else
-                <p class="mt-2 text-sm leading-relaxed text-gray-600">
-                    Belum ada pendaftar yang menunggu. Semua akun sudah diproses, tinggal pantau
-                    pendaftar baru sesekali.
-                </p>
-            @endif
-            <a href="{{ route('admin.akun.index', ['status' => 'pending']) }}"
-               class="btn btn-sekunder mt-4 px-3 py-1.5 text-xs">Buka Kelola Akun</a>
-        </div>
+        <x-stat label="Kegiatan" :value="$jumlahEvent" variant="info" ikon="event"
+                :href="route('admin.event.index')"
+                deskripsi="Lihat daftar kegiatan." />
 
-        <div class="rounded-xl border border-laut-100 bg-white p-5 shadow-sm sm:p-6">
-            <h2 class="font-judul text-lg font-semibold text-laut-800">Piket minggu berjalan</h2>
-            @if ($jumlahPiketMingguIni > 0)
-                <p class="mt-2 text-sm leading-relaxed text-gray-600">
-                    Sudah ada <span class="font-semibold text-arang">{{ $jumlahPiketMingguIni }} penugasan piket</span>
-                    pada Senin sampai Sabtu minggu ini. Buka jadwal untuk menambah atau merapikan.
-                </p>
-            @else
-                <p class="mt-2 text-sm leading-relaxed text-gray-600">
-                    Belum ada jadwal piket minggu ini. Silakan tambahkan lewat halaman Piket Gerbang
-                    supaya gerbang tetap terjaga.
-                </p>
-            @endif
-            <a href="{{ route('admin.piket.index') }}"
-               class="btn btn-sekunder mt-4 px-3 py-1.5 text-xs">Buka Piket Gerbang</a>
-        </div>
+        <x-stat label="Piket Minggu Ini" :value="$jumlahPiketMingguIni" variant="laut" ikon="piket"
+                :href="route('admin.piket.index')"
+                deskripsi="Atur pembagian piket gerbang." />
     </div>
 
     <div class="mt-4 grid gap-4 lg:grid-cols-2">
-        <div class="rounded-xl border border-laut-100 bg-white p-5 shadow-sm sm:p-6">
-            <div class="flex items-center justify-between">
-                <h2 class="font-judul text-lg font-semibold text-laut-800">5 Pendaftar Terbaru Menunggu</h2>
-                <a href="{{ route('admin.akun.index', ['status' => 'pending']) }}"
-                   class="text-xs font-medium text-laut-700 underline decoration-laut-200 underline-offset-2 hover:text-laut-800">
-                    Lihat semua
-                </a>
-            </div>
+        {{-- Pendaftar terbaru --}}
+        <x-card>
+            <x-slot name="header">
+                <div class="flex items-center justify-between gap-3">
+                    <h3 class="font-judul text-lg font-semibold text-laut-800">Pendaftar Menunggu</h3>
+                    <a href="{{ route('admin.akun.index', ['status' => 'pending']) }}"
+                       class="text-xs font-medium text-laut-700 underline decoration-laut-200 underline-offset-2 hover:text-laut-800">
+                        Lihat semua
+                    </a>
+                </div>
+            </x-slot>
+
             @if (($pendaftarTerbaru ?? collect())->isNotEmpty())
-                <ul class="mt-3 divide-y divide-gray-100">
+                <ul class="divide-y divide-laut-50">
                     @foreach ($pendaftarTerbaru as $item)
-                        <li class="flex flex-wrap items-center justify-between gap-2 py-2">
-                            <div>
-                                <p class="text-sm font-medium text-arang">{{ $item->name }}</p>
-                                <p class="text-xs text-gray-500">{{ $item->email }}</p>
-                                <p class="text-xs text-gray-500">{{ $item->stafProfile?->bidang?->nama ?? '-' }}</p>
+                        <li class="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+                            <div class="flex min-w-0 items-center gap-3">
+                                <x-avatar :name="$item->name" size="md" />
+                                <div class="min-w-0">
+                                    <p class="truncate text-sm font-semibold text-arang">{{ $item->name }}</p>
+                                    <p class="truncate text-xs text-gray-500">{{ $item->stafProfile?->bidang?->nama ?? $item->email }}</p>
+                                </div>
                             </div>
-                            <span class="badge badge-menunggu">Menunggu</span>
+                            <x-badge status="menunggu" />
                         </li>
                     @endforeach
                 </ul>
             @else
-                <div class="empty-state mt-3">
-                    Belum ada pendaftar yang menunggu.
-                </div>
+                <x-empty title="Belum ada pendaftar" ikon="akun">
+                    Pendaftar baru akan tampil di sini untuk disetujui atau ditolak.
+                </x-empty>
             @endif
-        </div>
+        </x-card>
 
-        <div class="rounded-xl border border-laut-100 bg-white p-5 shadow-sm sm:p-6">
-            <h2 class="font-judul text-lg font-semibold text-laut-800">Piket Hari Ini</h2>
+        {{-- Piket hari ini --}}
+        <x-card>
+            <x-slot name="header">
+                <div class="flex items-center justify-between gap-3">
+                    <h3 class="font-judul text-lg font-semibold text-laut-800">Piket Hari Ini</h3>
+                    <a href="{{ route('admin.piket.index') }}"
+                       class="text-xs font-medium text-laut-700 underline decoration-laut-200 underline-offset-2 hover:text-laut-800">
+                        Kelola
+                    </a>
+                </div>
+            </x-slot>
+
             @if (($piketHariIni ?? collect())->isNotEmpty())
-                <ul class="mt-3 divide-y divide-gray-100">
+                <ul class="divide-y divide-laut-50">
                     @foreach ($piketHariIni as $p)
-                        <li class="flex flex-wrap items-center justify-between gap-2 py-2">
-                            <div>
-                                <p class="text-sm font-medium text-arang">{{ $p->user?->name ?? '-' }}</p>
-                                <p class="text-xs text-gray-500">Sesi: {{ $p->sesi ?? '-' }}</p>
+                        <li class="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+                            <div class="flex min-w-0 items-center gap-3">
+                                <x-avatar :name="$p->user?->name ?? '-'" size="md" />
+                                <div class="min-w-0">
+                                    <p class="truncate text-sm font-semibold text-arang">{{ $p->user?->name ?? '-' }}</p>
+                                    <p class="truncate text-xs text-gray-500">Sesi: {{ $p->sesi ?? '-' }}</p>
+                                </div>
                             </div>
-                            <span class="badge badge-rencana">Ditugaskan</span>
+                            <x-badge status="berjalan" label="Ditugaskan" />
                         </li>
                     @endforeach
                 </ul>
             @else
-                <div class="empty-state mt-3">
-                    Belum ada piket untuk hari ini.
-                </div>
+                <x-empty title="Belum ada piket hari ini" ikon="piket">
+                    Tambahkan pembagian piket lewat halaman Piket Gerbang.
+                </x-empty>
             @endif
-        </div>
+        </x-card>
     </div>
 </x-admin-layout>

@@ -45,7 +45,7 @@
 @layer components {
     /* Tombol dasar: pakai "btn" bersama salah satu varian di bawah. */
     .btn {
-        @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-laut-500 focus-visible:ring-offset-2 focus-visible:ring-offset-tulang disabled:opacity-60;
+        @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-laut-500 focus-visible:ring-offset-2 focus-visible:ring-offset-tulang disabled:pointer-events-none disabled:opacity-60 sm:min-h-0;
     }
 
     .btn-utama {
@@ -65,63 +65,33 @@
         @apply rounded-md border-gray-300 text-arang shadow-sm focus:border-laut-500 focus:ring-laut-500 sm:text-sm;
     }
 
-    /* Lencana status: pakai "badge" bersama varian status. */
-    .badge {
-        @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+    /* Tombol ikon untuk aksi baris tabel: target sentuh besar di HP. */
+    .ikon-aksi {
+        @apply inline-flex h-11 w-11 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-laut-50 hover:text-laut-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-laut-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:h-9 sm:w-9;
     }
 
-    .badge-menunggu {
-        @apply bg-amber-100 text-amber-800;
-    }
-
-    .badge-disetujui {
-        @apply bg-emerald-100 text-emerald-800;
-    }
-
-    .badge-ditolak {
-        @apply bg-marun-100 text-marun-700;
-    }
-
-    .badge-rencana {
-        @apply bg-sky-100 text-sky-800;
-    }
-
-    .badge-berjalan {
-        @apply bg-laut-100 text-laut-800;
-    }
-
-    .badge-selesai {
-        @apply bg-gray-100 text-gray-700;
-    }
-
-    /* Alert */
-    .alert {
-        @apply rounded-2xl border px-5 py-4 text-sm leading-relaxed;
-    }
-
-    .alert-sukses {
-        @apply border-sukses-200 bg-sukses-50 text-sukses-800;
-    }
-
-    .alert-error {
-        @apply border-bahaya-200 bg-bahaya-50 text-bahaya-700;
-    }
-
-    .alert-info {
-        @apply border-info-200 bg-info-50 text-info-800;
+    .ikon-aksi-bahaya {
+        @apply hover:bg-marun-50 hover:text-marun-700 focus-visible:ring-marun-500;
     }
 
     /* Keadaan kosong (empty state) */
     .empty-state {
-        @apply rounded-2xl border border-laut-100 bg-white px-6 py-10 text-center text-base leading-relaxed text-arang/70 shadow-soft-sm;
+        @apply rounded-2xl border border-dashed border-laut-200 bg-laut-50/40 px-6 py-10 text-center text-base leading-relaxed text-arang/70;
     }
 
-    /* Avatar inisial */
-    .avatar {
-        @apply inline-flex h-10 w-10 items-center justify-center rounded-full bg-laut-100 text-sm font-semibold text-laut-700;
+    /* Animasi masuk halaman depan: satu hentakan lembut saat halaman dimuat. */
+    @keyframes sambut-naik {
+        from {
+            opacity: 0;
+            transform: translateY(14px);
+        }
+        to {
+            opacity: 1;
+            transform: none;
+        }
     }
 
-    .avatar-lg {
-        @apply h-14 w-14 text-base;
+    .animasi-muat {
+        animation: sambut-naik 0.6s ease-out both;
     }
 }
