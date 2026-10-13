@@ -79,49 +79,54 @@
         </div>
     </div>
 
-    <div class="mt-4 rounded-xl border border-laut-100 bg-white p-5 shadow-sm sm:p-6">
-        <h2 class="font-judul text-lg font-semibold text-laut-800">Selamat datang, {{ auth()->user()->name }}</h2>
-        <p class="mt-2 text-sm leading-relaxed text-gray-600">
-            Dari halaman ini Anda bisa mengelola akun staf, data staf, dan daftar bidang.
-        </p>
+    <div class="mt-4 grid gap-4 lg:grid-cols-2">
+        <div class="rounded-xl border border-laut-100 bg-white p-5 shadow-sm sm:p-6">
+            <div class="flex items-center justify-between">
+                <h2 class="font-judul text-lg font-semibold text-laut-800">5 Pendaftar Terbaru Menunggu</h2>
+                <a href="{{ route('admin.akun.index', ['status' => 'pending']) }}"
+                   class="text-xs font-medium text-laut-700 underline decoration-laut-200 underline-offset-2 hover:text-laut-800">
+                    Lihat semua
+                </a>
+            </div>
+            @if (($pendaftarTerbaru ?? collect())->isNotEmpty())
+                <ul class="mt-3 divide-y divide-gray-100">
+                    @foreach ($pendaftarTerbaru as $item)
+                        <li class="flex flex-wrap items-center justify-between gap-2 py-2">
+                            <div>
+                                <p class="text-sm font-medium text-arang">{{ $item->name }}</p>
+                                <p class="text-xs text-gray-500">{{ $item->email }}</p>
+                                <p class="text-xs text-gray-500">{{ $item->stafProfile?->bidang?->nama ?? '-' }}</p>
+                            </div>
+                            <span class="badge badge-menunggu">Menunggu</span>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <div class="empty-state mt-3">
+                    Belum ada pendaftar yang menunggu.
+                </div>
+            @endif
+        </div>
 
-        <ul class="mt-4 space-y-2 text-sm text-gray-600">
-            <li class="flex gap-2">
-                <span aria-hidden="true" class="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emas-500"></span>
-                <span>Periksa pendaftar baru di
-                    <a href="{{ route('admin.akun.index') }}" class="font-medium text-laut-700 underline decoration-laut-200 underline-offset-2 hover:text-laut-800">Kelola Akun</a>.
-                </span>
-            </li>
-            <li class="flex gap-2">
-                <span aria-hidden="true" class="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emas-500"></span>
-                <span>Ubah data staf di
-                    <a href="{{ route('admin.staf.index') }}" class="font-medium text-laut-700 underline decoration-laut-200 underline-offset-2 hover:text-laut-800">Data Staf</a>.
-                </span>
-            </li>
-            <li class="flex gap-2">
-                <span aria-hidden="true" class="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emas-500"></span>
-                <span>Tambah atau ubah bidang di
-                    <a href="{{ route('admin.bidang.index') }}" class="font-medium text-laut-700 underline decoration-laut-200 underline-offset-2 hover:text-laut-800">Bidang</a>.
-                </span>
-            </li>
-            <li class="flex gap-2">
-                <span aria-hidden="true" class="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emas-500"></span>
-                <span>Catat kegiatan dan unggah proposalnya di
-                    <a href="{{ route('admin.event.index') }}" class="font-medium text-laut-700 underline decoration-laut-200 underline-offset-2 hover:text-laut-800">Event</a>.
-                </span>
-            </li>
-            <li class="flex gap-2">
-                <span aria-hidden="true" class="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emas-500"></span>
-                <span>Bagi jadwal piket gerbang di
-                    <a href="{{ route('admin.piket.index') }}" class="font-medium text-laut-700 underline decoration-laut-200 underline-offset-2 hover:text-laut-800">Piket Gerbang</a>.
-                </span>
-            </li>
-            <li class="flex gap-2">
-                <span aria-hidden="true" class="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emas-500"></span>
-                <span>Cari proposal lama di
-                    <a href="{{ route('admin.arsip.index') }}" class="font-medium text-laut-700 underline decoration-laut-200 underline-offset-2 hover:text-laut-800">Arsip Proposal</a>.
-                </span>
-            </li>
-        </ul>
+        <div class="rounded-xl border border-laut-100 bg-white p-5 shadow-sm sm:p-6">
+            <h2 class="font-judul text-lg font-semibold text-laut-800">Piket Hari Ini</h2>
+            @if (($piketHariIni ?? collect())->isNotEmpty())
+                <ul class="mt-3 divide-y divide-gray-100">
+                    @foreach ($piketHariIni as $p)
+                        <li class="flex flex-wrap items-center justify-between gap-2 py-2">
+                            <div>
+                                <p class="text-sm font-medium text-arang">{{ $p->user?->name ?? '-' }}</p>
+                                <p class="text-xs text-gray-500">Sesi: {{ $p->sesi ?? '-' }}</p>
+                            </div>
+                            <span class="badge badge-rencana">Ditugaskan</span>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <div class="empty-state mt-3">
+                    Belum ada piket untuk hari ini.
+                </div>
+            @endif
+        </div>
     </div>
 </x-admin-layout>
