@@ -2,8 +2,8 @@
     <div class="rounded-lg bg-white p-4 shadow-sm sm:p-6">
         <h2 class="text-base font-semibold text-gray-800">Tambah Piket Gerbang</h2>
         <p class="mt-1 text-sm text-gray-600">
-            Pilih tanggal, sesi, dan satu atau beberapa staf yang bertugas. Semua staf yang
-            dicentang akan mendapat piket pada tanggal dan sesi yang sama.
+            Pilih tanggal dan satu atau beberapa staf yang bertugas. Semua staf yang
+            dicentang akan mendapat piket pada tanggal itu.
         </p>
 
         <form method="POST" action="{{ route('admin.piket.store') }}" class="mt-6 max-w-2xl space-y-5">
@@ -16,16 +16,7 @@
                 <x-input-error :messages="$errors->get('tanggal')" class="mt-2" />
             </div>
 
-            <div>
-                <x-input-label for="sesi" value="Sesi" />
-                <select id="sesi" name="sesi"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                    @foreach ($sesi as $nilai => $label)
-                        <option value="{{ $nilai }}" @selected(old('sesi') === $nilai)>{{ $label }}</option>
-                    @endforeach
-                </select>
-                <x-input-error :messages="$errors->get('sesi')" class="mt-2" />
-            </div>
+            <input type="hidden" name="sesi" value="{{ array_key_first($sesi) }}">
 
             <div>
                 <x-input-label for="user_ids" value="Staf yang Bertugas" />

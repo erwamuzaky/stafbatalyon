@@ -14,7 +14,7 @@ class PiketTest extends TestCase
     /**
      * Buat entri piket langsung lewat model.
      */
-    private function entri(User $staf, string $tanggal, string $sesi = 'pagi', ?string $catatan = null): PiketGerbang
+    private function entri(User $staf, string $tanggal, string $sesi = 'harian', ?string $catatan = null): PiketGerbang
     {
         return PiketGerbang::create([
             'tanggal' => $tanggal,
@@ -34,7 +34,7 @@ class PiketTest extends TestCase
 
         $response = $this->actingAs($admin)->post(route('admin.piket.store'), [
             'tanggal' => '2026-10-13',
-            'sesi' => 'pagi',
+            'sesi' => 'harian',
             'user_ids' => $staf->pluck('id')->all(),
             'catatan' => 'Bawa buku piket',
         ]);
@@ -45,25 +45,25 @@ class PiketTest extends TestCase
 
         $this->assertDatabaseCount('piket_gerbang', 3);
         $this->assertDatabaseHas('piket_gerbang', [
-            'sesi' => 'pagi',
+            'sesi' => 'harian',
             'user_id' => $staf->first()->id,
             'catatan' => 'Bawa buku piket',
         ]);
     }
 
     /**
-     * Staf yang sama tidak boleh dua kali pada tanggal dan sesi yang sama.
+     * Staf yang sama tidak boleh dua kali pada tanggal yang sama.
      */
     public function test_duplicate_piket_on_the_same_slot_is_rejected(): void
     {
         $admin = User::factory()->admin()->create();
         $staf = User::factory()->create();
 
-        $this->entri($staf, '2026-10-13', 'pagi');
+        $this->entri($staf, '2026-10-13', 'harian');
 
         $response = $this->actingAs($admin)->post(route('admin.piket.store'), [
             'tanggal' => '2026-10-13',
-            'sesi' => 'pagi',
+            'sesi' => 'harian',
             'user_ids' => [$staf->id],
         ]);
 
@@ -82,14 +82,14 @@ class PiketTest extends TestCase
         // Staf yang masih menunggu persetujuan ditolak.
         $this->actingAs($admin)->post(route('admin.piket.store'), [
             'tanggal' => '2026-10-13',
-            'sesi' => 'siang',
+            'sesi' => 'harian',
             'user_ids' => [$pending->id],
         ])->assertSessionHasErrors();
 
         // Akun admin juga bukan pilihan yang sah.
         $this->actingAs($admin)->post(route('admin.piket.store'), [
             'tanggal' => '2026-10-13',
-            'sesi' => 'siang',
+            'sesi' => 'harian',
             'user_ids' => [$admin->id],
         ])->assertSessionHasErrors();
 
@@ -105,8 +105,8 @@ class PiketTest extends TestCase
         $a = User::factory()->create();
         $b = User::factory()->create();
 
-        $this->entri($a, '2026-10-12', 'pagi', 'Kunci gerbang');
-        $this->entri($b, '2026-10-14', 'siang');
+        $this->entri($a, '2026-10-12', 'harian', 'Kunci gerbang');
+        $this->entri($b, '2026-10-14', 'harian');
 
         $response = $this->actingAs($admin)->post(route('admin.piket.salin'), [
             'minggu' => '2026-10-12',
@@ -119,12 +119,12 @@ class PiketTest extends TestCase
         $this->assertDatabaseCount('piket_gerbang', 4);
 
         $this->assertTrue(PiketGerbang::whereDate('tanggal', '2026-10-19')
-            ->where('sesi', 'pagi')
+            ->where('sesi', 'harian')
             ->where('user_id', $a->id)
             ->exists());
 
         $this->assertTrue(PiketGerbang::whereDate('tanggal', '2026-10-21')
-            ->where('sesi', 'siang')
+            ->where('sesi', 'harian')
             ->where('user_id', $b->id)
             ->exists());
 
@@ -151,7 +151,7 @@ class PiketTest extends TestCase
 
         $this->actingAs($staf)->post(route('admin.piket.store'), [
             'tanggal' => '2026-10-13',
-            'sesi' => 'siang',
+            'sesi' => 'harian',
             'user_ids' => [$staf->id],
         ])->assertForbidden();
 
@@ -165,14 +165,14 @@ class PiketTest extends TestCase
     }
 
     /**
-     * Tampilan mingguan memuat nama staf, sesi, dan tombol navigasi minggu.
+     * Tampilan mingguan memuat nama staf dan tombol navigasi minggu.
      */
     public function test_weekly_view_shows_schedule_and_navigation(): void
     {
         $admin = User::factory()->admin()->create();
         $staf = User::factory()->create(['name' => 'Rina Piket']);
 
-        $this->entri($staf, '2026-10-13', 'pagi', 'Datang lebih awal');
+        $this->entri($staf, '2026-10-13', 'harian', 'Datang lebih awal');
 
         $response = $this->actingAs($admin)->get(route('admin.piket.index', ['minggu' => '2026-10-12']));
 
@@ -182,8 +182,8 @@ class PiketTest extends TestCase
         $response->assertSee('Datang lebih awal');
         $response->assertSee('Senin');
         $response->assertSee('Sabtu');
-        $response->assertSee('Pagi');
-        $response->assertSee('Siang');
+        $response->assertSee('Staf Piket');
+        $response->assertDontSee('Siang');
         $response->assertSee('Minggu Sebelumnya');
         $response->assertSee('Minggu Ini');
         $response->assertSee('Minggu Berikutnya');
@@ -216,7 +216,7 @@ class PiketTest extends TestCase
         $a = User::factory()->create();
         $b = User::factory()->create();
 
-        $entri = $this->entri($a, '2026-10-13', 'pagi');
+        $entri = $this->entri($a, '2026-10-13', 'harian');
 
         $this->actingAs($admin)->get(route('admin.piket.edit', $entri))
             ->assertOk()
@@ -224,7 +224,7 @@ class PiketTest extends TestCase
 
         $response = $this->actingAs($admin)->patch(route('admin.piket.update', $entri), [
             'tanggal' => '2026-10-14',
-            'sesi' => 'siang',
+            'sesi' => 'harian',
             'user_id' => $b->id,
             'catatan' => 'Ganti jaga',
         ]);
@@ -236,7 +236,7 @@ class PiketTest extends TestCase
         $entri->refresh();
 
         $this->assertSame('2026-10-14', $entri->tanggal->toDateString());
-        $this->assertSame('siang', $entri->sesi);
+        $this->assertSame('harian', $entri->sesi);
         $this->assertSame($b->id, $entri->user_id);
         $this->assertSame('Ganti jaga', $entri->catatan);
     }
@@ -249,7 +249,7 @@ class PiketTest extends TestCase
         $admin = User::factory()->admin()->create();
         $staf = User::factory()->create();
 
-        $entri = $this->entri($staf, '2026-10-13', 'pagi');
+        $entri = $this->entri($staf, '2026-10-13', 'harian');
 
         $response = $this->actingAs($admin)->delete(route('admin.piket.destroy', $entri));
 

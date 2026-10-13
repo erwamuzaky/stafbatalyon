@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,6 +14,17 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    /**
+     * Pilihan penyaring peserta absensi beserta labelnya.
+     *
+     * @var array<string, string>
+     */
+    public const PESERTA_FILTER = [
+        'semua' => 'Semua staf',
+        'inti' => 'Staf inti saja',
+        'bidang' => 'Per bidang',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -80,5 +92,36 @@ class User extends Authenticatable
     public function stafProfile(): HasOne
     {
         return $this->hasOne(StafProfile::class);
+    }
+
+    /**
+     * Daftar peserta absensi: akun role staf yang sudah disetujui, urut nama.
+     *
+     * Penyaring yang didukung: semua staf, staf inti saja, atau satu bidang.
+     *
+     * @return Collection<int, User>
+     */
+    public static function pesertaAbsensi(string $filter, ?int $bidangId = null): Collection
+    {
+        return static::query()
+            ->with('stafProfile.bidang')
+            ->where('role', 'staf')
+            ->where('status', 'approved')
+            ->when(
+                $filter === 'inti',
+                fn ($query) => $query->whereHas(
+                    'stafProfile',
+                    fn ($profil) => $profil->where('is_inti', true),
+                ),
+            )
+            ->when(
+                $filter === 'bidang' && $bidangId !== null,
+                fn ($query) => $query->whereHas(
+                    'stafProfile',
+                    fn ($profil) => $profil->where('bidang_id', $bidangId),
+                ),
+            )
+            ->orderBy('name')
+            ->get();
     }
 }

@@ -11,11 +11,12 @@ class PiketGerbang extends Model
     /**
      * Sesi piket gerbang beserta labelnya.
      *
+     * Satu hari hanya ada satu jadwal piket, jadi sesinya cuma satu.
+     *
      * @var array<string, string>
      */
     public const SESI = [
-        'pagi' => 'Pagi',
-        'siang' => 'Siang',
+        'harian' => 'Staf Piket',
     ];
 
     /**

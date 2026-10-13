@@ -4,7 +4,7 @@
             <div>
                 <h2 class="text-base font-semibold text-gray-800">Ubah Piket Gerbang</h2>
                 <p class="mt-1 text-sm text-gray-600">
-                    Perbaiki tanggal, sesi, staf, atau catatan untuk satu entri piket.
+                    Perbaiki tanggal, staf, atau catatan untuk satu entri piket.
                 </p>
             </div>
 
@@ -25,16 +25,7 @@
                 <x-input-error :messages="$errors->get('tanggal')" class="mt-2" />
             </div>
 
-            <div>
-                <x-input-label for="sesi" value="Sesi" />
-                <select id="sesi" name="sesi"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                    @foreach ($sesi as $nilai => $label)
-                        <option value="{{ $nilai }}" @selected(old('sesi', $piket->sesi) === $nilai)>{{ $label }}</option>
-                    @endforeach
-                </select>
-                <x-input-error :messages="$errors->get('sesi')" class="mt-2" />
-            </div>
+            <input type="hidden" name="sesi" value="{{ old('sesi', $piket->sesi) }}">
 
             <div>
                 <x-input-label for="user_id" value="Staf yang Bertugas" />

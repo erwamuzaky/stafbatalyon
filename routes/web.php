@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AbsensiController;
 use App\Http\Controllers\Admin\AkunController;
 use App\Http\Controllers\Admin\ArsipController;
 use App\Http\Controllers\Admin\BidangController;
@@ -82,6 +83,10 @@ Route::middleware(['auth', 'approved', 'role:admin'])->prefix('admin')->name('ad
     // Arsip proposal dari semua kegiatan.
     Route::get('/arsip', [ArsipController::class, 'index'])->name('arsip.index');
     Route::get('/arsip/{proposal}/unduh', [ArsipController::class, 'unduh'])->name('arsip.unduh');
+
+    // Cetak absensi (PDF), tanpa absen online.
+    Route::get('/absensi', [AbsensiController::class, 'create'])->name('absensi.create');
+    Route::post('/absensi/cetak', [AbsensiController::class, 'cetak'])->name('absensi.cetak');
 });
 
 // Area staf: hanya staf dengan status approved.

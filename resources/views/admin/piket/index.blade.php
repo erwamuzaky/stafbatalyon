@@ -8,7 +8,7 @@
                     &ndash; {{ $hari[count($hari) - 1]['label'] }} {{ $hari[count($hari) - 1]['tanggalLabel'] }}
                 </p>
                 <p class="mt-1 text-xs text-gray-500">
-                    Bagi staf ke piket pagi dan siang untuk tiap hari sekolah.
+                    Setiap hari hanya ada satu jadwal piket gerbang. Bisa diisi beberapa staf sekaligus.
                 </p>
             </div>
 
