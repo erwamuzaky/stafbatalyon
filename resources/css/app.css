@@ -1,8 +1,96 @@
+@import '@fontsource/barlow-semi-condensed/500.css';
+@import '@fontsource/barlow-semi-condensed/600.css';
+@import '@fontsource/barlow-semi-condensed/700.css';
+@import '@fontsource-variable/public-sans';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Elemen yang memakai x-cloak disembunyikan sampai Alpine siap. */
 [x-cloak] {
     display: none !important;
+}
+
+@layer base {
+    body {
+        @apply bg-tulang font-isi text-arang antialiased;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-judul;
+    }
+
+    ::selection {
+        @apply bg-laut-600 text-white;
+    }
+
+    /* Hormati pengaturan pengurangan animasi di sistem operasi. */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+}
+
+@layer components {
+    /* Tombol dasar: pakai "btn" bersama salah satu varian di bawah. */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-laut-500 focus-visible:ring-offset-2 focus-visible:ring-offset-tulang disabled:opacity-60;
+    }
+
+    .btn-utama {
+        @apply bg-laut-600 text-white hover:bg-laut-700;
+    }
+
+    .btn-sekunder {
+        @apply border border-gray-300 bg-white text-arang hover:bg-gray-50;
+    }
+
+    .btn-bahaya {
+        @apply border border-marun-500 bg-white text-marun-600 hover:bg-marun-50;
+    }
+
+    /* Isian form seragam. */
+    .input-baku {
+        @apply rounded-md border-gray-300 text-arang shadow-sm focus:border-laut-500 focus:ring-laut-500 sm:text-sm;
+    }
+
+    /* Lencana status: pakai "badge" bersama varian status. */
+    .badge {
+        @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+    }
+
+    .badge-menunggu {
+        @apply bg-amber-100 text-amber-800;
+    }
+
+    .badge-disetujui {
+        @apply bg-emerald-100 text-emerald-800;
+    }
+
+    .badge-ditolak {
+        @apply bg-marun-100 text-marun-700;
+    }
+
+    .badge-rencana {
+        @apply bg-sky-100 text-sky-800;
+    }
+
+    .badge-berjalan {
+        @apply bg-laut-100 text-laut-800;
+    }
+
+    .badge-selesai {
+        @apply bg-gray-100 text-gray-700;
+    }
 }

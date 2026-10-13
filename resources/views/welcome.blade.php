@@ -6,40 +6,40 @@
 
         <title>Staf Batalyon - SMKN 3 Pariaman</title>
 
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
+        <link rel="icon" href="{{ asset('images/logo-staf-batalyon.jpg') }}">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <style>
+            @keyframes sambut-naik {
+                from { opacity: 0; transform: translateY(14px); }
+                to { opacity: 1; transform: none; }
+            }
+            .animasi-muat { animation: sambut-naik .6s ease-out both; }
+        </style>
     </head>
-    <body class="bg-gray-100 font-sans text-gray-900 antialiased">
+    <body>
         {{-- Navbar --}}
         <nav class="sticky top-0 z-20 border-b border-gray-200 bg-white">
             <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
                 <a href="{{ url('/') }}" class="flex items-center gap-3">
-                    <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-white">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                        </svg>
-                    </span>
+                    <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-10 w-10 rounded-full border border-gray-200 object-cover">
                     <span class="leading-tight">
-                        <span class="block text-sm font-bold text-gray-800 sm:text-base">Staf Batalyon</span>
-                        <span class="block text-xs text-gray-500">SMKN 3 Pariaman</span>
+                        <span class="block font-judul text-lg font-bold text-arang">Staf Batalyon</span>
+                        <span class="block text-sm text-arang/70">SMKN 3 Pariaman</span>
                     </span>
                 </a>
 
                 <div class="flex items-center gap-2 sm:gap-3">
                     @auth
-                        <a href="{{ route('dashboard') }}"
-                           class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 sm:px-4">
+                        <a href="{{ route('dashboard') }}" class="btn btn-utama">
                             Buka Dashboard
                         </a>
                     @else
-                        <a href="{{ route('login') }}"
-                           class="rounded-md border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 sm:px-4">
+                        <a href="{{ route('login') }}" class="btn btn-sekunder">
                             Masuk
                         </a>
-                        <a href="{{ route('register') }}"
-                           class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 sm:px-4">
+                        <a href="{{ route('register') }}" class="btn btn-utama">
                             Daftar
                         </a>
                     @endauth
@@ -47,95 +47,105 @@
             </div>
         </nav>
 
-        {{-- Hero --}}
-        <header class="bg-indigo-700">
-            <div class="relative mx-auto max-w-6xl overflow-hidden px-4 py-12 sm:px-6 sm:py-16">
-                <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-indigo-600" aria-hidden="true"></div>
-                <div class="pointer-events-none absolute -bottom-20 right-24 h-40 w-40 rounded-full bg-indigo-500 opacity-60" aria-hidden="true"></div>
-
-                <div class="relative max-w-2xl">
-                    <p class="inline-flex rounded-full bg-indigo-800 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-indigo-200">
-                        Organisasi Kesiswaan
-                    </p>
-                    <h1 class="mt-4 text-3xl font-extrabold text-white sm:text-4xl">Staf Batalyon</h1>
-                    <p class="mt-1 text-lg font-semibold text-indigo-200">SMKN 3 Pariaman</p>
-                    <p class="mt-4 text-sm leading-relaxed text-indigo-100 sm:text-base">
-                        Staf Batalyon adalah organisasi kesiswaan setara OSIS yang membantu
-                        kelancaran kegiatan sekolah, mulai dari ketertiban harian sampai
-                        pelaksanaan acara dan kepanitiaan.
+        {{-- Hero: latar tulang + satu blok laut tegas --}}
+        <header class="border-b border-gray-200">
+            <div class="mx-auto grid max-w-6xl items-stretch gap-6 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[minmax(0,11fr)_minmax(0,9fr)] lg:gap-10">
+                <div class="animasi-muat flex flex-col justify-center">
+                    <h1 class="font-judul text-5xl font-bold leading-none text-arang sm:text-6xl lg:text-7xl">Staf Batalyon</h1>
+                    <p class="mt-2 font-judul text-2xl font-semibold text-laut-600 sm:text-3xl">SMKN 3 Pariaman</p>
+                    <p class="mt-4 max-w-xl text-base leading-relaxed text-arang/85">
+                        Organisasi kesiswaan yang menjaga ketertiban harian sekolah dan
+                        menjalankan kegiatan serta kepanitiaan sepanjang tahun ajaran.
                     </p>
 
                     <div class="mt-6 flex flex-wrap gap-3">
                         @auth
-                            <a href="{{ route('dashboard') }}"
-                               class="rounded-md bg-white px-4 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-50">
+                            <a href="{{ route('dashboard') }}" class="btn btn-utama">
                                 Buka Dashboard
                             </a>
                         @else
-                            <a href="{{ route('register') }}"
-                               class="rounded-md bg-white px-4 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-50">
+                            <a href="{{ route('register') }}" class="btn btn-utama">
                                 Daftar
                             </a>
-                            <a href="{{ route('login') }}"
-                               class="rounded-md border border-indigo-300 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-600">
+                            <a href="{{ route('login') }}" class="btn btn-sekunder">
                                 Masuk
                             </a>
                         @endauth
                     </div>
                 </div>
+
+                <div class="flex flex-col justify-center rounded-2xl border-t-4 border-emas-500 bg-laut-700 px-6 py-8 text-white sm:px-8">
+                    <div class="flex items-center gap-4">
+                        <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white p-1">
+                            <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-12 w-12 rounded-full object-cover">
+                        </span>
+                        <div>
+                            <p class="font-judul text-2xl font-bold leading-tight">Staf Batalyon</p>
+                            <p class="text-sm text-laut-100">SMKN 3 Pariaman</p>
+                        </div>
+                    </div>
+                    <span class="mt-5 h-1 w-20 rounded-full bg-emas-500" aria-hidden="true"></span>
+                    <p class="mt-3 max-w-md text-base leading-relaxed text-laut-50">
+                        Satu wadah pengurus dan staf: piket gerbang harian, arsip proposal
+                        kegiatan, dan data keanggotaan yang tertib.
+                    </p>
+                </div>
             </div>
         </header>
 
-        <main class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
-            {{-- Struktur staf inti --}}
+        <main class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12">
+            {{-- Formasi staf inti: jabatan menonjol, nama di bawah, bidang kecil --}}
             <section>
-                <h2 class="text-base font-semibold text-gray-800 sm:text-lg">Struktur Staf</h2>
-                <p class="mt-1 text-sm text-gray-600">Staf inti yang memimpin kepengurusan periode berjalan.</p>
+                <h2 class="text-3xl font-bold text-arang sm:text-4xl">Struktur Staf</h2>
+                <p class="mt-2 max-w-2xl text-base text-arang/75">Staf inti yang memimpin kepengurusan periode berjalan.</p>
 
-                @if ($stafInti->isNotEmpty())
-                    <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        @foreach ($stafInti as $user)
-                            <div class="rounded-lg bg-white p-4 shadow-sm sm:p-6">
-                                <div class="flex items-center gap-3">
-                                    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-lg font-bold text-indigo-700">
-                                        {{ strtoupper(mb_substr($user->name, 0, 1)) }}
-                                    </span>
-                                    <div class="min-w-0">
-                                        <p class="truncate text-sm font-semibold text-gray-800">{{ $user->name }}</p>
-                                        <p class="truncate text-sm text-gray-600">{{ $user->stafProfile?->jabatan ?? '-' }}</p>
-                                    </div>
-                                </div>
-                                <p class="mt-3 inline-flex rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">
-                                    {{ $user->stafProfile?->bidang?->nama ?? '-' }}
-                                </p>
-                            </div>
-                        @endforeach
+                @php
+                    $daftarInti = ($stafInti ?? collect());
+                    $pemimpin = $daftarInti->first();
+                    $pengurus = $daftarInti->skip(1);
+                @endphp
+
+                @if ($daftarInti->isNotEmpty() && $pemimpin)
+                    <div class="mx-auto mt-6 max-w-xl rounded-2xl border-t-4 border-emas-500 bg-laut-700 px-6 py-8 text-center text-white">
+                        <p class="font-judul text-4xl font-bold leading-tight sm:text-5xl">{{ $pemimpin->stafProfile?->jabatan ?? '-' }}</p>
+                        <p class="mt-3 text-lg font-semibold">{{ $pemimpin->name }}</p>
+                        <p class="mt-1 text-sm text-laut-100">{{ $pemimpin->stafProfile?->bidang?->nama ?? '-' }}</p>
                     </div>
+
+                    @if ($pengurus->isNotEmpty())
+                        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                            @foreach ($pengurus as $user)
+                                <div class="rounded-xl border-l-4 border-emas-500 border-y border-r border-gray-200 bg-white px-5 py-4">
+                                    <p class="font-judul text-2xl font-bold leading-tight text-laut-700">{{ $user->stafProfile?->jabatan ?? '-' }}</p>
+                                    <p class="mt-1 text-base font-semibold text-arang">{{ $user->name }}</p>
+                                    <p class="mt-0.5 text-sm text-arang/65">{{ $user->stafProfile?->bidang?->nama ?? '-' }}</p>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 @else
-                    <div class="mt-4 rounded-lg bg-white p-4 text-sm text-gray-500 shadow-sm sm:p-6">
+                    <div class="mt-6 rounded-xl border border-gray-200 bg-white px-5 py-6 text-base text-arang/70">
                         Belum ada data staf inti.
                     </div>
                 @endif
             </section>
 
-            {{-- Daftar bidang --}}
-            <section class="mt-8">
-                <h2 class="text-base font-semibold text-gray-800 sm:text-lg">Bidang</h2>
-                <p class="mt-1 text-sm text-gray-600">Bidang-bidang yang menaungi seluruh staf batalyon.</p>
+            {{-- Daftar bidang yang rapi --}}
+            <section class="mt-12">
+                <h2 class="text-3xl font-bold text-arang sm:text-4xl">Bidang</h2>
+                <p class="mt-2 max-w-2xl text-base text-arang/75">Bidang-bidang yang menaungi seluruh staf batalyon.</p>
 
-                @if ($bidang->isNotEmpty())
-                    <div class="mt-4 flex flex-wrap gap-2">
-                        @foreach ($bidang as $item)
-                            <span class="inline-flex items-center gap-2 rounded-lg border border-indigo-200 bg-white px-3 py-2 text-sm font-medium text-indigo-700 shadow-sm">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
-                                </svg>
-                                {{ $item->nama }}
-                            </span>
+                @if (($bidang ?? collect())->isNotEmpty())
+                    <ul class="mt-6 max-w-3xl divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white">
+                        @foreach (($bidang ?? collect()) as $item)
+                            <li class="flex items-center gap-3 px-5 py-3.5">
+                                <span class="h-2.5 w-2.5 shrink-0 rounded-sm bg-emas-500" aria-hidden="true"></span>
+                                <span class="text-base font-medium text-arang">{{ $item->nama ?? '-' }}</span>
+                            </li>
                         @endforeach
-                    </div>
+                    </ul>
                 @else
-                    <div class="mt-4 rounded-lg bg-white p-4 text-sm text-gray-500 shadow-sm sm:p-6">
+                    <div class="mt-6 max-w-3xl rounded-xl border border-gray-200 bg-white px-5 py-6 text-base text-arang/70">
                         Belum ada data bidang.
                     </div>
                 @endif
@@ -144,7 +154,7 @@
 
         {{-- Footer --}}
         <footer class="border-t border-gray-200 bg-white">
-            <div class="mx-auto max-w-6xl px-4 py-6 text-center text-sm text-gray-500 sm:px-6">
+            <div class="mx-auto max-w-6xl px-4 py-6 text-center text-sm text-arang/70 sm:px-6">
                 Staf Batalyon SMKN 3 Pariaman &middot; &copy; {{ date('Y') }}
             </div>
         </footer>
