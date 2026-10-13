@@ -51,6 +51,30 @@ class User extends Authenticatable
     }
 
     /**
+     * Apakah user ini admin (staf inti)?
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Apakah user ini staf biasa?
+     */
+    public function isStaf(): bool
+    {
+        return $this->role === 'staf';
+    }
+
+    /**
+     * Apakah akun sudah disetujui admin?
+     */
+    public function isApproved(): bool
+    {
+        return $this->status === 'approved';
+    }
+
+    /**
      * Get the staf profile of the user.
      */
     public function stafProfile(): HasOne

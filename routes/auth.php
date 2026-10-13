@@ -17,6 +17,11 @@ Route::middleware('guest')->group(function () {
 
     Route::post('register', [RegisteredUserController::class, 'store']);
 
+    // Halaman informasi setelah daftar: akun menunggu persetujuan admin.
+    Route::get('menunggu-persetujuan', function () {
+        return view('auth.pending');
+    })->name('registration.pending');
+
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 

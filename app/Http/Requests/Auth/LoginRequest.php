@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -47,6 +48,21 @@ class LoginRequest extends FormRequest
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
+            ]);
+        }
+
+        $user = Auth::user();
+
+        // Hanya akun approved yang boleh masuk. Akun pending/rejected langsung dikeluarkan.
+        if (! $user instanceof User || ! $user->isApproved()) {
+            Auth::guard('web')->logout();
+
+            throw ValidationException::withMessages([
+                'email' => match ($user?->status) {
+                    'rejected' => 'Pendaftaran akun Anda ditolak admin. Silakan hubungi admin sekolah.',
+                    'pending' => 'Akun Anda belum disetujui admin. Silakan tunggu persetujuan sebelum masuk.',
+                    default => 'Akun Anda belum bisa dipakai untuk masuk. Silakan hubungi admin sekolah.',
+                },
             ]);
         }
 
