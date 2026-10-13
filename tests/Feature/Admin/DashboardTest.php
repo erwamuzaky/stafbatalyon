@@ -28,9 +28,11 @@ class DashboardTest extends TestCase
         $response->assertSee('Piket Minggu Ini');
 
         $this->assertSame(
-            User::where('status', 'approved')->count(),
+            User::where('role', 'staf')->where('status', 'approved')->count(),
             $response->viewData('jumlahStaf')
         );
+        // Akun admin tidak ikut dihitung di kartu "Staf Aktif".
+        $this->assertSame(2, $response->viewData('jumlahStaf'));
         $this->assertSame(1, $response->viewData('jumlahPending'));
         $this->assertSame(0, $response->viewData('jumlahEvent'));
         $this->assertSame(0, $response->viewData('jumlahPiketMingguIni'));

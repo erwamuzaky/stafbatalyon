@@ -4,7 +4,7 @@
         <div class="rounded-lg bg-white p-5 shadow-sm">
             <p class="text-sm font-medium text-gray-500">Staf Aktif</p>
             <p class="mt-2 text-3xl font-semibold text-gray-800">{{ $jumlahStaf }}</p>
-            <p class="mt-1 text-xs text-gray-500">Akun yang sudah disetujui admin.</p>
+            <p class="mt-1 text-xs text-gray-500">Staf biasa yang sudah disetujui admin.</p>
         </div>
 
         {{-- Pendaftar menunggu --}}
@@ -20,11 +20,14 @@
         </a>
 
         {{-- Event --}}
-        <div class="rounded-lg bg-white p-5 shadow-sm">
+        <a href="{{ route('admin.event.index') }}"
+           class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-transparent transition hover:ring-indigo-300">
             <p class="text-sm font-medium text-gray-500">Kegiatan (Event)</p>
             <p class="mt-2 text-3xl font-semibold text-gray-800">{{ $jumlahEvent }}</p>
-            <p class="mt-1 text-xs text-gray-500">Jumlah kegiatan yang tercatat.</p>
-        </div>
+            <p class="mt-1 text-xs font-medium text-indigo-600">
+                Lihat daftar kegiatan &rarr;
+            </p>
+        </a>
 
         {{-- Piket minggu ini --}}
         <div class="rounded-lg bg-white p-5 shadow-sm">
@@ -53,11 +56,18 @@
                 &bull; Tambah atau ubah bidang di
                 <a href="{{ route('admin.bidang.index') }}" class="font-medium text-indigo-600 hover:underline">Bidang</a>.
             </li>
+            <li>
+                &bull; Catat kegiatan dan unggah proposalnya di
+                <a href="{{ route('admin.event.index') }}" class="font-medium text-indigo-600 hover:underline">Event</a>.
+            </li>
+            <li>
+                &bull; Cari proposal lama di
+                <a href="{{ route('admin.arsip.index') }}" class="font-medium text-indigo-600 hover:underline">Arsip Proposal</a>.
+            </li>
         </ul>
 
         <p class="mt-4 rounded-md bg-gray-50 px-3 py-2 text-xs text-gray-500">
-            Catatan: kartu Kegiatan dan Piket Minggu Ini masih menampilkan 0 karena
-            datanya baru diisi pada Fase 4 dan Fase 5.
+            Catatan: kartu Piket Minggu Ini masih menampilkan 0 karena datanya baru diisi pada Fase 5.
         </p>
     </div>
 </x-admin-layout>

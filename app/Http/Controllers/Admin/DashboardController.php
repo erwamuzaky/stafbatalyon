@@ -16,7 +16,7 @@ class DashboardController extends Controller
     public function index(): View
     {
         return view('admin.dashboard', [
-            'jumlahStaf' => User::where('status', 'approved')->count(),
+            'jumlahStaf' => User::where('role', 'staf')->where('status', 'approved')->count(),
             'jumlahPending' => User::where('status', 'pending')->count(),
             'jumlahEvent' => Event::count(),
             'jumlahPiketMingguIni' => PiketGerbang::whereBetween('tanggal', [

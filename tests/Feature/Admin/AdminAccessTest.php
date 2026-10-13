@@ -3,6 +3,8 @@
 namespace Tests\Feature\Admin;
 
 use App\Models\Bidang;
+use App\Models\Event;
+use App\Models\Proposal;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -26,6 +28,9 @@ class AdminAccessTest extends TestCase
             '/admin/staf/tambah',
             '/admin/bidang',
             '/admin/bidang/tambah',
+            '/admin/event',
+            '/admin/event/tambah',
+            '/admin/arsip',
         ];
 
         foreach ($halaman as $url) {
@@ -59,6 +64,47 @@ class AdminAccessTest extends TestCase
 
         $this->assertSame('approved', $target->fresh()->status);
         $this->assertDatabaseHas('bidangs', ['id' => $bidang->id]);
+    }
+
+    /**
+     * Staf biasa tidak boleh mengelola kegiatan dan proposal.
+     */
+    public function test_staf_cannot_manage_events_and_proposals(): void
+    {
+        $staf = User::factory()->create();
+
+        $event = Event::create([
+            'nama' => 'Kegiatan Lama',
+            'tahun' => 2026,
+            'tanggal_mulai' => '2026-03-01',
+            'status' => 'rencana',
+        ]);
+
+        $proposal = Proposal::create([
+            'event_id' => $event->id,
+            'judul' => 'Proposal Lama',
+            'file_path' => 'proposals/contoh.pdf',
+        ]);
+
+        $this->actingAs($staf)
+            ->post(route('admin.event.store'), [
+                'nama' => 'Kegiatan Curang',
+                'tahun' => 2026,
+                'tanggal_mulai' => '2026-04-01',
+                'status' => 'rencana',
+            ])
+            ->assertForbidden();
+
+        $this->actingAs($staf)
+            ->delete(route('admin.proposal.destroy', $proposal))
+            ->assertForbidden();
+
+        $this->actingAs($staf)
+            ->get(route('admin.arsip.unduh', $proposal))
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('events', ['nama' => 'Kegiatan Curang']);
+        $this->assertDatabaseHas('proposals', ['id' => $proposal->id]);
     }
 
     /**

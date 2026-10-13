@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Admin\AkunController;
+use App\Http\Controllers\Admin\ArsipController;
 use App\Http\Controllers\Admin\BidangController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\ProposalController;
 use App\Http\Controllers\Admin\StafController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Staf\DashboardController as StafDashboardController;
@@ -20,7 +23,6 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'approved'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 // Area admin: hanya admin dengan status approved.
@@ -51,6 +53,25 @@ Route::middleware(['auth', 'approved', 'role:admin'])->prefix('admin')->name('ad
     Route::get('/bidang/{bidang}/edit', [BidangController::class, 'edit'])->name('bidang.edit');
     Route::patch('/bidang/{bidang}', [BidangController::class, 'update'])->name('bidang.update');
     Route::delete('/bidang/{bidang}', [BidangController::class, 'destroy'])->name('bidang.destroy');
+
+    // Kegiatan (event).
+    Route::get('/event', [EventController::class, 'index'])->name('event.index');
+    Route::get('/event/tambah', [EventController::class, 'create'])->name('event.create');
+    Route::post('/event', [EventController::class, 'store'])->name('event.store');
+    Route::get('/event/{event}', [EventController::class, 'show'])->name('event.show');
+    Route::get('/event/{event}/edit', [EventController::class, 'edit'])->name('event.edit');
+    Route::patch('/event/{event}', [EventController::class, 'update'])->name('event.update');
+    Route::delete('/event/{event}', [EventController::class, 'destroy'])->name('event.destroy');
+
+    // Proposal: unggah baru, pakai proposal lama sebagai dasar, hapus.
+    Route::post('/event/{event}/proposal', [ProposalController::class, 'store'])->name('proposal.store');
+    Route::get('/proposal/{proposal}/dasar', [ProposalController::class, 'createDari'])->name('proposal.dasar.create');
+    Route::post('/proposal/{proposal}/dasar', [ProposalController::class, 'storeDari'])->name('proposal.dasar.store');
+    Route::delete('/proposal/{proposal}', [ProposalController::class, 'destroy'])->name('proposal.destroy');
+
+    // Arsip proposal dari semua kegiatan.
+    Route::get('/arsip', [ArsipController::class, 'index'])->name('arsip.index');
+    Route::get('/arsip/{proposal}/unduh', [ArsipController::class, 'unduh'])->name('arsip.unduh');
 });
 
 // Area staf: hanya staf dengan status approved.

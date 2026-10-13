@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Proposal extends Model
 {
@@ -20,6 +21,18 @@ class Proposal extends Model
         'catatan',
         'template_dari_id',
     ];
+
+    /**
+     * Hapus berkas fisik setiap kali data proposal dihapus.
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (Proposal $proposal) {
+            if ($proposal->file_path) {
+                Storage::disk('public')->delete($proposal->file_path);
+            }
+        });
+    }
 
     /**
      * Get the event of the proposal.
