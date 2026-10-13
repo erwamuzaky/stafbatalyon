@@ -93,4 +93,22 @@
     .badge-selesai {
         @apply bg-gray-100 text-gray-700;
     }
+
+    /* Alert */
+    .alert {
+        @apply rounded-lg border px-4 py-3 text-sm leading-relaxed;
+    }
+
+    .alert-sukses {
+        @apply border-emerald-200 bg-emerald-50 text-emerald-800;
+    }
+
+    .alert-error {
+        @apply border-marun-200 bg-marun-50 text-marun-700;
+    }
+
+    /* Keadaan kosong (empty state) */
+    .empty-state {
+        @apply rounded-xl border border-gray-200 bg-white px-5 py-8 text-center text-base leading-relaxed text-arang/70;
+    }
 }

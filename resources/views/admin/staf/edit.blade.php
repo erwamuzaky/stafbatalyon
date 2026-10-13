@@ -1,11 +1,11 @@
 <x-admin-layout title="Ubah Data Staf">
-    <div class="rounded-lg bg-white p-4 shadow-sm sm:p-6">
+    <div class="rounded-xl border border-laut-100 bg-white p-4 shadow-sm sm:p-6">
         <div class="max-w-xl">
-            <h2 class="text-base font-semibold text-gray-800">Ubah Data Staf</h2>
+            <h2 class="font-judul text-lg font-semibold text-laut-800">Ubah Data Staf</h2>
 
-            <div class="mt-3 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-700">
-                <p><span class="font-medium">Nama:</span> {{ $user->name }}</p>
-                <p><span class="font-medium">Email:</span> {{ $user->email }}</p>
+            <div class="mt-3 rounded-lg border border-laut-100 bg-laut-50 px-3 py-2.5 text-sm text-gray-700">
+                <p><span class="font-medium text-arang">Nama:</span> {{ $user->name }}</p>
+                <p><span class="font-medium text-arang">Email:</span> {{ $user->email }}</p>
                 <p class="mt-1 text-xs text-gray-500">
                     Nama dan email tidak bisa diubah dari halaman ini. Kalau perlu diubah, ubah lewat Kelola Akun.
                 </p>
@@ -18,7 +18,7 @@
                 <div>
                     <x-input-label for="bidang_id" value="Bidang" />
                     <select id="bidang_id" name="bidang_id" required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            class="input-baku mt-1 block w-full">
                         <option value="">-- Pilih Bidang --</option>
                         @foreach ($bidangs as $bidang)
                             <option value="{{ $bidang->id }}"
@@ -44,19 +44,18 @@
                     <x-input-error :messages="$errors->get('no_hp')" class="mt-2" />
                 </div>
 
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50/50 px-3 py-2.5">
                     <input type="hidden" name="is_inti" value="0">
                     <input id="is_inti" name="is_inti" type="checkbox" value="1"
                            @checked(old('is_inti', $profile?->is_inti))
-                           class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                    <label for="is_inti" class="text-sm text-gray-700">Staf inti (pengurus)</label>
+                           class="rounded border-gray-300 text-laut-600 shadow-sm focus:ring-laut-500">
+                    <label for="is_inti" class="text-sm text-arang">Staf inti (pengurus)</label>
                 </div>
 
-                <div class="flex items-center gap-3 pt-2">
+                <div class="flex flex-wrap items-center gap-3 pt-2">
                     <x-primary-button>Simpan</x-primary-button>
 
-                    <a href="{{ route('admin.staf.index') }}"
-                       class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm hover:bg-gray-50">
+                    <a href="{{ route('admin.staf.index') }}" class="btn btn-sekunder">
                         Batal
                     </a>
                 </div>
@@ -64,10 +63,10 @@
         </div>
     </div>
 
-    <div class="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 sm:p-6">
+    <div class="mt-4 rounded-xl border border-marun-200 bg-marun-50 p-4 sm:p-6">
         <div class="max-w-xl">
-            <h2 class="text-base font-semibold text-red-800">Hapus Staf Ini</h2>
-            <p class="mt-1 text-sm text-red-700">
+            <h2 class="font-judul text-lg font-semibold text-marun-600">Hapus Staf Ini</h2>
+            <p class="mt-1 text-sm leading-relaxed text-marun-600/90">
                 Akun staf beserta data profilnya akan dihapus permanen. Tindakan ini tidak bisa dibatalkan.
             </p>
 
@@ -75,7 +74,7 @@
                   onsubmit="return confirm('Hapus staf {{ $user->name }}? Tindakan ini tidak bisa dibatalkan.')">
                 @csrf
                 @method('delete')
-                <x-danger-button>Hapus Staf</x-danger-button>
+                <button type="submit" class="btn btn-bahaya">Hapus Staf</button>
             </form>
         </div>
     </div>

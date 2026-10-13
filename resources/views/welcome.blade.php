@@ -23,7 +23,7 @@
         <nav class="sticky top-0 z-20 border-b border-gray-200 bg-white">
             <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
                 <a href="{{ url('/') }}" class="flex items-center gap-3">
-                    <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-10 w-10 rounded-full border border-gray-200 object-cover">
+                    <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-12 w-12 rounded-full border border-gray-200 object-cover">
                     <span class="leading-tight">
                         <span class="block font-judul text-lg font-bold text-arang">Staf Batalyon</span>
                         <span class="block text-sm text-arang/70">SMKN 3 Pariaman</span>
@@ -76,8 +76,8 @@
 
                 <div class="flex flex-col justify-center rounded-2xl border-t-4 border-emas-500 bg-laut-700 px-6 py-8 text-white sm:px-8">
                     <div class="flex items-center gap-4">
-                        <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white p-1">
-                            <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-12 w-12 rounded-full object-cover">
+                        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white p-1">
+                            <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-10 w-10 rounded-full object-cover">
                         </span>
                         <div>
                             <p class="font-judul text-2xl font-bold leading-tight">Staf Batalyon</p>

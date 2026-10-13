@@ -1,16 +1,16 @@
 <x-admin-layout title="Gunakan sebagai Dasar">
-    <div class="rounded-lg bg-white p-4 shadow-sm sm:p-6">
+    <div class="rounded-xl border border-laut-100 bg-white p-4 shadow-sm sm:p-6">
         <div class="max-w-xl">
-            <h2 class="text-base font-semibold text-gray-800">Gunakan Proposal sebagai Dasar</h2>
-            <p class="mt-1 text-sm text-gray-600">
+            <h2 class="font-judul text-lg font-semibold text-laut-800">Gunakan Proposal sebagai Dasar</h2>
+            <p class="mt-1 text-sm leading-relaxed text-gray-600">
                 Proposal baru akan dibuat sebagai salinan. Berkas aslinya disalin, jadi proposal lama
                 tetap utuh meskipun proposal baru diubah atau dihapus.
             </p>
 
             {{-- Proposal sumber --}}
-            <div class="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm">
-                <p class="text-xs font-medium uppercase tracking-wider text-gray-500">Proposal dasar</p>
-                <p class="mt-1 font-medium text-gray-900">{{ $proposal->judul }}</p>
+            <div class="mt-6 rounded-xl border border-laut-100 border-l-4 border-l-emas-500 bg-laut-50 p-4 text-sm">
+                <p class="text-xs font-medium tracking-wide text-laut-700">Proposal dasar</p>
+                <p class="mt-1 font-medium text-arang">{{ $proposal->judul }}</p>
                 <p class="mt-0.5 text-gray-600">
                     Kegiatan: {{ $proposal->event?->nama ?? '-' }}
                     @if ($proposal->event)
@@ -28,7 +28,7 @@
                 <div>
                     <x-input-label for="event_id" value="Kegiatan Tujuan" />
                     <select id="event_id" name="event_id" required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            class="input-baku mt-1 block w-full">
                         <option value="">-- Pilih Kegiatan --</option>
                         @foreach ($events as $pilihan)
                             <option value="{{ $pilihan->id }}" @selected(old('event_id', $proposal->event_id) == $pilihan->id)>
@@ -49,15 +49,14 @@
                 <div>
                     <x-input-label for="catatan" value="Catatan (opsional)" />
                     <textarea id="catatan" name="catatan" rows="3"
-                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('catatan') }}</textarea>
+                              class="input-baku mt-1 block w-full">{{ old('catatan') }}</textarea>
                     <x-input-error :messages="$errors->get('catatan')" class="mt-2" />
                 </div>
 
-                <div class="flex items-center gap-3 pt-2">
-                    <x-primary-button>Buat Proposal Baru</x-primary-button>
+                <div class="flex flex-wrap items-center gap-3 pt-2">
+                    <x-primary-button>Simpan</x-primary-button>
 
-                    <a href="{{ route('admin.event.show', $proposal->event_id) }}"
-                       class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm hover:bg-gray-50">
+                    <a href="{{ route('admin.event.show', $proposal->event_id) }}" class="btn btn-sekunder">
                         Batal
                     </a>
                 </div>

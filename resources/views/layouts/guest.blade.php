@@ -20,8 +20,8 @@
             {{-- Panel kiri: identitas, menyusut jadi bar atas di HP --}}
             <aside class="bg-laut-700 text-white">
                 <div class="mx-auto flex max-w-md items-center gap-3 px-4 py-4 sm:px-6 lg:mx-0 lg:ml-auto lg:h-full lg:max-w-sm lg:flex-col lg:items-start lg:justify-center lg:gap-4 lg:px-10">
-                    <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white p-1">
-                        <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-12 w-12 rounded-full object-cover">
+                    <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white p-1">
+                        <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-10 w-10 rounded-full object-cover">
                     </span>
                     <div class="min-w-0">
                         <p class="font-judul text-xl font-bold leading-tight sm:text-2xl lg:text-3xl">Staf Batalyon</p>

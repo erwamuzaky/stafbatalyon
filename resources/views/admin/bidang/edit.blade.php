@@ -1,7 +1,7 @@
 <x-admin-layout title="Ubah Bidang">
-    <div class="rounded-lg bg-white p-4 shadow-sm sm:p-6">
+    <div class="rounded-xl border border-laut-100 bg-white p-4 shadow-sm sm:p-6">
         <div class="max-w-xl">
-            <h2 class="text-base font-semibold text-gray-800">Ubah Bidang</h2>
+            <h2 class="font-judul text-lg font-semibold text-laut-800">Ubah Bidang</h2>
 
             <form method="POST" action="{{ route('admin.bidang.update', $bidang) }}" class="mt-6 space-y-5">
                 @csrf
@@ -14,18 +14,17 @@
                     <x-input-error :messages="$errors->get('nama')" class="mt-2" />
                 </div>
 
-                <div class="flex items-center gap-3 pt-2">
+                <div class="flex flex-wrap items-center gap-3 pt-2">
                     <x-primary-button>Simpan</x-primary-button>
 
-                    <a href="{{ route('admin.bidang.index') }}"
-                       class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm hover:bg-gray-50">
+                    <a href="{{ route('admin.bidang.index') }}" class="btn btn-sekunder">
                         Batal
                     </a>
                 </div>
             </form>
 
-            <div class="mt-6 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-700">
-                <p>Jumlah staf di bidang ini: {{ $bidang->stafProfiles()->count() }}</p>
+            <div class="mt-6 rounded-lg border border-laut-100 bg-laut-50 px-3 py-2.5 text-sm text-gray-700">
+                <p>Jumlah staf di bidang ini: <span class="font-semibold text-arang">{{ $bidang->stafProfiles()->count() }}</span></p>
 
                 @if ($bidang->stafProfiles()->count() > 0)
                     <p class="mt-1 text-xs text-gray-500">

@@ -25,6 +25,15 @@ class DashboardController extends Controller
                 $mulaiMinggu->copy()->startOfDay(),
                 $mulaiMinggu->copy()->addDays(5)->endOfDay(),
             ])->count(),
+            'pendaftarTerbaru' => User::where('status', 'pending')
+                ->with('stafProfile.bidang')
+                ->latest()
+                ->limit(5)
+                ->get(),
+            'piketHariIni' => PiketGerbang::whereDate('tanggal', today())
+                ->with('user')
+                ->orderBy('sesi')
+                ->get(),
         ]);
     }
 }

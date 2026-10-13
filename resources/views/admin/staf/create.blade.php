@@ -1,9 +1,9 @@
 <x-admin-layout title="Tambah Staf">
-    <div class="rounded-lg bg-white p-4 shadow-sm sm:p-6">
+    <div class="rounded-xl border border-laut-100 bg-white p-4 shadow-sm sm:p-6">
         <div class="max-w-xl">
-            <h2 class="text-base font-semibold text-gray-800">Tambah Staf Baru</h2>
-            <p class="mt-1 text-sm text-gray-600">
-                Staf yang ditambahkan admin langsung berstatus <span class="font-medium">disetujui</span>,
+            <h2 class="font-judul text-lg font-semibold text-laut-800">Tambah Staf Baru</h2>
+            <p class="mt-1 text-sm leading-relaxed text-gray-600">
+                Staf yang ditambahkan admin langsung berstatus <span class="font-medium text-arang">disetujui</span>,
                 jadi bisa masuk memakai email dan kata sandi di bawah ini.
             </p>
 
@@ -42,7 +42,7 @@
                 <div>
                     <x-input-label for="bidang_id" value="Bidang" />
                     <select id="bidang_id" name="bidang_id" required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            class="input-baku mt-1 block w-full">
                         <option value="">-- Pilih Bidang --</option>
                         @foreach ($bidangs as $bidang)
                             <option value="{{ $bidang->id }}" @selected(old('bidang_id') == $bidang->id)>
@@ -67,18 +67,17 @@
                     <x-input-error :messages="$errors->get('no_hp')" class="mt-2" />
                 </div>
 
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50/50 px-3 py-2.5">
                     <input type="hidden" name="is_inti" value="0">
                     <input id="is_inti" name="is_inti" type="checkbox" value="1" @checked(old('is_inti'))
-                           class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                    <label for="is_inti" class="text-sm text-gray-700">Staf inti (pengurus)</label>
+                           class="rounded border-gray-300 text-laut-600 shadow-sm focus:ring-laut-500">
+                    <label for="is_inti" class="text-sm text-arang">Staf inti (pengurus)</label>
                 </div>
 
-                <div class="flex items-center gap-3 pt-2">
+                <div class="flex flex-wrap items-center gap-3 pt-2">
                     <x-primary-button>Simpan</x-primary-button>
 
-                    <a href="{{ route('admin.staf.index') }}"
-                       class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm hover:bg-gray-50">
+                    <a href="{{ route('admin.staf.index') }}" class="btn btn-sekunder">
                         Batal
                     </a>
                 </div>

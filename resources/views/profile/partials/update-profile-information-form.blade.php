@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="font-judul text-lg font-semibold text-laut-800">
             Informasi Profil
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
+        <p class="mt-1 text-sm leading-relaxed text-gray-600">
             Ubah nama dan alamat email akun Anda di sini.
         </p>
     </header>
@@ -13,7 +13,7 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-5">
         @csrf
         @method('patch')
 
@@ -30,16 +30,16 @@
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>
-                    <p class="text-sm mt-2 text-gray-800">
+                    <p class="mt-2 text-sm text-gray-800">
                         Alamat email Anda belum diverifikasi.
 
-                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <button form="send-verification" class="rounded-md text-sm text-laut-700 underline decoration-laut-200 underline-offset-2 hover:text-laut-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-laut-500">
                             Klik di sini untuk mengirim ulang email verifikasi.
                         </button>
                     </p>
 
                     @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600">
+                        <p class="mt-2 text-sm font-medium text-green-600">
                             Tautan verifikasi baru sudah dikirim ke alamat email Anda.
                         </p>
                     @endif
@@ -57,7 +57,7 @@
             <p class="text-sm text-gray-500">Nomor HP hanya untuk akun staf.</p>
         @endif
 
-        <div class="flex items-center gap-4">
+        <div class="flex flex-wrap items-center gap-4 pt-1">
             <x-primary-button>Simpan</x-primary-button>
 
             @if (session('status') === 'profile-updated')

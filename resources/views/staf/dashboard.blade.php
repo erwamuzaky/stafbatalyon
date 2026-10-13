@@ -1,65 +1,74 @@
 <x-staf-layout title="Dashboard">
     {{-- Sapaan --}}
-    <div class="rounded-lg bg-white p-4 shadow-sm sm:p-6">
-        <h2 class="text-base font-semibold text-gray-800">Selamat datang, {{ auth()->user()->name }}</h2>
+    <div class="rounded-xl border border-laut-100 bg-white p-5 shadow-sm sm:p-6">
+        <h2 class="font-judul text-xl font-semibold text-laut-800">Selamat datang, {{ auth()->user()->name }}</h2>
         <p class="mt-1 text-sm text-gray-600">
-            Bidang: {{ $profil?->bidang?->nama ?? '-' }}
+            Bidang: <span class="font-medium text-arang">{{ $profil?->bidang?->nama ?? '-' }}</span>
             &middot;
-            Jabatan: {{ $profil?->jabatan ?? '-' }}
+            Jabatan: <span class="font-medium text-arang">{{ $profil?->jabatan ?? '-' }}</span>
         </p>
     </div>
 
-    <div class="mt-4 grid gap-4 lg:grid-cols-2">
+    <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         {{-- Jadwal piket --}}
-        <div class="rounded-lg bg-white p-4 shadow-sm sm:p-6">
-            <h2 class="text-base font-semibold text-gray-800">Jadwal Piket Saya</h2>
+        <section aria-label="Jadwal piket saya" class="rounded-xl border border-laut-100 bg-white p-5 shadow-sm sm:p-6">
+            <h2 class="font-judul text-lg font-semibold text-laut-800">Jadwal Piket Saya</h2>
 
             @if ($piketHariIni)
-                <div class="mt-3 rounded-md border border-indigo-300 bg-indigo-50 px-4 py-3 text-sm font-semibold text-indigo-800">
-                    Hari ini giliran Anda
-                    <span class="mt-0.5 block text-xs font-normal text-indigo-600">
+                <div class="mt-4 rounded-lg border border-emas-500 border-l-4 bg-laut-50 px-4 py-3">
+                    <p class="text-sm font-semibold text-laut-800">Hari ini giliran Anda</p>
+                    <p class="mt-0.5 text-xs text-laut-700">
                         {{ $piketHariIni['tanggal']->translatedFormat('l, j F Y') }}
-                    </span>
+                    </p>
+                    @if ($piketHariIni['catatan'])
+                        <p class="mt-1 text-xs leading-relaxed text-gray-600">{{ $piketHariIni['catatan'] }}</p>
+                    @endif
                 </div>
             @endif
 
             @if ($jadwalPiket->isNotEmpty())
-                <ul class="mt-3 space-y-2">
+                <ul class="mt-4 space-y-2">
                     @foreach ($jadwalPiket as $item)
-                        <li class="flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 {{ $item['hariIni'] ? 'border-indigo-300 bg-indigo-50' : 'border-gray-200' }}">
-                            <div>
-                                <p class="text-sm font-medium text-gray-800">{{ $item['tanggal']->translatedFormat('l, j F Y') }}</p>
-                                @if ($item['catatan'])
-                                    <p class="mt-0.5 text-xs text-gray-500">{{ $item['catatan'] }}</p>
-                                @endif
+                        <li class="rounded-lg border px-3 py-2.5 transition-colors {{ $item['hariIni'] ? 'border-emas-500 border-l-4 bg-laut-50' : 'border-gray-200 hover:bg-gray-50/60' }}">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <p class="text-sm font-medium text-arang">{{ $item['tanggal']->translatedFormat('l, j F Y') }}</p>
+                                <span class="badge {{ $item['mingguIni'] ? 'badge-disetujui' : 'badge-selesai' }}">
+                                    {{ $item['mingguIni'] ? 'Minggu ini' : 'Minggu depan' }}
+                                </span>
                             </div>
-                            <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium {{ $item['mingguIni'] ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700' }}">
-                                {{ $item['mingguIni'] ? 'Minggu ini' : 'Minggu depan' }}
-                            </span>
+                            @if ($item['catatan'])
+                                <p class="mt-1 text-xs leading-relaxed text-gray-500">{{ $item['catatan'] }}</p>
+                            @endif
                         </li>
                     @endforeach
                 </ul>
             @else
-                <p class="mt-3 text-sm text-gray-500">Belum ada jadwal piket untuk Anda.</p>
+                <div class="mt-4 rounded-lg border border-dashed border-laut-200 bg-laut-50/50 px-4 py-6 text-center">
+                    <p class="text-sm text-gray-500">Belum ada jadwal piket untuk Anda.</p>
+                    <p class="mt-1 text-xs text-gray-400">Jadwal baru akan muncul di sini setelah admin membaginya.</p>
+                </div>
             @endif
-        </div>
+        </section>
 
         {{-- Kegiatan terdekat --}}
-        <div class="rounded-lg bg-white p-4 shadow-sm sm:p-6">
-            <h2 class="text-base font-semibold text-gray-800">Kegiatan Terdekat</h2>
+        <section aria-label="Kegiatan terdekat" class="rounded-xl border border-laut-100 bg-white p-5 shadow-sm sm:p-6">
+            <h2 class="font-judul text-lg font-semibold text-laut-800">Kegiatan Terdekat</h2>
 
             @if ($kegiatan->isNotEmpty())
-                <ul class="mt-3 space-y-2">
+                <ul class="mt-4 space-y-2">
                     @foreach ($kegiatan as $item)
                         @php
-                            $badge = ($item['status'] ?? null) === 'berjalan'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-indigo-100 text-indigo-800';
+                            $badge = match ($item['status'] ?? null) {
+                                'berjalan' => 'badge-berjalan',
+                                'rencana' => 'badge-rencana',
+                                'selesai' => 'badge-selesai',
+                                default => 'badge-selesai',
+                            };
                         @endphp
-                        <li class="rounded-md border border-gray-200 px-3 py-2">
+                        <li class="rounded-lg border border-gray-200 px-3 py-2.5">
                             <div class="flex flex-wrap items-center justify-between gap-2">
-                                <p class="text-sm font-medium text-gray-800">{{ $item['nama'] }}</p>
-                                <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium {{ $badge }}">
+                                <p class="text-sm font-medium text-arang">{{ $item['nama'] }}</p>
+                                <span class="badge {{ $badge }}">
                                     {{ $item['statusLabel'] }}
                                 </span>
                             </div>
@@ -76,8 +85,11 @@
                     @endforeach
                 </ul>
             @else
-                <p class="mt-3 text-sm text-gray-500">Belum ada kegiatan yang direncanakan.</p>
+                <div class="mt-4 rounded-lg border border-dashed border-laut-200 bg-laut-50/50 px-4 py-6 text-center">
+                    <p class="text-sm text-gray-500">Belum ada kegiatan yang direncanakan.</p>
+                    <p class="mt-1 text-xs text-gray-400">Kegiatan baru akan muncul di sini setelah admin mencatatnya.</p>
+                </div>
             @endif
-        </div>
+        </section>
     </div>
 </x-staf-layout>
