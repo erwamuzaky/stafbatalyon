@@ -55,6 +55,29 @@ export default {
                     800: '#4B1A20',
                     900: '#361317',
                 },
+                // Palet pastel untuk status
+                info: { 50: '#F0F9FF', 700: '#075985', 800: '#0C4A6E' },
+                sukses: { 50: '#ECFDF5', 700: '#047857', 800: '#065F46' },
+                peringatan: { 50: '#FEFCE8', 700: '#854D0E', 800: '#713F12' },
+                bahaya: { 50: '#FEF2F2', 700: '#991B1B', 800: '#7F1D1D' },
+            },
+            boxShadow: {
+                'soft-sm': '0 1px 2px rgba(31, 78, 107, 0.04)',
+                'soft-md': '0 4px 12px rgba(31, 78, 107, 0.06)',
+                'soft-lg': '0 10px 30px rgba(31, 78, 107, 0.10)',
+                'soft-xl': '0 20px 40px rgba(31, 78, 107, 0.12)',
+            },
+            borderRadius: {
+                'xl': '0.875rem',
+                '2xl': '1.25rem',
+                '3xl': '1.5rem',
+            },
+            transitionDuration: {
+                150: '150ms',
+                200: '200ms',
+            },
+            lineHeight: {
+                relaxed: '1.75rem',
             },
 
             fontFamily: {

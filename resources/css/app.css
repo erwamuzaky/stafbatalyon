@@ -96,19 +96,32 @@
 
     /* Alert */
     .alert {
-        @apply rounded-lg border px-4 py-3 text-sm leading-relaxed;
+        @apply rounded-2xl border px-5 py-4 text-sm leading-relaxed;
     }
 
     .alert-sukses {
-        @apply border-emerald-200 bg-emerald-50 text-emerald-800;
+        @apply border-sukses-200 bg-sukses-50 text-sukses-800;
     }
 
     .alert-error {
-        @apply border-marun-200 bg-marun-50 text-marun-700;
+        @apply border-bahaya-200 bg-bahaya-50 text-bahaya-700;
+    }
+
+    .alert-info {
+        @apply border-info-200 bg-info-50 text-info-800;
     }
 
     /* Keadaan kosong (empty state) */
     .empty-state {
-        @apply rounded-xl border border-gray-200 bg-white px-5 py-8 text-center text-base leading-relaxed text-arang/70;
+        @apply rounded-2xl border border-laut-100 bg-white px-6 py-10 text-center text-base leading-relaxed text-arang/70 shadow-soft-sm;
+    }
+
+    /* Avatar inisial */
+    .avatar {
+        @apply inline-flex h-10 w-10 items-center justify-center rounded-full bg-laut-100 text-sm font-semibold text-laut-700;
+    }
+
+    .avatar-lg {
+        @apply h-14 w-14 text-base;
     }
 }
