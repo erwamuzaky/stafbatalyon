@@ -1,27 +1,63 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Dashboard Admin
-        </h2>
-    </x-slot>
+<x-admin-layout title="Dashboard">
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {{-- Staf aktif --}}
+        <div class="rounded-lg bg-white p-5 shadow-sm">
+            <p class="text-sm font-medium text-gray-500">Staf Aktif</p>
+            <p class="mt-2 text-3xl font-semibold text-gray-800">{{ $jumlahStaf }}</p>
+            <p class="mt-1 text-xs text-gray-500">Akun yang sudah disetujui admin.</p>
+        </div>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <p class="font-medium">Selamat datang, {{ auth()->user()->name }}.</p>
+        {{-- Pendaftar menunggu --}}
+        <a href="{{ route('admin.akun.index', ['status' => 'pending']) }}"
+           class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-transparent transition hover:ring-indigo-300">
+            <p class="text-sm font-medium text-gray-500">Menunggu Persetujuan</p>
+            <p class="mt-2 text-3xl font-semibold {{ $jumlahPending > 0 ? 'text-amber-600' : 'text-gray-800' }}">
+                {{ $jumlahPending }}
+            </p>
+            <p class="mt-1 text-xs font-medium text-indigo-600">
+                Buka Kelola Akun untuk memeriksa pendaftar &rarr;
+            </p>
+        </a>
 
-                    <p class="mt-2 text-sm text-gray-600">
-                        Anda masuk sebagai admin Staf Batalyon.
-                    </p>
+        {{-- Event --}}
+        <div class="rounded-lg bg-white p-5 shadow-sm">
+            <p class="text-sm font-medium text-gray-500">Kegiatan (Event)</p>
+            <p class="mt-2 text-3xl font-semibold text-gray-800">{{ $jumlahEvent }}</p>
+            <p class="mt-1 text-xs text-gray-500">Jumlah kegiatan yang tercatat.</p>
+        </div>
 
-                    <p class="mt-4 text-sm text-gray-600">
-                        Halaman ini masih tahap awal. Ringkasan data (jumlah staf,
-                        pendaftar yang menunggu persetujuan, event, dan piket minggu ini)
-                        akan ditambahkan di Fase 3.
-                    </p>
-                </div>
-            </div>
+        {{-- Piket minggu ini --}}
+        <div class="rounded-lg bg-white p-5 shadow-sm">
+            <p class="text-sm font-medium text-gray-500">Piket Minggu Ini</p>
+            <p class="mt-2 text-3xl font-semibold text-gray-800">{{ $jumlahPiketMingguIni }}</p>
+            <p class="mt-1 text-xs text-gray-500">Jadwal piket gerbang minggu ini.</p>
         </div>
     </div>
-</x-app-layout>
+
+    <div class="mt-6 rounded-lg bg-white p-6 shadow-sm">
+        <h2 class="text-base font-semibold text-gray-800">Selamat datang, {{ auth()->user()->name }}</h2>
+        <p class="mt-2 text-sm text-gray-600">
+            Dari halaman ini Anda bisa mengelola akun staf, data staf, dan daftar bidang.
+        </p>
+
+        <ul class="mt-4 space-y-1 text-sm text-gray-600">
+            <li>
+                &bull; Periksa pendaftar baru di
+                <a href="{{ route('admin.akun.index') }}" class="font-medium text-indigo-600 hover:underline">Kelola Akun</a>.
+            </li>
+            <li>
+                &bull; Ubah data staf di
+                <a href="{{ route('admin.staf.index') }}" class="font-medium text-indigo-600 hover:underline">Data Staf</a>.
+            </li>
+            <li>
+                &bull; Tambah atau ubah bidang di
+                <a href="{{ route('admin.bidang.index') }}" class="font-medium text-indigo-600 hover:underline">Bidang</a>.
+            </li>
+        </ul>
+
+        <p class="mt-4 rounded-md bg-gray-50 px-3 py-2 text-xs text-gray-500">
+            Catatan: kartu Kegiatan dan Piket Minggu Ini masih menampilkan 0 karena
+            datanya baru diisi pada Fase 4 dan Fase 5.
+        </p>
+    </div>
+</x-admin-layout>

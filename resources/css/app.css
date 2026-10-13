@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Elemen yang memakai x-cloak disembunyikan sampai Alpine siap. */
+[x-cloak] {
+    display: none !important;
+}
