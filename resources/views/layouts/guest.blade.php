@@ -37,7 +37,7 @@
             {{-- Panel kanan: form --}}
             <main class="flex items-start justify-center px-4 py-8 sm:px-6 lg:items-center lg:py-12">
                 <div class="w-full max-w-md">
-                    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-8">
+                    <div class="rounded-2xl border border-laut-100 bg-white p-6 shadow-soft-md sm:p-8">
                         {{ $slot }}
                     </div>
 

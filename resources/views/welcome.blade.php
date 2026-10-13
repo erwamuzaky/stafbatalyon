@@ -20,10 +20,10 @@
     </head>
     <body>
         {{-- Navbar --}}
-        <nav class="sticky top-0 z-20 border-b border-gray-200 bg-white">
-            <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+        <nav class="sticky top-0 z-20 border border-laut-100/60 bg-white/95 shadow-soft-sm backdrop-blur supports-[backdrop-filter]:bg-white/80">
+            <div class="mx-auto flex h-16 max-w-6xl items-center justify-between rounded-2xl px-4 sm:px-6">
                 <a href="{{ url('/') }}" class="flex items-center gap-3">
-                    <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-12 w-12 rounded-full border border-gray-200 object-cover">
+                    <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-12 w-12 rounded-full border border-laut-100 object-cover">
                     <span class="leading-tight">
                         <span class="block font-judul text-lg font-bold text-arang">Staf Batalyon</span>
                         <span class="block text-sm text-arang/70">SMKN 3 Pariaman</span>
@@ -48,10 +48,14 @@
         </nav>
 
         {{-- Hero: latar tulang + satu blok laut tegas --}}
-        <header class="border-b border-gray-200">
+        <header class="relative overflow-hidden">
+            <div class="absolute inset-x-0 top-0 -z-10 h-full bg-gradient-to-b from-white via-tulang/70 to-tulang"></div>
+            <div class="pointer-events-none absolute -top-16 right-[-20%] -z-10 h-72 w-72 rounded-full bg-laut-50 blur-3xl md:right-[10%]"></div>
+            <div class="pointer-events-none absolute -bottom-20 left-[-10%] -z-10 h-64 w-64 rounded-full bg-emas-50 blur-3xl md:left-[5%]"></div>
+
             <div class="mx-auto grid max-w-6xl items-stretch gap-6 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[minmax(0,11fr)_minmax(0,9fr)] lg:gap-10">
-                <div class="animasi-muat flex flex-col justify-center">
-                    <h1 class="font-judul text-5xl font-bold leading-none text-arang sm:text-6xl lg:text-7xl">Staf Batalyon</h1>
+                <div class="flex flex-col justify-center">
+                    <h1 class="font-judul text-5xl font-bold leading-none tracking-tight text-arang sm:text-6xl lg:text-7xl">Staf Batalyon</h1>
                     <p class="mt-2 font-judul text-2xl font-semibold text-laut-600 sm:text-3xl">SMKN 3 Pariaman</p>
                     <p class="mt-4 max-w-xl text-base leading-relaxed text-arang/85">
                         Organisasi kesiswaan yang menjaga ketertiban harian sekolah dan
@@ -74,18 +78,18 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col justify-center rounded-2xl border-t-4 border-emas-500 bg-laut-700 px-6 py-8 text-white sm:px-8">
+                <div class="flex flex-col justify-center rounded-2xl border border-laut-100 bg-white px-6 py-8 shadow-soft-md sm:px-8">
                     <div class="flex items-center gap-4">
-                        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white p-1">
+                        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-laut-50 p-1 shadow-soft-sm">
                             <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-10 w-10 rounded-full object-cover">
                         </span>
                         <div>
                             <p class="font-judul text-2xl font-bold leading-tight">Staf Batalyon</p>
-                            <p class="text-sm text-laut-100">SMKN 3 Pariaman</p>
+                            <p class="text-sm text-arang/70">SMKN 3 Pariaman</p>
                         </div>
                     </div>
                     <span class="mt-5 h-1 w-20 rounded-full bg-emas-500" aria-hidden="true"></span>
-                    <p class="mt-3 max-w-md text-base leading-relaxed text-laut-50">
+                    <p class="mt-3 max-w-md text-base leading-relaxed text-arang/80">
                         Satu wadah pengurus dan staf: piket gerbang harian, arsip proposal
                         kegiatan, dan data keanggotaan yang tertib.
                     </p>
@@ -106,25 +110,39 @@
                 @endphp
 
                 @if ($daftarInti->isNotEmpty() && $pemimpin)
-                    <div class="mx-auto mt-6 max-w-xl rounded-2xl border-t-4 border-emas-500 bg-laut-700 px-6 py-8 text-center text-white">
-                        <p class="font-judul text-4xl font-bold leading-tight sm:text-5xl">{{ $pemimpin->stafProfile?->jabatan ?? '-' }}</p>
-                        <p class="mt-3 text-lg font-semibold">{{ $pemimpin->name }}</p>
-                        <p class="mt-1 text-sm text-laut-100">{{ $pemimpin->stafProfile?->bidang?->nama ?? '-' }}</p>
+                    <div class="mx-auto mt-6 max-w-xl rounded-3xl border border-laut-100 bg-white px-6 py-8 text-center shadow-soft-md">
+                        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-laut-50 text-lg font-semibold text-laut-700">
+                            {{ Str::substr($pemimpin->name, 0, 2) }}
+                        </div>
+                        <p class="mt-4 font-judul text-4xl font-bold leading-tight sm:text-5xl">{{ $pemimpin->stafProfile?->jabatan ?? '-' }}</p>
+                        <p class="mt-3 text-lg font-semibold text-arang">{{ $pemimpin->name }}</p>
+                        <span class="mt-2 inline-flex items-center rounded-full bg-info-50 px-3 py-1 text-xs font-medium text-info-700">
+                            {{ $pemimpin->stafProfile?->bidang?->nama ?? '-' }}
+                        </span>
                     </div>
 
                     @if ($pengurus->isNotEmpty())
                         <div class="mt-6 grid gap-4 sm:grid-cols-2">
                             @foreach ($pengurus as $user)
-                                <div class="rounded-xl border-l-4 border-emas-500 border-y border-r border-gray-200 bg-white px-5 py-4">
-                                    <p class="font-judul text-2xl font-bold leading-tight text-laut-700">{{ $user->stafProfile?->jabatan ?? '-' }}</p>
-                                    <p class="mt-1 text-base font-semibold text-arang">{{ $user->name }}</p>
-                                    <p class="mt-0.5 text-sm text-arang/65">{{ $user->stafProfile?->bidang?->nama ?? '-' }}</p>
+                                <div class="rounded-2xl border border-laut-100 bg-white px-5 py-4 shadow-soft-sm">
+                                    <div class="flex items-start gap-3">
+                                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-laut-50 text-sm font-semibold text-laut-700">
+                                            {{ Str::substr($user->name, 0, 2) }}
+                                        </div>
+                                        <div>
+                                            <p class="font-judul text-2xl font-bold leading-tight text-laut-700">{{ $user->stafProfile?->jabatan ?? '-' }}</p>
+                                            <p class="mt-1 text-base font-semibold text-arang">{{ $user->name }}</p>
+                                            <span class="mt-1 inline-flex items-center rounded-full bg-info-50 px-2.5 py-0.5 text-xs font-medium text-info-700">
+                                                {{ $user->stafProfile?->bidang?->nama ?? '-' }}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
                     @endif
                 @else
-                    <div class="mt-6 rounded-xl border border-gray-200 bg-white px-5 py-6 text-base text-arang/70">
+                    <div class="empty-state mt-6">
                         Belum ada data staf inti.
                     </div>
                 @endif
@@ -136,16 +154,20 @@
                 <p class="mt-2 max-w-2xl text-base text-arang/75">Bidang-bidang yang menaungi seluruh staf batalyon.</p>
 
                 @if (($bidang ?? collect())->isNotEmpty())
-                    <ul class="mt-6 max-w-3xl divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white">
+                    <div class="mt-6 grid max-w-3xl gap-3 sm:grid-cols-2">
                         @foreach (($bidang ?? collect()) as $item)
-                            <li class="flex items-center gap-3 px-5 py-3.5">
-                                <span class="h-2.5 w-2.5 shrink-0 rounded-sm bg-emas-500" aria-hidden="true"></span>
+                            <div class="flex items-center gap-3 rounded-2xl border border-laut-100 bg-white px-4 py-3 shadow-soft-sm">
+                                <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-emas-50">
+                                    <svg class="h-5 w-5 text-emas-600" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                                    </svg>
+                                </span>
                                 <span class="text-base font-medium text-arang">{{ $item->nama ?? '-' }}</span>
-                            </li>
+                            </div>
                         @endforeach
-                    </ul>
+                    </div>
                 @else
-                    <div class="mt-6 max-w-3xl rounded-xl border border-gray-200 bg-white px-5 py-6 text-base text-arang/70">
+                    <div class="empty-state mt-6 max-w-3xl">
                         Belum ada data bidang.
                     </div>
                 @endif
