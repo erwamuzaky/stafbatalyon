@@ -20,6 +20,7 @@ class ProfilStafTest extends TestCase
         return StafProfile::create([
             'user_id' => $staf->id,
             'bidang_id' => $bidang?->id,
+            'kelas' => 'XI RPL 1',
             'jabatan' => 'Anggota',
             'is_inti' => false,
             'no_hp' => '081200000000',
@@ -53,6 +54,7 @@ class ProfilStafTest extends TestCase
         $response = $this->actingAs($staf)->patch(route('profile.update'), [
             'name' => 'Nama Baru',
             'email' => $staf->email,
+            'kelas' => 'XI RPL 1',
             'no_hp' => '081298765432',
         ]);
 
@@ -78,6 +80,7 @@ class ProfilStafTest extends TestCase
         $this->actingAs($staf)->patch(route('profile.update'), [
             'name' => 'Nama Baru',
             'email' => $staf->email,
+            'kelas' => 'XI RPL 1',
             'no_hp' => str_repeat('8', 21),
         ])->assertSessionHasErrors('no_hp');
     }

@@ -34,11 +34,23 @@ class ProfileController extends Controller
 
         $user->save();
 
-        // Nomor HP staf disimpan pada profil staf, bukan pada tabel user.
+        // Kelas dan nomor HP staf disimpan pada profil staf, bukan pada tabel user.
         $profil = $user->stafProfile;
 
-        if ($profil !== null && $request->has('no_hp')) {
-            $profil->update(['no_hp' => $request->input('no_hp')]);
+        if ($profil !== null) {
+            $dataProfil = [];
+
+            if ($request->has('kelas')) {
+                $dataProfil['kelas'] = $request->input('kelas');
+            }
+
+            if ($request->has('no_hp')) {
+                $dataProfil['no_hp'] = $request->input('no_hp');
+            }
+
+            if ($dataProfil !== []) {
+                $profil->update($dataProfil);
+            }
         }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');

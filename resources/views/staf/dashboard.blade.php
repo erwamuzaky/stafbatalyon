@@ -11,6 +11,10 @@
             <h2 class="mt-1.5 font-judul text-2xl font-bold sm:text-3xl">Selamat datang, {{ auth()->user()->name }}</h2>
             <p class="mt-1.5 text-sm text-laut-100">
                 {{ $profil?->bidang?->nama ?? 'Belum ada bidang' }}
+                @if ($profil?->kelas)
+                    &middot;
+                    {{ $profil->kelas }}
+                @endif
                 &middot;
                 {{ $profil?->jabatan ?? 'Anggota' }}
                 &middot;

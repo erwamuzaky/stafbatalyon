@@ -28,6 +28,8 @@ class RegistrationTest extends TestCase
             'password' => 'password',
             'password_confirmation' => 'password',
             'bidang_id' => $bidang->id,
+            'kelas' => 'X RPL 1',
+            'jabatan' => 'Anggota',
             'no_hp' => '081234567890',
         ]);
 
@@ -43,11 +45,13 @@ class RegistrationTest extends TestCase
 
         $this->assertNotNull($user->stafProfile);
         $this->assertSame($bidang->id, $user->stafProfile->bidang_id);
+        $this->assertSame('X RPL 1', $user->stafProfile->kelas);
+        $this->assertSame('Anggota', $user->stafProfile->jabatan);
         $this->assertSame('081234567890', $user->stafProfile->no_hp);
         $this->assertFalse($user->stafProfile->is_inti);
     }
 
-    public function test_bidang_and_no_hp_are_required_for_registration(): void
+    public function test_kelas_bidang_dan_no_hp_wajib_saat_daftar(): void
     {
         $response = $this->post('/register', [
             'name' => 'Calon Staf',
@@ -56,7 +60,7 @@ class RegistrationTest extends TestCase
             'password_confirmation' => 'password',
         ]);
 
-        $response->assertSessionHasErrors(['bidang_id', 'no_hp']);
+        $response->assertSessionHasErrors(['bidang_id', 'kelas', 'no_hp']);
         $this->assertGuest();
         $this->assertNull(User::where('email', 'calon2@example.com')->first());
     }

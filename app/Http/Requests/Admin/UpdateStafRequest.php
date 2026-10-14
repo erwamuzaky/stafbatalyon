@@ -25,9 +25,12 @@ class UpdateStafRequest extends FormRequest
     {
         return [
             'bidang_id' => ['required', 'exists:bidangs,id'],
+            'kelas' => ['required', 'string', 'max:255'],
             'jabatan' => ['nullable', 'string', 'max:255'],
             'is_inti' => ['nullable', 'boolean'],
             'no_hp' => ['nullable', 'string', 'max:20'],
+            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'hapus_foto' => ['nullable', 'boolean'],
         ];
     }
 
@@ -41,7 +44,12 @@ class UpdateStafRequest extends FormRequest
         return [
             'bidang_id.required' => 'Bidang wajib dipilih.',
             'bidang_id.exists' => 'Bidang yang dipilih tidak sah.',
+            'kelas.required' => 'Kelas wajib diisi.',
+            'kelas.max' => 'Kelas terlalu panjang, maksimal 255 karakter.',
             'no_hp.max' => 'Nomor HP terlalu panjang, maksimal 20 karakter.',
+            'foto.image' => 'Foto harus berupa gambar.',
+            'foto.mimes' => 'Format foto harus jpg, jpeg, png, atau webp.',
+            'foto.max' => 'Ukuran foto maksimal 2 MB.',
         ];
     }
 }

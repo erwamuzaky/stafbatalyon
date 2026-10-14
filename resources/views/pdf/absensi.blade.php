@@ -96,16 +96,20 @@
         }
 
         .kolom-no {
-            width: 8%;
+            width: 7%;
             text-align: center;
         }
 
+        .kolom-kelas {
+            width: 15%;
+        }
+
         .kolom-bidang {
-            width: 24%;
+            width: 20%;
         }
 
         .kolom-ttd {
-            width: 38%;
+            width: 32%;
         }
 
         .kosong {
@@ -144,7 +148,7 @@
     <div class="kop">
         <div class="sekolah">SMKN 3 Pariaman</div>
         <div class="unit">Staf Batalyon</div>
-        <div class="alamat">Jalan Sutan Syahrir, Pariaman, Sumatera Barat</div>
+        <div class="alamat">Jl. Siti Manggopoh, Manggung, Kec. Pariaman Utara, Kota Pariaman, Sumatera Barat 25522</div>
     </div>
 
     <div class="judul">DAFTAR HADIR STAF BATALYON</div>
@@ -172,6 +176,7 @@
             <tr>
                 <th class="kolom-no">No</th>
                 <th>Nama</th>
+                <th class="kolom-kelas">Kelas</th>
                 <th class="kolom-bidang">Bidang</th>
                 <th class="kolom-ttd">Tanda Tangan</th>
             </tr>
@@ -183,6 +188,7 @@
                 <tr>
                     <td class="kolom-no baris">{{ $nomor++ }}</td>
                     <td class="baris">{{ $orang->name }}</td>
+                    <td class="kolom-kelas baris">{{ $orang->stafProfile?->kelas ?? '-' }}</td>
                     <td class="kolom-bidang baris">{{ $orang->stafProfile?->bidang?->nama ?? '-' }}</td>
                     <td class="kolom-ttd baris">&nbsp;</td>
                 </tr>
@@ -190,6 +196,7 @@
                 <tr>
                     <td class="kolom-no baris">1</td>
                     <td class="baris kosong">Belum ada peserta pada penyaring ini</td>
+                    <td class="kolom-kelas baris kosong">-</td>
                     <td class="kolom-bidang baris kosong">-</td>
                     <td class="kolom-ttd baris">&nbsp;</td>
                 </tr>
@@ -200,6 +207,7 @@
                 <tr>
                     <td class="kolom-no baris">{{ $nomor++ }}</td>
                     <td class="baris">&nbsp;</td>
+                    <td class="kolom-kelas baris">&nbsp;</td>
                     <td class="kolom-bidang baris">&nbsp;</td>
                     <td class="kolom-ttd baris">&nbsp;</td>
                 </tr>

@@ -182,6 +182,26 @@ class DashboardTest extends TestCase
     }
 
     /**
+     * Sapaan memuat kelas staf kalau sudah diisi.
+     */
+    public function test_sapaan_menampilkan_kelas(): void
+    {
+        $staf = User::factory()->create(['name' => 'Rina Sapaan']);
+        StafProfile::create([
+            'user_id' => $staf->id,
+            'bidang_id' => null,
+            'kelas' => 'XI RPL 2',
+            'jabatan' => 'Anggota',
+            'is_inti' => false,
+        ]);
+
+        $response = $this->actingAs($staf)->get(route('staf.dashboard'));
+
+        $response->assertOk();
+        $response->assertSee('XI RPL 2');
+    }
+
+    /**
      * Dashbord tetap tampil walau staf belum punya profil atau jadwal piket.
      */
     public function test_dashboard_tetap_tampil_tanpa_profil_dan_jadwal(): void

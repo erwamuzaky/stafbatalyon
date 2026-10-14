@@ -6,22 +6,25 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreStafRequest;
 use App\Http\Requests\Admin\UpdateStafRequest;
 use App\Models\Bidang;
+use App\Models\StafProfile;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class StafController extends Controller
 {
     /**
-     * Daftar staf dengan pencarian dan filter bidang.
+     * Daftar staf dengan pencarian dan filter bidang serta kelas.
      */
     public function index(Request $request): View
     {
         $q = $request->query('q');
         $bidangId = $request->query('bidang_id');
+        $kelas = $request->query('kelas');
 
         $users = User::with('stafProfile.bidang')
             ->where('role', 'staf')
@@ -38,6 +41,12 @@ class StafController extends Controller
                     $sub->where('bidang_id', $bidangId);
                 })
             )
+            ->when(
+                is_string($kelas) && $kelas !== '',
+                fn ($query) => $query->whereHas('stafProfile', function ($sub) use ($kelas) {
+                    $sub->where('kelas', 'like', '%'.$kelas.'%');
+                })
+            )
             ->orderBy('name')
             ->paginate(15)
             ->withQueryString();
@@ -45,8 +54,15 @@ class StafController extends Controller
         return view('admin.staf.index', [
             'users' => $users,
             'bidangs' => Bidang::orderBy('nama')->get(),
+            'kelasList' => StafProfile::query()
+                ->whereNotNull('kelas')
+                ->where('kelas', '!=', '')
+                ->distinct()
+                ->orderBy('kelas')
+                ->pluck('kelas'),
             'q' => $q,
             'bidangId' => $bidangId,
+            'kelas' => $kelas,
         ]);
     }
 
@@ -78,9 +94,11 @@ class StafController extends Controller
 
             $user->stafProfile()->create([
                 'bidang_id' => $validated['bidang_id'],
+                'kelas' => $validated['kelas'],
                 'jabatan' => $validated['jabatan'] ?? null,
                 'no_hp' => $validated['no_hp'] ?? null,
                 'is_inti' => $request->boolean('is_inti'),
+                'foto' => $request->hasFile('foto') ? $request->file('foto')->store('staf', 'public') : null,
             ]);
 
             return $user;
@@ -117,12 +135,45 @@ class StafController extends Controller
 
         $validated = $request->validated();
 
-        $user->stafProfile()->updateOrCreate([], [
-            'bidang_id' => $validated['bidang_id'],
-            'jabatan' => $validated['jabatan'] ?? null,
-            'no_hp' => $validated['no_hp'] ?? null,
-            'is_inti' => $request->boolean('is_inti'),
-        ]);
+        $profile = $user->stafProfile;
+
+        if ($request->hasFile('foto')) {
+            $lama = $profile?->foto;
+            if ($lama) {
+                Storage::disk('public')->delete($lama);
+            }
+            $fotoPath = $request->file('foto')->store('staf', 'public');
+            $user->stafProfile()->updateOrCreate([], [
+                'bidang_id' => $validated['bidang_id'],
+                'kelas' => $validated['kelas'],
+                'jabatan' => $validated['jabatan'] ?? null,
+                'no_hp' => $validated['no_hp'] ?? null,
+                'is_inti' => $request->boolean('is_inti'),
+                'foto' => $fotoPath,
+            ]);
+        } elseif ($request->boolean('hapus_foto')) {
+            $lama = $profile?->foto;
+            if ($lama) {
+                Storage::disk('public')->delete($lama);
+            }
+            $user->stafProfile()->updateOrCreate([], [
+                'bidang_id' => $validated['bidang_id'],
+                'kelas' => $validated['kelas'],
+                'jabatan' => $validated['jabatan'] ?? null,
+                'no_hp' => $validated['no_hp'] ?? null,
+                'is_inti' => $request->boolean('is_inti'),
+                'foto' => null,
+            ]);
+        } else {
+            $user->stafProfile()->updateOrCreate([], [
+                'bidang_id' => $validated['bidang_id'],
+                'kelas' => $validated['kelas'],
+                'jabatan' => $validated['jabatan'] ?? null,
+                'no_hp' => $validated['no_hp'] ?? null,
+                'is_inti' => $request->boolean('is_inti'),
+                'foto' => $profile?->foto,
+            ]);
+        }
 
         return redirect()->route('admin.staf.index')
             ->with('success', 'Data staf '.$user->name.' sudah diperbarui.');

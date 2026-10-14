@@ -109,4 +109,36 @@
             @endif
         </x-card>
     </div>
+
+    {{-- Sebaran kelas staf aktif --}}
+    <x-card class="mt-4">
+        <x-slot name="header">
+            <div class="flex items-center justify-between gap-3">
+                <h3 class="font-judul text-lg font-semibold text-laut-800">Sebaran Kelas</h3>
+                <a href="{{ route('admin.staf.index') }}"
+                   class="text-xs font-medium text-laut-700 underline decoration-laut-200 underline-offset-2 hover:text-laut-800">
+                    Data Staf
+                </a>
+            </div>
+        </x-slot>
+
+        @if (($sebaranKelas ?? collect())->isNotEmpty())
+            <ul class="flex flex-wrap gap-2">
+                @foreach ($sebaranKelas as $namaKelas => $jumlah)
+                    <li>
+                        <a href="{{ route('admin.staf.index', ['kelas' => $namaKelas]) }}"
+                           title="Lihat staf kelas {{ $namaKelas }}"
+                           class="inline-flex items-center gap-2 rounded-full border border-laut-100 bg-laut-50 py-1.5 pl-3 pr-1.5 transition-colors hover:border-laut-200 hover:bg-laut-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-laut-500">
+                            <span class="text-sm font-medium text-arang">{{ $namaKelas }}</span>
+                            <span class="rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-laut-700">{{ $jumlah }}</span>
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        @else
+            <x-empty title="Belum ada data kelas" ikon="staf">
+                Kelas staf aktif akan tampil di sini setelah diisi.
+            </x-empty>
+        @endif
+    </x-card>
 </x-admin-layout>

@@ -57,6 +57,12 @@
 
             <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
+                    <x-input-label for="kelas" value="Kelas" />
+                    <x-text-input id="kelas" class="mt-1 block w-full" type="text" name="kelas" :value="old('kelas')" required placeholder="Contoh: XI RPL 1" />
+                    <x-input-error :messages="$errors->get('kelas')" class="mt-2" />
+                </div>
+
+                <div>
                     <x-input-label for="bidang_id" value="Bidang" />
                     <select id="bidang_id" name="bidang_id" required class="input-baku mt-1 block w-full">
                         <option value="">-- Pilih Bidang --</option>
@@ -67,6 +73,12 @@
                         @endforeach
                     </select>
                     <x-input-error :messages="$errors->get('bidang_id')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-input-label for="jabatan" value="Jabatan (opsional)" />
+                    <x-text-input id="jabatan" class="mt-1 block w-full" type="text" name="jabatan" :value="old('jabatan')" placeholder="Contoh: Anggota" />
+                    <x-input-error :messages="$errors->get('jabatan')" class="mt-2" />
                 </div>
 
                 <div>

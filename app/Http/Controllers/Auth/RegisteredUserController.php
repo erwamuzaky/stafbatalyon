@@ -42,6 +42,8 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'bidang_id' => ['required', 'exists:bidangs,id'],
+            'kelas' => ['required', 'string', 'max:255'],
+            'jabatan' => ['nullable', 'string', 'max:255'],
             'no_hp' => ['required', 'string', 'max:20'],
         ]);
 
@@ -56,6 +58,8 @@ class RegisteredUserController extends Controller
 
             $user->stafProfile()->create([
                 'bidang_id' => $validated['bidang_id'],
+                'kelas' => $validated['kelas'],
+                'jabatan' => $validated['jabatan'] ?? null,
                 'no_hp' => $validated['no_hp'],
                 'is_inti' => false,
             ]);

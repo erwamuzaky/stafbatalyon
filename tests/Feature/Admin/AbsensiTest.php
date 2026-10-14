@@ -15,11 +15,12 @@ class AbsensiTest extends TestCase
     /**
      * Buat profil staf dengan bidang dan status inti tertentu.
      */
-    private function profil(User $staf, ?Bidang $bidang = null, bool $inti = false): StafProfile
+    private function profil(User $staf, ?Bidang $bidang = null, bool $inti = false, ?string $kelas = null): StafProfile
     {
         return StafProfile::create([
             'user_id' => $staf->id,
             'bidang_id' => $bidang?->id,
+            'kelas' => $kelas,
             'jabatan' => $inti ? 'Koordinator' : 'Anggota',
             'is_inti' => $inti,
         ]);
@@ -217,7 +218,7 @@ class AbsensiTest extends TestCase
     {
         $bidang = Bidang::create(['nama' => 'Humas']);
         $staf = User::factory()->create(['name' => 'Rina Absensi']);
-        $this->profil($staf, $bidang);
+        $this->profil($staf, $bidang, false, 'XI RPL 3');
 
         $html = view('pdf.absensi', [
             'namaKegiatan' => 'Latihan Dasar Kepemimpinan',
@@ -236,6 +237,8 @@ class AbsensiTest extends TestCase
         $this->assertStringContainsString('Selasa, 13 Oktober 2026', $html);
         $this->assertStringContainsString('Semua staf', $html);
         $this->assertStringContainsString('Rina Absensi', $html);
+        $this->assertStringContainsString('Kelas', $html);
+        $this->assertStringContainsString('XI RPL 3', $html);
         $this->assertStringContainsString('Humas', $html);
         $this->assertStringContainsString('Tanda Tangan', $html);
         $this->assertStringContainsString('Pariaman, 13 Oktober 2026', $html);

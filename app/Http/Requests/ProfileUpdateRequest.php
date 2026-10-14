@@ -26,6 +26,12 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'kelas' => [
+                Rule::requiredIf(fn () => $this->user()?->stafProfile !== null),
+                'nullable',
+                'string',
+                'max:255',
+            ],
             'no_hp' => ['nullable', 'string', 'max:20'],
         ];
     }
@@ -44,6 +50,8 @@ class ProfileUpdateRequest extends FormRequest
             'email.email' => 'Format email tidak sah.',
             'email.max' => 'Email terlalu panjang, maksimal 255 karakter.',
             'email.unique' => 'Email ini sudah dipakai akun lain.',
+            'kelas.required' => 'Kelas wajib diisi.',
+            'kelas.max' => 'Kelas terlalu panjang, maksimal 255 karakter.',
             'no_hp.max' => 'Nomor HP terlalu panjang, maksimal 20 karakter.',
         ];
     }

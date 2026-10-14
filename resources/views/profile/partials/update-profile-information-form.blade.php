@@ -50,12 +50,18 @@
 
         @if ($user->stafProfile)
             <div>
+                <x-input-label for="kelas" value="Kelas" />
+                <x-text-input id="kelas" name="kelas" type="text" class="mt-1 block w-full" :value="old('kelas', $user->stafProfile?->kelas)" placeholder="Contoh: XI RPL 1" required />
+                <x-input-error class="mt-2" :messages="$errors->get('kelas')" />
+            </div>
+
+            <div>
                 <x-input-label for="no_hp" value="Nomor HP" />
                 <x-text-input id="no_hp" name="no_hp" type="text" class="mt-1 block w-full" :value="old('no_hp', $user->stafProfile?->no_hp)" autocomplete="tel" />
                 <x-input-error class="mt-2" :messages="$errors->get('no_hp')" />
             </div>
         @else
-            <p class="text-sm text-gray-500">Nomor HP hanya untuk akun staf.</p>
+            <p class="text-sm text-gray-500">Kelas dan nomor HP hanya untuk akun staf.</p>
         @endif
 
         <div class="flex flex-wrap items-center gap-4 pt-1">

@@ -60,4 +60,52 @@ class ProfileTest extends TestCase
 
         $this->assertNotNull($user->refresh()->email_verified_at);
     }
+
+    public function test_staf_can_update_kelas_and_no_hp_from_profile(): void
+    {
+        $user = User::factory()->create();
+        $user->stafProfile()->create([
+            'bidang_id' => null,
+            'kelas' => 'X RPL 1',
+            'is_inti' => false,
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->patch('/profile', [
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+                'kelas' => 'XI RPL 2',
+                'no_hp' => '081234567890',
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/profile');
+
+        $user->refresh();
+
+        $this->assertSame('XI RPL 2', $user->stafProfile?->kelas);
+        $this->assertSame('081234567890', $user->stafProfile?->no_hp);
+    }
+
+    public function test_staf_wajib_mengisi_kelas_saat_ubah_profil(): void
+    {
+        $user = User::factory()->create();
+        $user->stafProfile()->create([
+            'bidang_id' => null,
+            'kelas' => 'X RPL 1',
+            'is_inti' => false,
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->patch('/profile', [
+                'name' => 'Test User',
+                'email' => $user->email,
+                'kelas' => '',
+            ]);
+
+        $response->assertSessionHasErrors('kelas');
+    }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class StafProfile extends Model
 {
@@ -22,6 +24,7 @@ class StafProfile extends Model
     protected $fillable = [
         'user_id',
         'bidang_id',
+        'kelas',
         'jabatan',
         'is_inti',
         'no_hp',
@@ -54,5 +57,15 @@ class StafProfile extends Model
     public function bidang(): BelongsTo
     {
         return $this->belongsTo(Bidang::class);
+    }
+
+    /**
+     * URL publik foto profil. Null kalau belum ada foto.
+     */
+    protected function fotoUrl(): Attribute
+    {
+        return Attribute::get(
+            fn () => $this->foto ? Storage::disk('public')->url($this->foto) : null
+        );
     }
 }

@@ -9,6 +9,7 @@
         </div>
 
         <form method="POST" action="{{ route('admin.staf.update', $user) }}" class="mt-6 space-y-5"
+              enctype="multipart/form-data"
               x-data="{ memproses: false }" @submit="memproses = true">
             @csrf
             @method('patch')
@@ -25,6 +26,13 @@
                     @endforeach
                 </select>
                 <x-input-error :messages="$errors->get('bidang_id')" class="mt-2" />
+            </div>
+
+            <div>
+                <x-input-label for="kelas" value="Kelas" />
+                <x-text-input id="kelas" name="kelas" type="text" class="mt-1 block w-full"
+                              :value="old('kelas', $profile?->kelas)" required placeholder="Contoh: XI RPL 1" />
+                <x-input-error :messages="$errors->get('kelas')" class="mt-2" />
             </div>
 
             <div>
@@ -48,6 +56,30 @@
                        class="rounded border-gray-300 text-laut-600 shadow-sm focus:ring-laut-500">
                 <label for="is_inti" class="text-sm text-arang">Staf inti (pengurus)</label>
             </div>
+
+            @if ($profile?->foto_url)
+            <div class="rounded-lg border border-laut-100 bg-laut-50 p-4">
+                <div class="mb-2 text-sm font-medium text-arang">Foto saat ini</div>
+                <x-avatar :name="$user->name" :foto="$profile->foto_url" size="lg" />
+            </div>
+            @endif
+
+            <div>
+                <x-input-label for="foto" value="Foto baru (opsional)" />
+                <input id="foto" name="foto" type="file" accept="image/*"
+                       class="input-baku mt-1 block w-full p-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-laut-600 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-laut-700">
+                <p class="mt-1 text-xs text-gray-500">Format jpg/png/webp, maksimal 2 MB.</p>
+                <x-input-error :messages="$errors->get('foto')" class="mt-2" />
+            </div>
+
+            @if ($profile?->foto_url)
+            <div class="flex items-center gap-2">
+                <input id="hapus_foto" name="hapus_foto" type="hidden" value="0">
+                <input id="hapus_foto_checkbox" name="hapus_foto" type="checkbox" value="1"
+                       class="rounded border-gray-300 text-laut-600 shadow-sm focus:ring-laut-500">
+                <label for="hapus_foto_checkbox" class="text-sm text-arang">Hapus foto saat ini</label>
+            </div>
+            @endif
 
             <div class="flex flex-wrap items-center gap-3 pt-2">
                 <x-primary-button x-bind:disabled="memproses">
