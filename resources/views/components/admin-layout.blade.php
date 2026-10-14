@@ -51,6 +51,12 @@
             'ikon' => 'cetak',
         ],
         [
+            'label' => 'Pengaturan',
+            'rute' => 'admin.pengaturan.index',
+            'aktif' => request()->routeIs('admin.pengaturan.*'),
+            'ikon' => 'pengaturan',
+        ],
+        [
             'label' => 'Profil Saya',
             'rute' => 'profile.edit',
             'aktif' => request()->routeIs('profile.*'),

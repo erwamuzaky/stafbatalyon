@@ -3,9 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\Bidang;
+use App\Models\Pengaturan;
 use App\Models\StafProfile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class WelcomePageTest extends TestCase
@@ -15,11 +17,12 @@ class WelcomePageTest extends TestCase
     /**
      * Buat profil staf pada satu bidang.
      */
-    private function profil(User $staf, ?Bidang $bidang, ?string $jabatan = null, bool $inti = false): StafProfile
+    private function profil(User $staf, ?Bidang $bidang, ?string $jabatan = null, bool $inti = false, ?string $kelas = null): StafProfile
     {
         return StafProfile::create([
             'user_id' => $staf->id,
             'bidang_id' => $bidang?->id,
+            'kelas' => $kelas,
             'jabatan' => $jabatan,
             'is_inti' => $inti,
             'no_hp' => '081234567890',
@@ -62,6 +65,22 @@ class WelcomePageTest extends TestCase
     }
 
     /**
+     * Halaman depan menampilkan kelas staf inti yang sudah diisi.
+     */
+    public function test_halaman_depan_menampilkan_kelas_staf_inti(): void
+    {
+        $humas = Bidang::create(['nama' => 'Humas']);
+
+        $ketua = User::factory()->create(['name' => 'Ketua Batalyon']);
+        $this->profil($ketua, $humas, 'Ketua', true, 'XI RPL 1');
+
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('Kelas XI RPL 1');
+    }
+
+    /**
      * Halaman depan tidak memuat email dan nomor HP staf.
      */
     public function test_halaman_depan_tidak_memuat_email_dan_nomor_hp(): void
@@ -97,5 +116,43 @@ class WelcomePageTest extends TestCase
         $response->assertSee('Keamanan');
         $response->assertSee(route('login'), false);
         $response->assertSee(route('register'), false);
+    }
+
+    /**
+     * Halaman depan membaca teks kustom dari pengaturan.
+     */
+    public function test_halaman_depan_membaca_teks_dari_pengaturan(): void
+    {
+        Pengaturan::simpan(['hero_label' => 'Selamat Datang Di Portal']);
+
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('Selamat Datang Di Portal');
+    }
+
+    /**
+     * Halaman depan menampilkan foto staf inti jika tersedia.
+     */
+    public function test_halaman_depan_menampilkan_foto_staf_inti(): void
+    {
+        $humas = Bidang::create(['nama' => 'Humas']);
+        $ketua = User::factory()->create(['name' => 'Ketua Berfoto']);
+
+        StafProfile::create([
+            'user_id' => $ketua->id,
+            'bidang_id' => $humas->id,
+            'jabatan' => 'Ketua',
+            'is_inti' => true,
+            'no_hp' => '081234567890',
+            'foto' => 'staf-foto/ketua.jpg',
+        ]);
+
+        $urlFoto = Storage::disk('public')->url('staf-foto/ketua.jpg');
+
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee($urlFoto, false);
     }
 }

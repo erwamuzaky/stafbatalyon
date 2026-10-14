@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ArsipController;
 use App\Http\Controllers\Admin\BidangController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Admin\PiketController;
 use App\Http\Controllers\Admin\ProposalController;
 use App\Http\Controllers\Admin\StafController;
@@ -55,6 +56,10 @@ Route::middleware(['auth', 'approved', 'role:admin'])->prefix('admin')->name('ad
     Route::get('/bidang/{bidang}/edit', [BidangController::class, 'edit'])->name('bidang.edit');
     Route::patch('/bidang/{bidang}', [BidangController::class, 'update'])->name('bidang.update');
     Route::delete('/bidang/{bidang}', [BidangController::class, 'destroy'])->name('bidang.destroy');
+
+    // Pengaturan halaman depan.
+    Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
+    Route::patch('/pengaturan', [PengaturanController::class, 'update'])->name('pengaturan.update');
 
     // Piket gerbang: pembagian staf per tanggal dan sesi.
     Route::get('/piket', [PiketController::class, 'index'])->name('piket.index');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bidang;
 use App\Models\Event;
+use App\Models\Pengaturan;
 use App\Models\User;
 use Illuminate\View\View;
 
@@ -25,6 +26,8 @@ class WelcomeController extends Controller
             'jumlahStafAktif' => User::where('role', 'staf')->where('status', 'approved')->count(),
             'jumlahBidang' => Bidang::count(),
             'jumlahKegiatanTahunIni' => Event::where('tahun', now()->year)->count(),
+            'pengaturan' => Pengaturan::peta(),
+            'heroBackground' => Pengaturan::gambar('hero_background'),
         ]);
     }
 }
