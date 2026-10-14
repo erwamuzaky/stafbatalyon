@@ -18,7 +18,7 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <x-primary-button class="w-full justify-center" x-bind:disabled="memproses">
+        <x-primary-button class="h-12 w-full justify-center" x-bind:disabled="memproses">
             <span x-show="!memproses">Lanjutkan</span>
             <span x-show="memproses" x-cloak>Memproses...</span>
         </x-primary-button>

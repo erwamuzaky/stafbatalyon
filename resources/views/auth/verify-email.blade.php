@@ -15,7 +15,7 @@
         <form method="POST" action="{{ route('verification.send') }}">
             @csrf
 
-            <x-primary-button class="w-full justify-center">
+            <x-primary-button class="h-12 w-full justify-center">
                 Kirim Ulang Email Verifikasi
             </x-primary-button>
         </form>

@@ -36,7 +36,7 @@
             <span class="ms-2 text-sm text-arang/80">Ingat saya</span>
         </label>
 
-        <x-primary-button class="w-full justify-center" x-bind:disabled="memproses">
+        <x-primary-button class="h-12 w-full justify-center" x-bind:disabled="memproses">
             <span x-show="!memproses">Masuk</span>
             <span x-show="memproses" x-cloak>Memproses...</span>
         </x-primary-button>

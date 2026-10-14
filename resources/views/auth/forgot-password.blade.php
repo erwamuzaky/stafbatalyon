@@ -20,7 +20,7 @@
             <p class="mt-1 text-xs text-arang/70">Pastikan email yang dimasukkan sama dengan email akun Anda.</p>
         </div>
 
-        <x-primary-button class="w-full justify-center" x-bind:disabled="memproses">
+        <x-primary-button class="h-12 w-full justify-center" x-bind:disabled="memproses">
             <span x-show="!memproses">Kirim Tautan</span>
             <span x-show="memproses" x-cloak>Mengirim...</span>
         </x-primary-button>

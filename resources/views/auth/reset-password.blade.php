@@ -30,7 +30,7 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <x-primary-button class="w-full justify-center" x-bind:disabled="memproses">
+        <x-primary-button class="h-12 w-full justify-center" x-bind:disabled="memproses">
             <span x-show="!memproses">Simpan Kata Sandi</span>
             <span x-show="memproses" x-cloak>Menyimpan...</span>
         </x-primary-button>

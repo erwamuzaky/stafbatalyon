@@ -78,7 +78,7 @@
             </div>
         </fieldset>
 
-        <x-primary-button class="w-full justify-center" x-bind:disabled="memproses">
+        <x-primary-button class="h-12 w-full justify-center" x-bind:disabled="memproses">
             <span x-show="!memproses">Daftar</span>
             <span x-show="memproses" x-cloak>Mengirim...</span>
         </x-primary-button>

@@ -36,7 +36,7 @@
 
     <form method="POST" action="{{ route('logout') }}" class="mt-6">
         @csrf
-        <x-primary-button class="w-full justify-center">
+        <x-primary-button class="h-12 w-full justify-center">
             Keluar
         </x-primary-button>
     </form>
