@@ -17,38 +17,36 @@
     <body>
         <div class="min-h-screen lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
 
-            {{-- Panel kiri: laut solid dengan hiasan bintang, menampilkan logo, nama, dan sambutan --}}
-            <aside class="relative h-full w-full overflow-hidden bg-laut-700 text-white">
+            {{-- Panel kiri: laut solid dengan hiasan bintang; isi terpusat, tinggi penuh saat jadi kolom di desktop --}}
+            <aside class="relative flex items-center justify-center overflow-hidden bg-laut-700 p-6 text-white lg:sticky lg:top-0 lg:h-screen lg:p-12">
                 <x-hiasan-auth class="text-white/[0.07]" />
 
-                <div class="relative mx-auto flex h-full max-w-md items-center gap-3 px-4 py-4 sm:px-6 lg:mx-0 lg:ml-auto lg:max-w-sm lg:flex-col lg:items-start lg:justify-center lg:gap-5 lg:px-10">
-                    {{-- Lingkaran putih dengan logo (logo mengisi lingkaran dengan padding kecil, cincin emas di sekelilingnya) --}}
-                    <div class="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white p-1 shadow-md">
-                        <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-14 w-14 rounded-full object-contain p-1">
-                        <div class="absolute inset-0 rounded-full border-2 border-emas-500/50"></div>
+                {{-- Satu wadah isi: lebar dibatasi, selalu rata tengah --}}
+                <div class="relative mx-auto flex w-full max-w-sm flex-col items-center gap-6 text-center">
+                    {{-- Lingkaran putih 96px, logo mengisi lingkaran dengan padding kecil, cincin emas tipis di sekelilingnya --}}
+                    <span class="mx-auto flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-white p-1 shadow-soft-md ring-1 ring-emas-500/60">
+                        <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-full w-full rounded-full object-contain p-1">
+                    </span>
+
+                    {{-- Nama dan sekolah --}}
+                    <div>
+                        <p class="font-judul text-2xl font-bold leading-tight lg:text-3xl">Staf Batalyon</p>
+                        <p class="mt-1 text-sm text-laut-100 lg:text-base">SMKN 3 Pariaman</p>
                     </div>
 
-                    {{-- Logo dan "Staf Batalyon / SMKN 3 Pariaman" di atas kiri --}}
-                    <div class="min-w-0">
-                        <p class="font-judul text-xl font-bold leading-tight sm:text-2xl lg:text-3xl">Staf Batalyon</p>
-                        <p class="text-sm text-laut-100 lg:text-base">SMKN 3 Pariaman</p>
-                    </div>
+                    {{-- Garis emas pendek sebagai pemisah --}}
+                    <span class="mx-auto block h-1 w-24 rounded-full bg-emas-500" aria-hidden="true"></span>
 
-                    {{-- Sambutan besar (font condensed) di bagian bawah kiri --}}
-                    <div class="hidden max-w-xs lg:block">
-                        @if ($sambutan)
-                            <p class="text-2xl font-light leading-tight text-laut-100">{{ $sambutan }}</p>
-                        @endif
-                    </div>
-
-                    {{-- Garis emas pendek sebagai pemisah (hanya di desktop) --}}
-                    <span class="hidden h-1 w-24 rounded-full bg-emas-500 lg:block" aria-hidden="true"></span>
+                    {{-- Kalimat sambutan (disembunyikan di header HP agar tetap ringkas) --}}
+                    @if ($sambutan)
+                        <p class="hidden font-judul text-xl font-medium leading-snug text-white lg:block lg:text-2xl">{{ $sambutan }}</p>
+                    @endif
                 </div>
             </aside>
 
-            {{-- Panel kanan: form dengan latar belakang putih dan bayangan --}}
-            <main class="flex items-start justify-center px-4 py-8 sm:px-6 lg:items-center lg:py-12">
-                <div class="w-full max-w-md">
+            {{-- Panel kanan: latar putih, kartu form di tengah vertikal --}}
+            <main class="flex items-center justify-center bg-white px-4 py-8 sm:px-6 lg:min-h-screen lg:py-12">
+                <div class="w-full max-w-[520px]">
                     <div class="rounded-2xl border border-laut-100 bg-white p-6 shadow-soft-md sm:p-8">
                         {{ $slot }}
                     </div>
