@@ -4,7 +4,7 @@
     $profil = $node['profil'];
     $anak = $node['anak'];
 
-    // Inisial dipakai kalau staf belum punya foto (pola sama seperti komponen kartu-staf).
+    // Inisial dipakai kalau staf belum punya foto.
     $kata = preg_split('/\s+/', trim($profil->user?->name ?? '')) ?: [];
     $pertama = $kata[0] ?? '';
     $terakhir = count($kata) > 1 ? end($kata) : '';
