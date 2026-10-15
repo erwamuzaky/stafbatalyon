@@ -86,6 +86,34 @@ class ProfilStafTest extends TestCase
     }
 
     /**
+     * Bagian foto profil muncul untuk staf yang punya profil.
+     */
+    public function test_bagian_foto_muncul_untuk_staf(): void
+    {
+        $staf = User::factory()->create(['name' => 'Sari Foto']);
+        $this->profil($staf);
+
+        $response = $this->actingAs($staf)->get(route('profile.edit'));
+
+        $response->assertOk();
+        $response->assertSee('Foto Profil');
+        $response->assertSee(route('profile.photo.update'));
+    }
+
+    /**
+     * Bagian foto profil tidak muncul untuk admin tanpa profil staf.
+     */
+    public function test_bagian_foto_tidak_muncul_untuk_admin(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->get(route('profile.edit'));
+
+        $response->assertOk();
+        $response->assertDontSee('Foto Profil');
+    }
+
+    /**
      * Admin tanpa profil staf tetap bisa memperbarui profilnya.
      */
     public function test_admin_tanpa_profil_staf_tetap_bisa_memperbarui_profil(): void

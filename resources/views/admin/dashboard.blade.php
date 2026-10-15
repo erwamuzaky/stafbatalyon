@@ -58,7 +58,7 @@
                     @foreach ($pendaftarTerbaru as $item)
                         <li class="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
                             <div class="flex min-w-0 items-center gap-3">
-                                <x-avatar :name="$item->name" size="md" />
+                                <x-avatar :name="$item->name" size="md" :foto="$item->stafProfile?->foto_url" />
                                 <div class="min-w-0">
                                     <p class="truncate text-sm font-semibold text-arang">{{ $item->name }}</p>
                                     <p class="truncate text-xs text-gray-500">{{ $item->stafProfile?->bidang?->nama ?? $item->email }}</p>

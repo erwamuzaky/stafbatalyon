@@ -45,9 +45,14 @@ class RegisteredUserController extends Controller
             'kelas' => ['required', 'string', 'max:255'],
             'jabatan' => ['nullable', 'string', 'max:255'],
             'no_hp' => ['required', 'string', 'max:20'],
+            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ], [
+            'foto.image' => 'Foto harus berupa gambar.',
+            'foto.mimes' => 'Format foto harus jpg, jpeg, png, atau webp.',
+            'foto.max' => 'Ukuran foto maksimal 2 MB.',
         ]);
 
-        $user = DB::transaction(function () use ($validated) {
+        $user = DB::transaction(function () use ($validated, $request) {
             $user = User::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
@@ -62,6 +67,7 @@ class RegisteredUserController extends Controller
                 'jabatan' => $validated['jabatan'] ?? null,
                 'no_hp' => $validated['no_hp'],
                 'is_inti' => false,
+                'foto' => $request->hasFile('foto') ? $request->file('foto')->store('staf', 'public') : null,
             ]);
 
             return $user;

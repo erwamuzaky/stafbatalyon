@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\PiketController;
 use App\Http\Controllers\Admin\ProposalController;
 use App\Http\Controllers\Admin\StafController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfilePhotoController;
 use App\Http\Controllers\Staf\DashboardController as StafDashboardController;
 use App\Http\Controllers\StrukturController;
 use App\Http\Controllers\WelcomeController;
@@ -31,6 +32,10 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'approved'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Foto profil staf: pasang/ganti dan hapus, dipakai dashboard & halaman profil.
+    Route::patch('/profile/photo', [ProfilePhotoController::class, 'update'])->name('profile.photo.update');
+    Route::delete('/profile/photo', [ProfilePhotoController::class, 'destroy'])->name('profile.photo.destroy');
 });
 
 // Area admin: hanya admin dengan status approved.

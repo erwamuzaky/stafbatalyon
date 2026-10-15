@@ -216,6 +216,36 @@ class DashboardTest extends TestCase
     }
 
     /**
+     * Dashboard menampilkan foto staf kalau sudah dipasang.
+     */
+    public function test_dashboard_menampilkan_foto_staf(): void
+    {
+        $staf = User::factory()->create(['name' => 'Sari Foto']);
+        $profil = $this->profil($staf);
+        $profil->update(['foto' => 'staf/contoh.jpg']);
+
+        $response = $this->actingAs($staf)->get(route('staf.dashboard'));
+
+        $response->assertOk();
+        $response->assertSee('Profil Saya');
+        $response->assertSee($profil->fresh()->foto_url);
+    }
+
+    /**
+     * Kalau belum ada foto, dashboard mengajak staf memasang foto.
+     */
+    public function test_dashboard_menampilkan_ajakan_pasang_foto(): void
+    {
+        $staf = User::factory()->create(['name' => 'Sari Tanpa Foto']);
+        $this->profil($staf);
+
+        $response = $this->actingAs($staf)->get(route('staf.dashboard'));
+
+        $response->assertOk();
+        $response->assertSee('Pasang foto supaya kartumu di bagan struktur tidak polos');
+    }
+
+    /**
      * Admin tidak boleh membuka dashboard staf.
      */
     public function test_admin_tidak_bisa_membuka_dashboard_staf(): void

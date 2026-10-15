@@ -28,6 +28,44 @@
         <span class="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-emas-500"></span>
     </section>
 
+    {{-- Profil saya: foto, identitas, dan kontak --}}
+    <x-card title="Profil Saya" class="mt-4">
+        <x-foto-staf :profil="$profil" :nama="auth()->user()->name" />
+
+        <dl class="mt-5 grid grid-cols-1 gap-3 border-t border-laut-50 pt-5 text-sm sm:grid-cols-2">
+            <div>
+                <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">Nama</dt>
+                <dd class="mt-0.5 font-medium text-arang">{{ auth()->user()->name }}</dd>
+            </div>
+
+            <div>
+                <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">Jabatan</dt>
+                <dd class="mt-0.5 text-arang">{{ $profil?->jabatan ?: 'Anggota' }}</dd>
+            </div>
+
+            @if ($profil?->bidang)
+                <div>
+                    <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">Bidang</dt>
+                    <dd class="mt-0.5 text-arang">{{ $profil->bidang->nama }}</dd>
+                </div>
+            @endif
+
+            @if ($profil?->kelas)
+                <div>
+                    <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">Kelas</dt>
+                    <dd class="mt-0.5 text-arang">{{ $profil->kelas }}</dd>
+                </div>
+            @endif
+
+            @if ($profil?->no_hp)
+                <div>
+                    <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">Nomor HP</dt>
+                    <dd class="mt-0.5 text-arang">{{ $profil->no_hp }}</dd>
+                </div>
+            @endif
+        </dl>
+    </x-card>
+
     <div id="piket" class="mt-4 scroll-mt-20 grid grid-cols-1 gap-4 lg:grid-cols-2">
         {{-- Giliran piket saya --}}
         <section aria-label="Jadwal Piket Saya">

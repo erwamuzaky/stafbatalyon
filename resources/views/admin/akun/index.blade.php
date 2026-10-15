@@ -60,7 +60,7 @@
             <tr class="transition-colors hover:bg-laut-50/50">
                 <td class="px-4 py-3">
                     <div class="flex items-center gap-3">
-                        <x-avatar :name="$user->name" size="sm" />
+                        <x-avatar :name="$user->name" size="sm" :foto="$user->stafProfile?->foto_url" />
                         <div class="min-w-0">
                             <p class="truncate font-medium text-arang">{{ $user->name }}</p>
                             @if ($user->is(auth()->user()))
@@ -135,7 +135,7 @@
                 <div class="rounded-xl border border-laut-100 p-4">
                     <div class="flex items-start justify-between gap-2">
                         <div class="flex min-w-0 items-center gap-3">
-                            <x-avatar :name="$user->name" size="md" />
+                            <x-avatar :name="$user->name" size="md" :foto="$user->stafProfile?->foto_url" />
                             <div class="min-w-0">
                                 <p class="truncate text-sm font-semibold text-arang">{{ $user->name }}</p>
                                 <p class="truncate text-xs text-gray-500">{{ $user->email }}</p>
