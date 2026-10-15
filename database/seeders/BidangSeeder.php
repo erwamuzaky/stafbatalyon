@@ -21,6 +21,8 @@ class BidangSeeder extends Seeder
             'Kebersihan',
             'Kesehatan',
             'Olahraga dan Seni',
+            'Poltar',
+            'Poltir',
         ];
 
         foreach ($bidangs as $nama) {
