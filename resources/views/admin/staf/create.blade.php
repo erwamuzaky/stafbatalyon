@@ -81,6 +81,14 @@
             </div>
 
             <div>
+                <x-input-label for="urutan" value="Urutan tampil (opsional)" />
+                <x-text-input id="urutan" name="urutan" type="number" min="1" class="mt-1 block w-full"
+                              :value="old('urutan')" placeholder="Contoh: 1" />
+                <p class="mt-1 text-xs text-gray-500">Angka terkecil tampil paling dulu di halaman depan (mis. 1 untuk Komandan Batalyon, 2 untuk Komandan Poltar).</p>
+                <x-input-error :messages="$errors->get('urutan')" class="mt-2" />
+            </div>
+
+            <div>
                 <x-input-label for="foto" value="Foto (opsional)" />
                 <input id="foto" name="foto" type="file" accept="image/*"
                        class="input-baku mt-1 block w-full p-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-laut-600 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-laut-700">

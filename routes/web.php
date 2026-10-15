@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AbsensiController;
 use App\Http\Controllers\Admin\AkunController;
 use App\Http\Controllers\Admin\ArsipController;
+use App\Http\Controllers\Admin\BaganController;
 use App\Http\Controllers\Admin\BidangController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\EventController;
@@ -12,11 +13,15 @@ use App\Http\Controllers\Admin\ProposalController;
 use App\Http\Controllers\Admin\StafController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Staf\DashboardController as StafDashboardController;
+use App\Http\Controllers\StrukturController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
 // Halaman depan: profil Staf Batalyon untuk umum.
 Route::get('/', WelcomeController::class);
+
+// Struktur lengkap: semua staf yang sudah disetujui, dikelompokkan per bidang.
+Route::get('/struktur', StrukturController::class)->name('struktur');
 
 // /dashboard bawaan Breeze diarahkan ke dashboard sesuai role.
 Route::get('/dashboard', function () {
@@ -48,6 +53,10 @@ Route::middleware(['auth', 'approved', 'role:admin'])->prefix('admin')->name('ad
     Route::get('/staf/{user}/edit', [StafController::class, 'edit'])->name('staf.edit');
     Route::patch('/staf/{user}', [StafController::class, 'update'])->name('staf.update');
     Route::delete('/staf/{user}', [StafController::class, 'destroy'])->name('staf.destroy');
+
+    // Bagan struktur: atur atasan langsung tiap staf.
+    Route::get('/bagan', [BaganController::class, 'index'])->name('bagan.index');
+    Route::put('/bagan', [BaganController::class, 'update'])->name('bagan.update');
 
     // Bidang.
     Route::get('/bidang', [BidangController::class, 'index'])->name('bidang.index');

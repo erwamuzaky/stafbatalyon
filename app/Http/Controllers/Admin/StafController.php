@@ -98,6 +98,7 @@ class StafController extends Controller
                 'jabatan' => $validated['jabatan'] ?? null,
                 'no_hp' => $validated['no_hp'] ?? null,
                 'is_inti' => $request->boolean('is_inti'),
+                'urutan' => $validated['urutan'] ?? null,
                 'foto' => $request->hasFile('foto') ? $request->file('foto')->store('staf', 'public') : null,
             ]);
 
@@ -149,6 +150,7 @@ class StafController extends Controller
                 'jabatan' => $validated['jabatan'] ?? null,
                 'no_hp' => $validated['no_hp'] ?? null,
                 'is_inti' => $request->boolean('is_inti'),
+                'urutan' => $validated['urutan'] ?? null,
                 'foto' => $fotoPath,
             ]);
         } elseif ($request->boolean('hapus_foto')) {
@@ -162,6 +164,7 @@ class StafController extends Controller
                 'jabatan' => $validated['jabatan'] ?? null,
                 'no_hp' => $validated['no_hp'] ?? null,
                 'is_inti' => $request->boolean('is_inti'),
+                'urutan' => $validated['urutan'] ?? null,
                 'foto' => null,
             ]);
         } else {
@@ -171,6 +174,7 @@ class StafController extends Controller
                 'jabatan' => $validated['jabatan'] ?? null,
                 'no_hp' => $validated['no_hp'] ?? null,
                 'is_inti' => $request->boolean('is_inti'),
+                'urutan' => $validated['urutan'] ?? null,
                 'foto' => $profile?->foto,
             ]);
         }

@@ -57,6 +57,14 @@
                 <label for="is_inti" class="text-sm text-arang">Staf inti (pengurus)</label>
             </div>
 
+            <div>
+                <x-input-label for="urutan" value="Urutan tampil (opsional)" />
+                <x-text-input id="urutan" name="urutan" type="number" min="1" class="mt-1 block w-full"
+                              :value="old('urutan', $profile?->urutan)" placeholder="Contoh: 1" />
+                <p class="mt-1 text-xs text-gray-500">Angka terkecil tampil paling dulu di halaman depan (mis. 1 untuk Komandan Batalyon, 2 untuk Komandan Poltar).</p>
+                <x-input-error :messages="$errors->get('urutan')" class="mt-2" />
+            </div>
+
             @if ($profile?->foto_url)
             <div class="rounded-lg border border-laut-100 bg-laut-50 p-4">
                 <div class="mb-2 text-sm font-medium text-arang">Foto saat ini</div>

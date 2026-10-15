@@ -94,4 +94,78 @@
     .animasi-muat {
         animation: sambut-naik 0.6s ease-out both;
     }
+
+    /* Bagan struktur bercabang: garis penghubung antar simpul.
+       Simpul = <li>, daftar anak = <ul> di dalam <li>. */
+    .bagan ul {
+        @apply relative flex justify-center pt-6;
+        list-style: none;
+        margin: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .bagan li {
+        @apply relative flex flex-col items-center pt-6;
+        list-style: none;
+    }
+
+    /* Simpul paling atas tidak butuh garis penghubung. */
+    .bagan > ul {
+        @apply pt-0;
+    }
+
+    .bagan > ul > li {
+        @apply pt-0;
+    }
+
+    .bagan > ul > li::before,
+    .bagan > ul > li::after {
+        display: none;
+    }
+
+    /* Garis mendatar barisan anak + siku turun ke tiap simpul. */
+    .bagan li::before,
+    .bagan li::after {
+        content: '';
+        @apply absolute top-0 h-6 w-1/2 border-t-2 border-laut-200;
+    }
+
+    .bagan li::before {
+        @apply right-1/2;
+    }
+
+    .bagan li::after {
+        @apply left-1/2 border-l-2;
+    }
+
+    /* Anak tunggal: tidak perlu garis mendatar. */
+    .bagan li:only-child::before,
+    .bagan li:only-child::after {
+        display: none;
+    }
+
+    .bagan li:only-child {
+        @apply pt-0;
+    }
+
+    /* Anak pertama tidak pakai garis ke kiri, anak terakhir tidak pakai garis ke kanan. */
+    .bagan li:first-child::before,
+    .bagan li:last-child::after {
+        border: 0 none;
+    }
+
+    .bagan li:last-child::before {
+        @apply rounded-tr-lg border-r-2;
+    }
+
+    .bagan li:first-child::after {
+        @apply rounded-tl-lg;
+    }
+
+    /* Garis turun dari induk ke barisan anaknya. */
+    .bagan ul ul::before {
+        content: '';
+        @apply absolute left-1/2 top-0 h-6 w-0 border-l-2 border-laut-200;
+    }
 }

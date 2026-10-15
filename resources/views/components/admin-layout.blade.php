@@ -21,6 +21,12 @@
             'ikon' => 'staf',
         ],
         [
+            'label' => 'Bagan Struktur',
+            'rute' => 'admin.bagan.index',
+            'aktif' => request()->routeIs('admin.bagan.*'),
+            'ikon' => 'bidang',
+        ],
+        [
             'label' => 'Bidang',
             'rute' => 'admin.bidang.index',
             'aktif' => request()->routeIs('admin.bidang.*'),
