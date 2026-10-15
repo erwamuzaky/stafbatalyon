@@ -124,24 +124,4 @@ class User extends Authenticatable
             ->orderBy('name')
             ->get();
     }
-
-    /**
-     * Beberapa staf inti teratas untuk ditampilkan di halaman depan.
-     *
-     * Urut dari angka "urutan" terkecil (mis. 1 = Komandan Batalyon,
-     * 2 = Komandan Poltar). Yang belum diisi urutannya ditaruh paling
-     * belakang, lalu diurutkan pakai nama.
-     *
-     * @return Collection<int, User>
-     */
-    public static function pemimpinInti(int $limit = 2): Collection
-    {
-        return static::pesertaAbsensi('inti')
-            ->sortBy([
-                fn (User $a, User $b) => ($a->stafProfile?->urutan ?? PHP_INT_MAX) <=> ($b->stafProfile?->urutan ?? PHP_INT_MAX),
-                fn (User $a, User $b) => strcmp($a->name, $b->name),
-            ])
-            ->take($limit)
-            ->values();
-    }
 }
