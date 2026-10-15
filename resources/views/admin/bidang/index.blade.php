@@ -18,7 +18,14 @@
         <x-tabel-responsif :headers="['Nama Bidang', 'Jumlah Staf', 'Aksi']">
             @forelse ($bidangs as $bidang)
                 <tr class="transition-colors hover:bg-laut-50/50">
-                    <td class="px-4 py-3 font-medium text-arang">{{ $bidang->nama }}</td>
+                    <td class="px-4 py-3 font-medium text-arang">
+                        <span class="inline-flex flex-wrap items-center gap-2">
+                            {{ $bidang->nama }}
+                            @if ($bidang->tampil_di_beranda)
+                                <x-badge status="berjalan" label="Halaman depan" />
+                            @endif
+                        </span>
+                    </td>
                     <td class="px-4 py-3 text-gray-700">
                         <x-badge status="berjalan" :label="$bidang->staf_profiles_count.' staf'" />
                     </td>
@@ -54,7 +61,14 @@
                 @forelse ($bidangs as $bidang)
                     <div class="rounded-xl border border-laut-100 p-4">
                         <div class="flex items-start justify-between gap-2">
-                            <p class="text-sm font-semibold text-arang">{{ $bidang->nama }}</p>
+                            <div class="min-w-0">
+                                <p class="text-sm font-semibold text-arang">{{ $bidang->nama }}</p>
+                                @if ($bidang->tampil_di_beranda)
+                                    <span class="mt-1 inline-block">
+                                        <x-badge status="berjalan" label="Halaman depan" />
+                                    </span>
+                                @endif
+                            </div>
                             <x-badge status="berjalan" :label="$bidang->staf_profiles_count.' staf'" />
                         </div>
                         @if ($bidang->staf_profiles_count > 0)

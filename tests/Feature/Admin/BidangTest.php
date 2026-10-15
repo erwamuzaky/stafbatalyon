@@ -104,4 +104,33 @@ class BidangTest extends TestCase
         $response->assertSee('1 staf');
         $response->assertSee('Tidak bisa dihapus: masih dipakai 1 staf.');
     }
+
+    public function test_admin_dapat_menyimpan_bidang_dengan_penanda_beranda(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->post(route('admin.bidang.store'), [
+            'nama' => 'Pemimpin',
+            'tampil_di_beranda' => '1',
+        ]);
+
+        $response->assertRedirect(route('admin.bidang.index'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('bidangs', ['nama' => 'Pemimpin', 'tampil_di_beranda' => 1]);
+    }
+
+    public function test_admin_dapat_mematikan_penanda_beranda_saat_edit(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $bidang = Bidang::create(['nama' => 'Pemimpin', 'tampil_di_beranda' => true]);
+
+        $response = $this->actingAs($admin)->patch(route('admin.bidang.update', $bidang), [
+            'nama' => 'Pemimpin',
+            'tampil_di_beranda' => '0',
+        ]);
+
+        $response->assertRedirect(route('admin.bidang.index'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('bidangs', ['id' => $bidang->id, 'tampil_di_beranda' => 0]);
+    }
 }

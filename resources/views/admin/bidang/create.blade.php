@@ -15,6 +15,16 @@
                 <x-input-error :messages="$errors->get('nama')" class="mt-2" />
             </div>
 
+            <div class="flex items-start gap-2 rounded-lg border border-gray-200 bg-gray-50/50 px-3 py-2.5">
+                <input type="hidden" name="tampil_di_beranda" value="0">
+                <input id="tampil_di_beranda" name="tampil_di_beranda" type="checkbox" value="1" @checked(old('tampil_di_beranda'))
+                       class="mt-0.5 rounded border-gray-300 text-laut-600 shadow-sm focus:ring-laut-500">
+                <div>
+                    <label for="tampil_di_beranda" class="text-sm text-arang">Tampilkan di halaman depan</label>
+                    <p class="text-xs text-gray-500">Staf bidang ini ikut tampil di bagan halaman depan.</p>
+                </div>
+            </div>
+
             <div class="flex flex-wrap items-center gap-3 pt-2">
                 <x-primary-button x-bind:disabled="memproses">
                     <span x-show="!memproses">Simpan bidang</span>

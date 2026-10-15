@@ -11,33 +11,15 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
-        {{-- Navbar mengambang lembut --}}
-        <div class="sticky top-0 z-30 px-3 pt-3 sm:px-4 sm:pt-4">
-            <nav class="mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-2xl border border-laut-100 bg-white/95 px-3 py-2 shadow-soft-sm backdrop-blur supports-[backdrop-filter]:bg-white/85 sm:px-4">
-                <a href="{{ url('/') }}" class="flex min-w-0 items-center gap-2.5">
-                    <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-9 w-9 shrink-0 rounded-full border border-laut-100 object-cover">
-                    <span class="min-w-0 leading-tight">
-                        <span class="block truncate font-judul text-base font-bold text-arang">{{ $pengaturan['situs_nama'] }}</span>
-                        <span class="hidden text-xs text-arang/70 sm:block">{{ $pengaturan['situs_sekolah'] }}</span>
-                    </span>
-                </a>
-
-                <div class="flex shrink-0 items-center gap-2">
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="btn btn-utama">Buka Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="btn btn-sekunder">Masuk</a>
-                        <a href="{{ route('register') }}" class="btn btn-utama">Daftar</a>
-                    @endauth
-                </div>
-            </nav>
-        </div>
+        <x-navbar-beranda :pengaturan="$pengaturan" />
 
         {{-- Hero: latar tulang + satu blok laut besar --}}
         @if ($heroBackground)
-            <header class="animasi-muat relative bg-cover bg-center" style="background-image: url('{{ $heroBackground }}');">
-                <div class="absolute inset-0 bg-laut-900/70"></div>
-                <div class="relative z-10 mx-auto grid max-w-6xl gap-8 px-4 pb-14 pt-10 sm:px-6 sm:pt-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-center lg:gap-12">
+            <header class="relative flex min-h-[70vh] items-center [clip-path:inset(0)] sm:min-h-[80vh]">
+                {{-- Lapisan foto dibuat fixed lalu dipotong oleh clip-path header, supaya parallax ikut jalan di HP (iOS tidak mendukung background-attachment: fixed). --}}
+                <div class="pointer-events-none fixed inset-0 bg-cover bg-center" style="background-image: url('{{ $heroBackground }}');" aria-hidden="true"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-laut-900/85 via-laut-900/70 to-laut-900/45"></div>
+                <div class="animasi-muat relative z-10 mx-auto grid w-full max-w-6xl gap-8 px-4 pb-14 pt-10 sm:px-6 sm:pt-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-center lg:gap-12">
                     <div>
                         <p class="font-judul text-sm font-semibold uppercase tracking-[0.18em] text-emas-400">{{ $pengaturan['hero_label'] }}</p>
                         <h1 class="mt-2 font-judul text-5xl font-bold leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl">{{ $pengaturan['situs_nama'] }}</h1>
@@ -77,8 +59,8 @@
                 </div>
             </header>
         @else
-            <header class="animasi-muat bg-tulang">
-                <div class="mx-auto grid max-w-6xl gap-8 px-4 pb-14 pt-10 sm:px-6 sm:pt-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-center lg:gap-12">
+            <header class="animasi-muat flex min-h-[70vh] items-center bg-tulang sm:min-h-[80vh]">
+                <div class="mx-auto w-full grid max-w-6xl gap-8 px-4 pb-14 pt-10 sm:px-6 sm:pt-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-center lg:gap-12">
                     <div>
                         <p class="font-judul text-sm font-semibold uppercase tracking-[0.18em] text-emas-600">{{ $pengaturan['hero_label'] }}</p>
                         <h1 class="mt-2 font-judul text-5xl font-bold leading-[0.95] tracking-tight text-arang sm:text-6xl lg:text-7xl">{{ $pengaturan['situs_nama'] }}</h1>
@@ -162,7 +144,7 @@
             </div>
         </section>
 
-        {{-- Struktur Staf: latar tulang --}}
+        {{-- Struktur Staf: bagan ringkas, staf dari bidang bertanda "tampil di halaman depan", dibatasi 3 tingkat --}}
         <section class="bg-tulang">
             <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
                 <div>
@@ -170,49 +152,23 @@
                     <p class="mt-1 text-sm text-gray-500">{{ $pengaturan['struktur_subjudul'] }}</p>
                 </div>
 
-                @php
-                    $daftarInti = ($stafInti ?? collect());
-                    $pemimpin = $daftarInti->first();
-                    $pengurus = $daftarInti->skip(1);
-                @endphp
-
-                @if ($daftarInti->isNotEmpty() && $pemimpin)
-                    <div class="mx-auto mt-8 max-w-xl rounded-3xl border border-laut-100 bg-white px-6 py-8 text-center shadow-soft-md">
-                        <x-avatar :foto="$pemimpin->stafProfile?->foto_url" :name="$pemimpin->name" size="lg" class="mx-auto" />
-                        <p class="mt-4 font-judul text-4xl font-bold leading-tight sm:text-5xl">{{ $pemimpin->stafProfile?->jabatan ?? '-' }}</p>
-                        <p class="mt-3 text-lg font-semibold text-arang">{{ $pemimpin->name }}</p>
-                        <span class="mt-2 inline-flex items-center rounded-full bg-info-50 px-3 py-1 text-xs font-medium text-info-700">
-                            {{ $pemimpin->stafProfile?->bidang?->nama ?? '-' }}
-                        </span>
-                        @if ($pemimpin->stafProfile?->kelas)
-                            <p class="mt-2 text-sm text-gray-500">Kelas {{ $pemimpin->stafProfile?->kelas }}</p>
-                        @endif
-                    </div>
-
-                    @if ($pengurus->isNotEmpty())
-                        <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            @foreach ($pengurus as $user)
-                                <div class="rounded-2xl border border-laut-100 bg-white p-5 shadow-soft-sm">
-                                    <div class="flex items-start gap-3">
-                                        <x-avatar :foto="$user->stafProfile?->foto_url" :name="$user->name" size="md" />
-                                        <div class="min-w-0">
-                                            <p class="font-judul text-xl font-bold leading-tight text-laut-700">{{ $user->stafProfile?->jabatan ?? '-' }}</p>
-                                            <p class="mt-1 text-sm font-semibold text-arang">{{ $user->name }}</p>
-                                            <span class="mt-1.5 inline-flex items-center rounded-full bg-info-50 px-2.5 py-0.5 text-xs font-medium text-info-700">
-                                                {{ $user->stafProfile?->bidang?->nama ?? '-' }}
-                                            </span>
-                                            @if ($user->stafProfile?->kelas)
-                                                <p class="mt-1 text-xs text-gray-500">Kelas {{ $user->stafProfile?->kelas }}</p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+                @if (($baganRingkas ?? collect())->isNotEmpty())
+                    <div class="mt-8 overflow-x-auto">
+                        <div class="bagan mx-auto w-max px-2 py-2">
+                            <ul>
+                                @foreach ($baganRingkas as $simpul)
+                                    <x-bagan-node :node="$simpul" />
+                                @endforeach
+                            </ul>
                         </div>
-                    @endif
+                    </div>
                 @else
-                    <x-empty title="Belum ada data staf inti" ikon="staf" class="mt-8" />
+                    <x-empty title="Belum ada data staf pimpinan" ikon="staf" class="mt-8" />
                 @endif
+
+                <div class="mt-8 flex justify-center">
+                    <a href="{{ route('struktur') }}" class="btn btn-sekunder">Lihat struktur lengkap</a>
+                </div>
             </div>
         </section>
 
@@ -267,41 +223,6 @@
             </div>
         </section>
 
-        {{-- Footer --}}
-        <footer class="bg-laut-900 text-white">
-            <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div class="flex items-center gap-3">
-                        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white p-0.5">
-                            <img src="{{ asset('images/logo-staf-batalyon.jpg') }}" alt="Logo Staf Batalyon" class="h-9 w-9 rounded-full object-cover">
-                        </span>
-                        <div>
-                            <p class="font-judul font-semibold">{{ $pengaturan['footer_nama'] }}</p>
-                            <p class="text-sm text-laut-100">{{ $pengaturan['footer_sekolah'] }}</p>
-                        </div>
-                    </div>
-
-                    <div class="w-full sm:w-72">
-                        <div class="relative overflow-hidden rounded-xl border border-white/10 bg-laut-800">
-                            <iframe
-                                src="https://maps.google.com/maps?q={{ urlencode($pengaturan['footer_peta_kata_kunci']) }}&amp;z=16&amp;output=embed"
-                                class="pointer-events-none h-40 w-full"
-                                loading="lazy"
-                                title="Peta lokasi {{ $pengaturan['footer_sekolah'] }}"
-                                referrerpolicy="no-referrer-when-downgrade"></iframe>
-                            <a href="https://www.google.com/maps/search/?api=1&amp;query={{ urlencode($pengaturan['footer_peta_kata_kunci']) }}"
-                                target="_blank" rel="noopener noreferrer"
-                                aria-label="Buka lokasi {{ $pengaturan['footer_sekolah'] }} di Google Maps pada tab baru"
-                                class="absolute inset-0 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-laut-900"></a>
-                        </div>
-                        <p class="mt-2 text-xs text-laut-100/70">{{ $pengaturan['footer_peta_catatan'] }}</p>
-                    </div>
-                </div>
-
-                <p class="mt-8 border-t border-white/10 pt-6 text-sm text-laut-100">
-                    {{ $pengaturan['footer_hak_cipta'] }} &middot; &copy; {{ date('Y') }}
-                </p>
-            </div>
-        </footer>
+        <x-footer-beranda :pengaturan="$pengaturan" />
     </body>
 </html>

@@ -24,6 +24,7 @@ class StoreBidangRequest extends FormRequest
     {
         return [
             'nama' => ['required', 'string', 'max:255', 'unique:bidangs,nama'],
+            'tampil_di_beranda' => ['boolean'],
         ];
     }
 

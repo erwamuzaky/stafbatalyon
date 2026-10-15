@@ -14,7 +14,20 @@ class Bidang extends Model
      */
     protected $fillable = [
         'nama',
+        'tampil_di_beranda',
     ];
+
+    /**
+     * Casting atribut bidang.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'tampil_di_beranda' => 'boolean',
+        ];
+    }
 
     /**
      * Get the staf profiles that belong to the bidang.

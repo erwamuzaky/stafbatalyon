@@ -30,6 +30,7 @@ class UpdateBidangRequest extends FormRequest
                 'max:255',
                 Rule::unique('bidangs', 'nama')->ignore($this->route('bidang')->id),
             ],
+            'tampil_di_beranda' => ['boolean'],
         ];
     }
 
