@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Pengaturan extends Model
 {
@@ -127,6 +126,8 @@ class Pengaturan extends Model
             return null;
         }
 
-        return Storage::disk('public')->url($path);
+        // Pakai asset() supaya URL mengikuti alamat (host + port) request saat ini,
+        // bukan APP_URL. URL dari disk storage bawaan sering kehilangan port dev server.
+        return asset('storage/'.$path);
     }
 }
