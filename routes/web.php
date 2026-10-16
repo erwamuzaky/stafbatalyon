@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\PiketRekapController;
 use App\Http\Controllers\Admin\ProposalController;
 use App\Http\Controllers\Admin\SerahTerimaController;
 use App\Http\Controllers\Admin\StafController;
+use App\Http\Controllers\Admin\SuratController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilePhotoController;
 use App\Http\Controllers\Staf\DashboardController as StafDashboardController;
@@ -108,6 +109,15 @@ Route::middleware(['auth', 'approved', 'role:admin'])->prefix('admin')->name('ad
     Route::get('/serah-terima/{serahTerima}/edit', [SerahTerimaController::class, 'edit'])->name('serah-terima.edit');
     Route::patch('/serah-terima/{serahTerima}', [SerahTerimaController::class, 'update'])->name('serah-terima.update');
     Route::delete('/serah-terima/{serahTerima}', [SerahTerimaController::class, 'destroy'])->name('serah-terima.destroy');
+
+    // Surat & SK otomatis — pembuatan surat resmi dengan nomor otomatis dan cetak PDF.
+    Route::get('/surat', [SuratController::class, 'index'])->name('surat.index');
+    Route::get('/surat/tambah', [SuratController::class, 'create'])->name('surat.create');
+    Route::post('/surat', [SuratController::class, 'store'])->name('surat.store');
+    Route::get('/surat/{surat}/edit', [SuratController::class, 'edit'])->name('surat.edit');
+    Route::patch('/surat/{surat}', [SuratController::class, 'update'])->name('surat.update');
+    Route::delete('/surat/{surat}', [SuratController::class, 'destroy'])->name('surat.destroy');
+    Route::get('/surat/{surat}/cetak', [SuratController::class, 'cetak'])->name('surat.cetak');
 
     // Kegiatan (event).
     Route::get('/event', [EventController::class, 'index'])->name('event.index');

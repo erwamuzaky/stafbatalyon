@@ -45,6 +45,12 @@
             'ikon' => 'dokumen',
         ],
         [
+            'label' => 'Surat & SK',
+            'rute' => 'admin.surat.index',
+            'aktif' => request()->routeIs('admin.surat.*'),
+            'ikon' => 'dokumen',
+        ],
+        [
             'label' => 'Event',
             'rute' => 'admin.event.index',
             'aktif' => request()->routeIs('admin.event.*'),
