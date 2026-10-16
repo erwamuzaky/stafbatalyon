@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Bidang;
+use App\Models\Pengaturan;
 use App\Models\StafProfile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -268,18 +269,117 @@ class StrukturTest extends TestCase
     }
 
     /**
-     * Halaman struktur menampilkan nama bidang tiap staf sebagai badge kecil.
+     * Halaman struktur tidak lagi menampilkan lencana bidang, cukup jabatan.
      */
-    public function test_halaman_struktur_menampilkan_nama_bidang_tiap_staf(): void
+    public function test_halaman_struktur_tidak_menampilkan_lencana_bidang(): void
     {
         $humas = Bidang::create(['nama' => 'Humas']);
 
-        $staf = User::factory()->create(['name' => 'Anggota Humas']);
+        $staf = User::factory()->create(['name' => 'Anggota Satu']);
         $this->profil($staf, $humas, 'Anggota', true, 1);
 
         $response = $this->get(route('struktur'));
 
         $response->assertOk();
-        $response->assertSee('Humas');
+        $response->assertSee('Anggota');
+        $response->assertDontSee('Humas');
+    }
+
+    /**
+     * Kalau background khusus Struktur Lengkap belum diisi, halaman memakai
+     * background bagian sebagai cadangan (perilaku lama tetap jalan).
+     */
+    public function test_halaman_struktur_memakai_background_bagian_saat_belum_ada_background_khusus(): void
+    {
+        $bidang = Bidang::create(['nama' => 'Humas']);
+        $ketua = User::factory()->create(['name' => 'Ketua Batalyon']);
+        $this->profil($ketua, $bidang, 'Ketua', true, 1);
+
+        Pengaturan::simpan(['bagian_background' => 'pengaturan/bg-bagian.jpg']);
+
+        $response = $this->get(route('struktur'));
+
+        $response->assertOk();
+
+        $konten = $response->getContent();
+
+        // Satu lapisan foto saja, sama seperti beranda.
+        $this->assertSame(1, substr_count($konten, asset('storage/pengaturan/bg-bagian.jpg')));
+        $this->assertSame(1, substr_count($konten, 'background-image: url'));
+        // Garis penghubung bagan dibuat terang supaya menyatu dengan latar gelap.
+        $this->assertStringContainsString('bagan-terang', $konten);
+    }
+
+    /**
+     * Kalau background khusus Struktur Lengkap diisi, halaman memakainya dan
+     * tidak lagi memakai background bagian (berbeda dengan beranda).
+     */
+    public function test_halaman_struktur_memakai_background_struktur_lengkap_sendiri(): void
+    {
+        $bidang = Bidang::create(['nama' => 'Humas']);
+        $ketua = User::factory()->create(['name' => 'Ketua Batalyon']);
+        $this->profil($ketua, $bidang, 'Ketua', true, 1);
+
+        Pengaturan::simpan([
+            'bagian_background' => 'pengaturan/bg-bagian.jpg',
+            'struktur_lengkap_background' => 'pengaturan/bg-struktur.jpg',
+        ]);
+
+        $response = $this->get(route('struktur'));
+
+        $response->assertOk();
+
+        $konten = $response->getContent();
+
+        // Background khusus dipakai, background bagian tidak muncul di halaman ini.
+        $this->assertSame(1, substr_count($konten, asset('storage/pengaturan/bg-struktur.jpg')));
+        $this->assertSame(0, substr_count($konten, asset('storage/pengaturan/bg-bagian.jpg')));
+        $this->assertSame(1, substr_count($konten, 'background-image: url'));
+        $this->assertStringContainsString('bagan-terang', $konten);
+    }
+
+    /**
+     * Tanpa foto latar, halaman struktur kembali ke tampilan warna dasar.
+     */
+    public function test_halaman_struktur_tanpa_latar_tetap_warna_dasar(): void
+    {
+        $response = $this->get(route('struktur'));
+
+        $response->assertOk();
+
+        $konten = $response->getContent();
+
+        $this->assertStringNotContainsString('background-image: url', $konten);
+        $this->assertStringNotContainsString('bagan-terang', $konten);
+    }
+
+    /**
+     * Tingkat kegelapan lapisan gelap halaman struktur mengikuti pengaturan admin.
+     */
+    public function test_halaman_struktur_memakai_kepekatan_tegas_untuk_lapisan_latar(): void
+    {
+        Pengaturan::simpan([
+            'struktur_lengkap_background' => 'pengaturan/bg-struktur.jpg',
+            'latar_kepekatan' => 'tegas',
+        ]);
+
+        $response = $this->get(route('struktur'));
+
+        $response->assertOk();
+        $response->assertSee('via-laut-900/70', false);
+        $response->assertDontSee('via-laut-900/55', false);
+    }
+
+    /**
+     * Kalau key belum diisi, lapisan gelap memakai tingkat bawaan "sedang".
+     */
+    public function test_halaman_struktur_memakai_kepekatan_sedang_saat_belum_diatur(): void
+    {
+        Pengaturan::simpan(['bagian_background' => 'pengaturan/bg-bagian.jpg']);
+
+        $response = $this->get(route('struktur'));
+
+        $response->assertOk();
+        $response->assertSee('via-laut-900/55', false);
     }
 }

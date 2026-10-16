@@ -8,8 +8,11 @@ use App\Http\Controllers\Admin\BidangController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\PengaturanController;
+use App\Http\Controllers\Admin\PeriodeController;
 use App\Http\Controllers\Admin\PiketController;
+use App\Http\Controllers\Admin\PiketRekapController;
 use App\Http\Controllers\Admin\ProposalController;
+use App\Http\Controllers\Admin\SerahTerimaController;
 use App\Http\Controllers\Admin\StafController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilePhotoController;
@@ -78,11 +81,33 @@ Route::middleware(['auth', 'approved', 'role:admin'])->prefix('admin')->name('ad
     // Piket gerbang: pembagian staf per tanggal dan sesi.
     Route::get('/piket', [PiketController::class, 'index'])->name('piket.index');
     Route::get('/piket/tambah', [PiketController::class, 'create'])->name('piket.create');
+
+    // Rekap & pemerataan piket. Ditaruh sebelum route berparameter "{piket}"
+    // supaya "/piket/rekap" tidak dianggap sebagai id piket.
+    Route::get('/piket/rekap', [PiketRekapController::class, 'index'])->name('piket.rekap');
+    Route::get('/piket/rekap/cetak', [PiketRekapController::class, 'cetak'])->name('piket.rekap.cetak');
+
     Route::post('/piket', [PiketController::class, 'store'])->name('piket.store');
     Route::post('/piket/salin', [PiketController::class, 'salin'])->name('piket.salin');
     Route::get('/piket/{piket}/edit', [PiketController::class, 'edit'])->name('piket.edit');
     Route::patch('/piket/{piket}', [PiketController::class, 'update'])->name('piket.update');
     Route::delete('/piket/{piket}', [PiketController::class, 'destroy'])->name('piket.destroy');
+
+    // Periode kepengurusan: acuan tahun dan status kepengurusan.
+    Route::get('/periode', [PeriodeController::class, 'index'])->name('periode.index');
+    Route::get('/periode/tambah', [PeriodeController::class, 'create'])->name('periode.create');
+    Route::post('/periode', [PeriodeController::class, 'store'])->name('periode.store');
+    Route::get('/periode/{periode}/edit', [PeriodeController::class, 'edit'])->name('periode.edit');
+    Route::patch('/periode/{periode}', [PeriodeController::class, 'update'])->name('periode.update');
+    Route::delete('/periode/{periode}', [PeriodeController::class, 'destroy'])->name('periode.destroy');
+
+    // Serah terima antar periode.
+    Route::get('/serah-terima', [SerahTerimaController::class, 'index'])->name('serah-terima.index');
+    Route::get('/serah-terima/tambah', [SerahTerimaController::class, 'create'])->name('serah-terima.create');
+    Route::post('/serah-terima', [SerahTerimaController::class, 'store'])->name('serah-terima.store');
+    Route::get('/serah-terima/{serahTerima}/edit', [SerahTerimaController::class, 'edit'])->name('serah-terima.edit');
+    Route::patch('/serah-terima/{serahTerima}', [SerahTerimaController::class, 'update'])->name('serah-terima.update');
+    Route::delete('/serah-terima/{serahTerima}', [SerahTerimaController::class, 'destroy'])->name('serah-terima.destroy');
 
     // Kegiatan (event).
     Route::get('/event', [EventController::class, 'index'])->name('event.index');

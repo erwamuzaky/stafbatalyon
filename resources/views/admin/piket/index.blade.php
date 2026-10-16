@@ -36,6 +36,11 @@
                 Tambah piket
             </a>
 
+            <a href="{{ route('admin.piket.rekap') }}" class="btn btn-sekunder">
+                <x-icon name="dokumen" class="h-4 w-4" />
+                Rekap &amp; pemerataan
+            </a>
+
             <form method="POST" action="{{ route('admin.piket.salin') }}"
                   onsubmit="return confirm('Salin jadwal minggu ini ke minggu berikutnya?')">
                 @csrf

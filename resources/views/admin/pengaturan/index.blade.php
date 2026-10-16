@@ -44,28 +44,8 @@
                     <x-input-error :messages="$errors->get('hero_pengantar')" class="mt-2" />
                 </div>
 
-                <div>
-                    <x-input-label for="hero_background" value="Background Hero (Maksimal 4 MB)" />
-                    <div class="mt-1">
-                        @if($heroBackground)
-                            <div class="mb-2">
-                                <img src="{{ $heroBackground }}" alt="Background Hero" class="max-w-xs rounded border">
-                            </div>
-                        @endif
-                        <input type="file" id="hero_background" name="hero_background" accept="image/*"
-                               class="input-baku block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-laut-50 file:text-laut-700 hover:file:bg-laut-100">
-                    </div>
-                    <x-input-error :messages="$errors->get('hero_background')" class="mt-2" />
-                </div>
-
-                @if($heroBackground)
-                    <div class="flex items-center">
-                        <input type="hidden" name="hapus_background" value="0">
-                        <input type="checkbox" id="hapus_background" name="hapus_background" value="1"
-                               class="rounded border-gray-300 text-laut-600 shadow-sm focus:ring-laut-500">
-                        <label for="hapus_background" class="ml-2 text-sm text-gray-600">Hapus background saat ini</label>
-                    </div>
-                @endif
+                <x-unggah-background kunci="hero_background" label="Background Hero (Maksimal 4 MB)"
+                                     :gambar="$heroBackground" flag-hapus="hapus_background" />
             </div>
 
             <!-- Tentang -->
@@ -166,6 +146,33 @@
                               class="input-baku mt-1 block w-full"
                               >{{ old('struktur_subjudul', $pengaturan['struktur_subjudul']) }}</textarea>
                     <x-input-error :messages="$errors->get('struktur_subjudul')" class="mt-2" />
+                </div>
+
+                <x-unggah-background kunci="bagian_background" label="Background Struktur Staf dan Bidang (Maksimal 4 MB)"
+                                     :gambar="$bagianBackground" flag-hapus="hapus_background_bagian" />
+
+                <x-unggah-background kunci="struktur_lengkap_background" label="Background Halaman Struktur Lengkap (Maksimal 4 MB)"
+                                     :gambar="$strukturLengkapBackground" flag-hapus="hapus_background_struktur" />
+
+                <p class="text-sm text-gray-500">
+                    Background ini hanya dipakai di halaman Struktur Lengkap. Kalau dikosongkan,
+                    halaman tersebut memakai background Struktur Staf dan Bidang di atas.
+                </p>
+
+                <div>
+                    <x-input-label for="latar_kepekatan" value="Tingkat kegelapan latar foto" />
+                    <select id="latar_kepekatan" name="latar_kepekatan" class="input-baku mt-1 block w-full sm:w-64">
+                        @foreach (\App\Models\Pengaturan::LATAR_KEPEKATAN as $nilai => $label)
+                            <option value="{{ $nilai }}" @selected(old('latar_kepekatan', $pengaturan['latar_kepekatan']) === $nilai)>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('latar_kepekatan')" class="mt-2" />
+                    <p class="mt-1 text-sm text-gray-500">
+                        Mengatur seberapa gelap lapisan di atas foto latar bagian beranda dan halaman struktur.
+                        Berlaku untuk foto latar Struktur Staf, Bidang, dan halaman Struktur Lengkap.
+                    </p>
                 </div>
             </div>
 

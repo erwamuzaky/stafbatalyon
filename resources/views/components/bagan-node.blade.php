@@ -1,4 +1,4 @@
-@props(['node', 'tampilBidang' => false])
+﻿@props(['node'])
 
 @php
     $profil = $node['profil'];
@@ -22,36 +22,37 @@
 @endphp
 
 <li>
-    <div class="flex w-28 flex-col items-center rounded-2xl border border-laut-100 bg-white p-2 sm:w-32 sm:p-2.5">
-        <div class="relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden rounded-xl bg-laut-50">
+    {{-- Satu kartu: foto penuh, keterangan menempel di dasar foto --}}
+    <div class="relative w-44 shrink-0 overflow-hidden rounded-2xl border border-laut-100 bg-white shadow-soft-md transition duration-200 sm:w-48">
+        <div class="relative aspect-[4/5] w-full bg-laut-50">
             @if ($profil->foto_url)
                 <img src="{{ $profil->foto_url }}" alt="Foto {{ $profil->user?->name }}" class="h-full w-full object-cover">
             @elseif ($inisial !== '')
-                <span aria-hidden="true" class="font-judul text-2xl font-bold {{ $warna[$index] }}">{{ $inisial }}</span>
+                <span aria-hidden="true" class="flex h-full w-full items-center justify-center font-judul text-4xl font-bold {{ $warna[$index] }}">{{ $inisial }}</span>
                 <span class="sr-only">{{ $profil->user?->name }}</span>
             @else
-                <x-icon name="profil" class="h-8 w-8 text-laut-400" />
+                <span class="flex h-full w-full items-center justify-center text-laut-400">
+                    <x-icon name="profil" class="h-10 w-10" />
+                </span>
             @endif
-        </div>
 
-        <div class="mt-2 w-full text-center">
-            @if ($profil->jabatan)
-                <p class="font-judul text-sm font-bold leading-tight text-laut-800">{{ $profil->jabatan }}</p>
-            @endif
-            <p class="mt-0.5 text-xs leading-tight text-arang sm:text-sm">{{ $profil->user?->name }}</p>
-            @if ($profil->kelas)
-                <p class="mt-0.5 text-xs leading-tight text-gray-500">Kelas {{ $profil->kelas }}</p>
-            @endif
-            @if ($tampilBidang && $profil->bidang)
-                <span class="mt-1 inline-block rounded-full bg-laut-50 px-2 py-0.5 text-[10px] font-medium leading-tight text-laut-700 sm:text-xs">{{ $profil->bidang->nama }}</span>
-            @endif
+            {{-- Keterangan menempel di dasar foto, dibungkus lapisan gelap transparan supaya tetap terbaca --}}
+            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-arang via-arang/80 to-transparent px-3 pb-3 pt-10">
+                @if ($profil->jabatan)
+                    <p class="font-judul text-[11px] font-semibold uppercase leading-tight tracking-wide text-emas-300">{{ $profil->jabatan }}</p>
+                @endif
+                <p class="mt-1 text-sm font-semibold leading-tight text-white" title="{{ $profil->user?->name }}">{{ $profil->user?->name }}</p>
+                @if ($profil->kelas)
+                    <p class="mt-0.5 text-[11px] leading-tight text-white/80">Kelas {{ $profil->kelas }}</p>
+                @endif
+            </div>
         </div>
     </div>
 
     @if ($anak->isNotEmpty())
         <ul>
             @foreach ($anak as $simpulAnak)
-                <x-bagan-node :node="$simpulAnak" :tampil-bidang="$tampilBidang" />
+                <x-bagan-node :node="$simpulAnak" />
             @endforeach
         </ul>
     @endif

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Event extends Model
@@ -18,6 +19,7 @@ class Event extends Model
         'tanggal_mulai',
         'tanggal_selesai',
         'status',
+        'periode_id',
     ];
 
     /**
@@ -40,5 +42,13 @@ class Event extends Model
     public function proposals(): HasMany
     {
         return $this->hasMany(Proposal::class);
+    }
+
+    /**
+     * Get the periode that the event belongs to.
+     */
+    public function periode(): BelongsTo
+    {
+        return $this->belongsTo(Periode::class);
     }
 }

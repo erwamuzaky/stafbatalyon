@@ -107,4 +107,28 @@ class ProfilePhotoTest extends TestCase
         $this->patch(route('profile.photo.update'))->assertRedirect(route('login'));
         $this->delete(route('profile.photo.destroy'))->assertRedirect(route('login'));
     }
+
+    public function test_foto_besar_dikecilkan_saat_diunggah(): void
+    {
+        Storage::fake('public');
+
+        $staf = User::factory()->create();
+        $this->profil($staf);
+        $file = UploadedFile::fake()->image('besar.jpg', 1200, 1200);
+
+        $this->actingAs($staf)
+            ->patch(route('profile.photo.update'), ['foto' => $file])
+            ->assertRedirect();
+
+        $path = 'staf/'.$file->hashName();
+
+        $this->assertSame($path, $staf->fresh()->stafProfile->foto);
+        Storage::disk('public')->assertExists($path);
+
+        $gambar = imagecreatefromstring(Storage::disk('public')->get($path));
+
+        $this->assertNotFalse($gambar);
+        $this->assertSame(800, imagesx($gambar));
+        $this->assertSame(800, imagesy($gambar));
+    }
 }

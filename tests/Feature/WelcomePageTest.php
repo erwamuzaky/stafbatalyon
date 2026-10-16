@@ -297,4 +297,87 @@ class WelcomePageTest extends TestCase
         $response->assertSee(route('struktur'), false);
         $response->assertSee('Lihat struktur lengkap');
     }
+
+    /**
+     * Satu foto latar dipakai bersama oleh bagian Struktur Staf dan Bidang.
+     */
+    public function test_halaman_depan_memakai_satu_latar_untuk_struktur_dan_bidang(): void
+    {
+        $pemimpin = Bidang::create(['nama' => 'Pemimpin', 'tampil_di_beranda' => true]);
+        $ketua = User::factory()->create(['name' => 'Ketua Berfoto']);
+
+        StafProfile::create([
+            'user_id' => $ketua->id,
+            'bidang_id' => $pemimpin->id,
+            'jabatan' => 'Ketua',
+            'is_inti' => true,
+            'no_hp' => '081234567890',
+        ]);
+
+        Pengaturan::simpan(['bagian_background' => 'pengaturan/bg-bagian.jpg']);
+
+        $response = $this->get('/');
+
+        $response->assertOk();
+
+        $konten = $response->getContent();
+
+        // Satu lapisan foto untuk kedua bagian, jadi tidak ada sambungan yang bisa bergaris.
+        $this->assertSame(1, substr_count($konten, asset('storage/pengaturan/bg-bagian.jpg')));
+        $this->assertSame(1, substr_count($konten, 'background-image: url'));
+        // Garis penghubung bagan dibuat terang supaya menyatu dengan latar gelap.
+        $this->assertStringContainsString('bagan-terang', $konten);
+    }
+
+    /**
+     * Tanpa foto latar, bagian tersebut kembali memakai latar warna biasa.
+     */
+    public function test_halaman_depan_tanpa_latar_kembali_ke_warna_dasar(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertDontSee('background-image: url', false);
+    }
+
+    /**
+     * Tingkat kegelapan lapisan gelap mengikuti pengaturan admin.
+     */
+    public function test_halaman_depan_memakai_kepekatan_samar_untuk_lapisan_latar(): void
+    {
+        Pengaturan::simpan([
+            'bagian_background' => 'pengaturan/bg-bagian.jpg',
+            'latar_kepekatan' => 'samar',
+        ]);
+
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('via-laut-900/45', false);
+        $response->assertDontSee('via-laut-900/55', false);
+    }
+
+    /**
+     * Kalau key belum diisi, lapisan gelap memakai tingkat bawaan "sedang".
+     */
+    public function test_halaman_depan_memakai_kepekatan_sedang_saat_belum_diatur(): void
+    {
+        Pengaturan::simpan(['bagian_background' => 'pengaturan/bg-bagian.jpg']);
+
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('via-laut-900/55', false);
+    }
+
+    /**
+     * Tanpa foto latar, lapisan gelap tidak dirender sama sekali.
+     */
+    public function test_halaman_depan_tanpa_latar_tidak_menampilkan_lapisan_gelap(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertDontSee('bg-gradient-to-b from-laut-900/80', false);
+    }
 }

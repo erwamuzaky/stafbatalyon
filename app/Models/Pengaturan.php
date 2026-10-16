@@ -58,6 +58,17 @@ class Pengaturan extends Model
         'bidang_judul' => 'Bidang',
         'bidang_subjudul' => 'Bidang-bidang yang menaungi seluruh staf batalyon.',
 
+        // Satu foto latar dipakai bersama oleh bagian Struktur Staf dan Bidang.
+        'bagian_background' => '',
+
+        // Foto latar khusus halaman Struktur Lengkap. Kalau kosong, halaman itu
+        // memakai foto latar bagian (bagian_background) sebagai cadangan.
+        'struktur_lengkap_background' => '',
+
+        // Tingkat kegelapan lapisan gelap di atas foto latar bagian (beranda
+        // dan halaman Struktur Lengkap). Salah satu: samar, sedang, tegas.
+        'latar_kepekatan' => 'sedang',
+
         // Pita ajakan daftar.
         'ajakan_judul' => 'Baru ditunjuk sebagai staf?',
         'ajakan_teks' => 'Daftar akun staf dulu, lalu tunggu persetujuan admin sebelum bisa masuk.',
@@ -68,6 +79,29 @@ class Pengaturan extends Model
         'footer_peta_kata_kunci' => 'SMK Negeri 3 Pariaman',
         'footer_peta_catatan' => 'Klik peta untuk buka di Google Maps',
         'footer_hak_cipta' => 'Staf Batalyon SMKN 3 Pariaman',
+    ];
+
+    /**
+     * Pasangan kunci gambar latar beranda => kunci checkbox penghapusnya.
+     *
+     * @var array<string, string>
+     */
+    public const LATAR_BERANDA = [
+        'hero_background' => 'hapus_background',
+        'bagian_background' => 'hapus_background_bagian',
+        'struktur_lengkap_background' => 'hapus_background_struktur',
+    ];
+
+    /**
+     * Pilihan tingkat kegelapan lapisan gelap di atas foto latar bagian,
+     * dipakai bersama oleh validasi dan formulir pengaturan admin.
+     *
+     * @var array<string, string>
+     */
+    public const LATAR_KEPEKATAN = [
+        'samar' => 'Samar',
+        'sedang' => 'Sedang',
+        'tegas' => 'Tegas',
     ];
 
     /**

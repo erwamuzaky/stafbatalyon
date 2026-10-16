@@ -17,6 +17,9 @@ class StrukturController extends Controller
         return view('struktur', [
             'pengaturan' => Pengaturan::peta(),
             'bagan' => BaganStruktur::susun(BaganStruktur::profilsDisetujui()),
+            // Background khusus Struktur Lengkap; kalau belum diisi, pakai background bagian.
+            'bagianBackground' => Pengaturan::gambar('struktur_lengkap_background')
+                ?? Pengaturan::gambar('bagian_background'),
         ]);
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\Pengaturan;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdatePengaturanRequest extends FormRequest
 {
@@ -63,11 +65,20 @@ class UpdatePengaturanRequest extends FormRequest
             $rules[$key] = ['nullable', 'string', 'max:2000'];
         }
 
-        // Aturan gambar hero background
-        $rules['hero_background'] = ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'];
+        // Aturan gambar latar beranda (hero, Struktur Staf, dan Bidang).
+        foreach (array_keys(Pengaturan::LATAR_BERANDA) as $gambar) {
+            $rules[$gambar] = ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'];
+        }
 
-        // Aturan checkbox hapus background
-        $rules['hapus_background'] = ['nullable', 'boolean'];
+        // Aturan checkbox penghapus latar.
+        foreach (array_values(Pengaturan::LATAR_BERANDA) as $hapus) {
+            $rules[$hapus] = ['nullable', 'boolean'];
+        }
+
+        // Tingkat kegelapan lapisan gelap foto latar. Dibolehkan kosong supaya
+        // kunci lama yang tidak dikirim form tes lama tetap aman; nilai yang
+        // dikirim wajib salah satu dari pilihan (samar, sedang, tegas).
+        $rules['latar_kepekatan'] = ['nullable', 'string', Rule::in(array_keys(Pengaturan::LATAR_KEPEKATAN))];
 
         return $rules;
     }
@@ -77,11 +88,18 @@ class UpdatePengaturanRequest extends FormRequest
      */
     public function messages(): array
     {
-        return [
-            // Pesan error gambar
-            'hero_background.image' => 'Background harus berupa gambar.',
-            'hero_background.mimes' => 'Format gambar harus jpg, jpeg, png, atau webp.',
-            'hero_background.max' => 'Ukuran gambar maksimal 4 MB.',
-        ];
+        $pesan = [];
+
+        // Pesan error untuk tiap gambar latar beranda.
+        foreach (array_keys(Pengaturan::LATAR_BERANDA) as $gambar) {
+            $pesan[$gambar.'.image'] = 'Background harus berupa gambar.';
+            $pesan[$gambar.'.mimes'] = 'Format gambar harus jpg, jpeg, png, atau webp.';
+            $pesan[$gambar.'.max'] = 'Ukuran gambar maksimal 4 MB.';
+        }
+
+        // Pesan error tingkat kegelapan foto latar.
+        $pesan['latar_kepekatan.in'] = 'Tingkat kegelapan latar harus salah satu dari: Samar, Sedang, atau Tegas.';
+
+        return $pesan;
     }
 }

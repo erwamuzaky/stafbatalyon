@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateProfilePhotoRequest;
+use App\Support\Foto\NormalisasiFoto;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 
@@ -23,7 +24,7 @@ class ProfilePhotoController extends Controller
         }
 
         $profil->update([
-            'foto' => $request->file('foto')->store('staf', 'public'),
+            'foto' => NormalisasiFoto::simpan($request->file('foto')),
         ]);
 
         return back()->with('success', 'Foto profil sudah diperbarui.');

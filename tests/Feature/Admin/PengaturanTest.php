@@ -201,4 +201,210 @@ class PengaturanTest extends TestCase
         // File yang terlanjur diunggah bareng "hapus background" tidak boleh tertinggal.
         Storage::disk('public')->assertDirectoryEmpty('pengaturan');
     }
+
+    public function test_admin_dapat_mengunggah_background_bagian(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Storage::fake('public');
+
+        $gambar = UploadedFile::fake()->image('bg-bagian.jpg', 1600, 900);
+
+        $response = $this->actingAs($admin)->patch(route('admin.pengaturan.update'), [
+            'bagian_background' => $gambar,
+        ]);
+
+        $response->assertRedirect(route('admin.pengaturan.index'));
+        $response->assertSessionHas('success');
+
+        $path = 'pengaturan/'.$gambar->hashName();
+
+        Storage::disk('public')->assertExists($path);
+        $this->assertDatabaseHas('pengaturan', ['kunci' => 'bagian_background', 'nilai' => $path]);
+    }
+
+    public function test_admin_dapat_mengganti_background_bagian_yang_sudah_ada(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Storage::fake('public');
+
+        $lama = UploadedFile::fake()->image('lama.jpg', 800, 600);
+        $pathLama = $lama->store('pengaturan', 'public');
+        Pengaturan::simpan(['bagian_background' => $pathLama]);
+
+        // Form mengirim hapus_background_bagian=0 saat checkbox tidak dicentang.
+        $baru = UploadedFile::fake()->image('baru.jpg', 800, 600);
+        $pathBaru = 'pengaturan/'.$baru->hashName();
+
+        $response = $this->actingAs($admin)->patch(route('admin.pengaturan.update'), [
+            'bagian_background' => $baru,
+            'hapus_background_bagian' => '0',
+        ]);
+
+        $response->assertRedirect(route('admin.pengaturan.index'));
+
+        $this->assertDatabaseHas('pengaturan', ['kunci' => 'bagian_background', 'nilai' => $pathBaru]);
+        Storage::disk('public')->assertExists($pathBaru);
+        Storage::disk('public')->assertMissing($pathLama);
+    }
+
+    public function test_admin_dapat_mengahapus_background_bagian(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Storage::fake('public');
+
+        $gambar = UploadedFile::fake()->image('bg-bagian.jpg', 800, 600);
+        $path = $gambar->store('pengaturan', 'public');
+        Pengaturan::simpan(['bagian_background' => $path]);
+
+        $response = $this->actingAs($admin)->patch(route('admin.pengaturan.update'), [
+            'hapus_background_bagian' => '1',
+        ]);
+
+        $response->assertRedirect(route('admin.pengaturan.index'));
+
+        Storage::disk('public')->assertMissing($path);
+        $this->assertDatabaseHas('pengaturan', ['kunci' => 'bagian_background', 'nilai' => '']);
+    }
+
+    public function test_halaman_pengaturan_menampilkan_kolom_latar_bagian(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->get(route('admin.pengaturan.index'));
+
+        $response->assertOk();
+        $response->assertSee('name="bagian_background"', false);
+        $response->assertSee('Background Struktur Staf dan Bidang', false);
+    }
+
+    public function test_admin_dapat_mengunggah_background_struktur_lengkap(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Storage::fake('public');
+
+        $gambar = UploadedFile::fake()->image('bg-struktur.jpg', 1600, 900);
+
+        $response = $this->actingAs($admin)->patch(route('admin.pengaturan.update'), [
+            'struktur_lengkap_background' => $gambar,
+        ]);
+
+        $response->assertRedirect(route('admin.pengaturan.index'));
+        $response->assertSessionHas('success');
+
+        $path = 'pengaturan/'.$gambar->hashName();
+
+        Storage::disk('public')->assertExists($path);
+        $this->assertDatabaseHas('pengaturan', ['kunci' => 'struktur_lengkap_background', 'nilai' => $path]);
+    }
+
+    public function test_admin_dapat_mengganti_background_struktur_lengkap_yang_sudah_ada(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Storage::fake('public');
+
+        $lama = UploadedFile::fake()->image('lama.jpg', 800, 600);
+        $pathLama = $lama->store('pengaturan', 'public');
+        Pengaturan::simpan(['struktur_lengkap_background' => $pathLama]);
+
+        // Form mengirim hapus_background_struktur=0 saat checkbox tidak dicentang.
+        $baru = UploadedFile::fake()->image('baru.jpg', 800, 600);
+        $pathBaru = 'pengaturan/'.$baru->hashName();
+
+        $response = $this->actingAs($admin)->patch(route('admin.pengaturan.update'), [
+            'struktur_lengkap_background' => $baru,
+            'hapus_background_struktur' => '0',
+        ]);
+
+        $response->assertRedirect(route('admin.pengaturan.index'));
+
+        $this->assertDatabaseHas('pengaturan', ['kunci' => 'struktur_lengkap_background', 'nilai' => $pathBaru]);
+        Storage::disk('public')->assertExists($pathBaru);
+        Storage::disk('public')->assertMissing($pathLama);
+    }
+
+    public function test_admin_dapat_mengahapus_background_struktur_lengkap(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Storage::fake('public');
+
+        $gambar = UploadedFile::fake()->image('bg-struktur.jpg', 800, 600);
+        $path = $gambar->store('pengaturan', 'public');
+        Pengaturan::simpan(['struktur_lengkap_background' => $path]);
+
+        $response = $this->actingAs($admin)->patch(route('admin.pengaturan.update'), [
+            'hapus_background_struktur' => '1',
+        ]);
+
+        $response->assertRedirect(route('admin.pengaturan.index'));
+
+        Storage::disk('public')->assertMissing($path);
+        $this->assertDatabaseHas('pengaturan', ['kunci' => 'struktur_lengkap_background', 'nilai' => '']);
+    }
+
+    public function test_halaman_pengaturan_menampilkan_kolom_latar_struktur_lengkap(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->get(route('admin.pengaturan.index'));
+
+        $response->assertOk();
+        $response->assertSee('name="struktur_lengkap_background"', false);
+        $response->assertSee('Background Halaman Struktur Lengkap', false);
+    }
+
+    public function test_admin_dapat_menyimpan_tingkat_kegelapan_latar(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->patch(route('admin.pengaturan.update'), [
+            'latar_kepekatan' => 'samar',
+        ]);
+
+        $response->assertRedirect(route('admin.pengaturan.index'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('pengaturan', ['kunci' => 'latar_kepekatan', 'nilai' => 'samar']);
+
+        // Ganti ke pilihan lain, nilai lama harus tertimpa.
+        $response = $this->actingAs($admin)->patch(route('admin.pengaturan.update'), [
+            'latar_kepekatan' => 'tegas',
+        ]);
+
+        $response->assertRedirect(route('admin.pengaturan.index'));
+        $this->assertDatabaseHas('pengaturan', ['kunci' => 'latar_kepekatan', 'nilai' => 'tegas']);
+    }
+
+    public function test_tingkat_kegelapan_latar_ngawur_ditolak(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->patch(route('admin.pengaturan.update'), [
+            'latar_kepekatan' => 'sangat-gelap',
+        ]);
+
+        $response->assertSessionHasErrors([
+            'latar_kepekatan' => 'Tingkat kegelapan latar harus salah satu dari: Samar, Sedang, atau Tegas.',
+        ]);
+        $this->assertDatabaseMissing('pengaturan', ['kunci' => 'latar_kepekatan', 'nilai' => 'sangat-gelap']);
+    }
+
+    public function test_halaman_pengaturan_menampilkan_pilihan_tingkat_kegelapan(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        Pengaturan::simpan(['latar_kepekatan' => 'tegas']);
+
+        $response = $this->actingAs($admin)->get(route('admin.pengaturan.index'));
+
+        $response->assertOk();
+        $response->assertSee('name="latar_kepekatan"', false);
+        $response->assertSee('Tingkat kegelapan latar foto');
+        // Pilihan yang sedang tersimpan harus terpilih.
+        $response->assertSee('<option value="tegas" selected', false);
+    }
 }

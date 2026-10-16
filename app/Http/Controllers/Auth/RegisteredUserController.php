@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Bidang;
 use App\Models\User;
+use App\Support\Foto\NormalisasiFoto;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -67,7 +68,7 @@ class RegisteredUserController extends Controller
                 'jabatan' => $validated['jabatan'] ?? null,
                 'no_hp' => $validated['no_hp'],
                 'is_inti' => false,
-                'foto' => $request->hasFile('foto') ? $request->file('foto')->store('staf', 'public') : null,
+                'foto' => $request->hasFile('foto') ? NormalisasiFoto::simpan($request->file('foto')) : null,
             ]);
 
             return $user;

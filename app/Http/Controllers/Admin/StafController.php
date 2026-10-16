@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\UpdateStafRequest;
 use App\Models\Bidang;
 use App\Models\StafProfile;
 use App\Models\User;
+use App\Support\Foto\NormalisasiFoto;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -99,7 +100,7 @@ class StafController extends Controller
                 'no_hp' => $validated['no_hp'] ?? null,
                 'is_inti' => $request->boolean('is_inti'),
                 'urutan' => $validated['urutan'] ?? null,
-                'foto' => $request->hasFile('foto') ? $request->file('foto')->store('staf', 'public') : null,
+                'foto' => $request->hasFile('foto') ? NormalisasiFoto::simpan($request->file('foto')) : null,
             ]);
 
             return $user;
@@ -143,7 +144,7 @@ class StafController extends Controller
             if ($lama) {
                 Storage::disk('public')->delete($lama);
             }
-            $fotoPath = $request->file('foto')->store('staf', 'public');
+            $fotoPath = NormalisasiFoto::simpan($request->file('foto'));
             $user->stafProfile()->updateOrCreate([], [
                 'bidang_id' => $validated['bidang_id'],
                 'kelas' => $validated['kelas'],

@@ -17,10 +17,12 @@ class PengaturanController extends Controller
      */
     public function index(Request $request): View
     {
-        $pengaturan = Pengaturan::peta();
-        $heroBackground = Pengaturan::gambar('hero_background');
-
-        return view('admin.pengaturan.index', compact('pengaturan', 'heroBackground'));
+        return view('admin.pengaturan.index', [
+            'pengaturan' => Pengaturan::peta(),
+            'heroBackground' => Pengaturan::gambar('hero_background'),
+            'bagianBackground' => Pengaturan::gambar('bagian_background'),
+            'strukturLengkapBackground' => Pengaturan::gambar('struktur_lengkap_background'),
+        ]);
     }
 
     /**
@@ -30,32 +32,41 @@ class PengaturanController extends Controller
     {
         $validated = $request->validated();
 
-        // Kumpulkan hanya kunci teks (semua kecuali hero_background dan hapus_background)
+        // Kunci yang ditangani khusus (bukan sekadar teks): gambar latar + checkbox hapusnya.
+        $kunciKhusus = array_merge(
+            array_keys(Pengaturan::LATAR_BERANDA),
+            array_values(Pengaturan::LATAR_BERANDA),
+        );
+
+        // Sisanya: kunci teks pengaturan.
         $data = [];
         foreach ($validated as $kunci => $nilai) {
-            if (! in_array($kunci, ['hero_background', 'hapus_background'])) {
+            if (! in_array($kunci, $kunciKhusus, true)) {
                 $data[$kunci] = $nilai;
             }
         }
 
-        $lama = Pengaturan::peta()['hero_background'] ?? '';
+        $lama = Pengaturan::peta();
 
-        if ($request->boolean('hapus_background')) {
-            // Hapus dimenangkan: buang file lama. Kalau user sekalian mengunggah
-            // file baru, file itu tidak dipakai sehingga tidak perlu disimpan.
-            if ($lama !== '') {
-                Storage::disk('public')->delete($lama);
+        foreach (Pengaturan::LATAR_BERANDA as $kunci => $flagHapus) {
+            $pathLama = $lama[$kunci] ?? '';
+
+            if ($request->boolean($flagHapus)) {
+                // Hapus dimenangkan: buang file lama. Kalau user sekalian mengunggah
+                // file baru, file itu tidak dipakai sehingga tidak perlu disimpan.
+                if ($pathLama !== '') {
+                    Storage::disk('public')->delete($pathLama);
+                }
+                $data[$kunci] = '';
+            } elseif ($request->hasFile($kunci)) {
+                // Ada unggahan baru: hapus file lama, lalu simpan yang baru.
+                if ($pathLama !== '') {
+                    Storage::disk('public')->delete($pathLama);
+                }
+                $data[$kunci] = $request->file($kunci)->store('pengaturan', 'public');
             }
-            $data['hero_background'] = '';
-        } elseif ($request->hasFile('hero_background')) {
-            // Ada unggahan baru: hapus file lama, lalu simpan yang baru.
-            if ($lama !== '') {
-                Storage::disk('public')->delete($lama);
-            }
-            $data['hero_background'] = $request->file('hero_background')->store('pengaturan', 'public');
         }
 
-        // Simpan semua data pengaturan
         Pengaturan::simpan($data);
 
         return redirect()->route('admin.pengaturan.index')

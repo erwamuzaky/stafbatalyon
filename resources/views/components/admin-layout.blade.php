@@ -33,6 +33,18 @@
             'ikon' => 'bidang',
         ],
         [
+            'label' => 'Periode',
+            'rute' => 'admin.periode.index',
+            'aktif' => request()->routeIs('admin.periode.*'),
+            'ikon' => 'kalender',
+        ],
+        [
+            'label' => 'Serah Terima',
+            'rute' => 'admin.serah-terima.index',
+            'aktif' => request()->routeIs('admin.serah-terima.*'),
+            'ikon' => 'dokumen',
+        ],
+        [
             'label' => 'Event',
             'rute' => 'admin.event.index',
             'aktif' => request()->routeIs('admin.event.*'),

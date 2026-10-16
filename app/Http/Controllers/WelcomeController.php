@@ -39,6 +39,7 @@ class WelcomeController extends Controller
             'jumlahKegiatanTahunIni' => Event::where('tahun', now()->year)->count(),
             'pengaturan' => Pengaturan::peta(),
             'heroBackground' => Pengaturan::gambar('hero_background'),
+            'bagianBackground' => Pengaturan::gambar('bagian_background'),
         ]);
     }
 }
