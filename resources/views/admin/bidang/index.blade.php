@@ -21,6 +21,9 @@
                     <td class="px-4 py-3 font-medium text-arang">
                         <span class="inline-flex flex-wrap items-center gap-2">
                             {{ $bidang->nama }}
+                            <span class="rounded-full bg-laut-50 px-2 py-0.5 text-xs font-medium text-laut-700">
+                                {{ \App\Models\Bidang::KELOMPOK[$bidang->kelompok] ?? $bidang->kelompok }}
+                            </span>
                             @if ($bidang->tampil_di_beranda)
                                 <x-badge status="berjalan" label="Halaman depan" />
                             @endif
@@ -63,6 +66,9 @@
                         <div class="flex items-start justify-between gap-2">
                             <div class="min-w-0">
                                 <p class="text-sm font-semibold text-arang">{{ $bidang->nama }}</p>
+                                <p class="mt-1 text-xs text-laut-700">
+                                    {{ \App\Models\Bidang::KELOMPOK[$bidang->kelompok] ?? $bidang->kelompok }}
+                                </p>
                                 @if ($bidang->tampil_di_beranda)
                                     <span class="mt-1 inline-block">
                                         <x-badge status="berjalan" label="Halaman depan" />

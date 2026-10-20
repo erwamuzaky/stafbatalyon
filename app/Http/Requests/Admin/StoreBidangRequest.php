@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\Bidang;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreBidangRequest extends FormRequest
 {
@@ -25,7 +27,9 @@ class StoreBidangRequest extends FormRequest
         return [
             'nama' => ['required', 'string', 'max:255', 'unique:bidangs,nama'],
             'tampil_di_beranda' => ['boolean'],
+            'kelompok' => ['nullable', Rule::in(array_keys(Bidang::KELOMPOK))],
         ];
+
     }
 
     /**

@@ -8,6 +8,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Bidang extends Model
 {
     /**
+     * Kelompok staf tempat bidang ini berada.
+     *
+     * @var array<string, string>
+     */
+    public const KELOMPOK = [
+        'inti' => 'Staf inti (Danyon/Wadanyon/Danpol/Wadanpol/dst)',
+        'harian' => 'Staf harian (bidang tugas harian)',
+        'kelas' => 'Staf kelas (poltar/poltir/danton/dst)',
+    ];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -15,6 +26,7 @@ class Bidang extends Model
     protected $fillable = [
         'nama',
         'tampil_di_beranda',
+        'kelompok',
     ];
 
     /**

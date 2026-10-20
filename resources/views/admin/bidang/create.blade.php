@@ -15,6 +15,16 @@
                 <x-input-error :messages="$errors->get('nama')" class="mt-2" />
             </div>
 
+            <div>
+                <x-input-label for="kelompok" value="Kelompok Staf" />
+                <select id="kelompok" name="kelompok" class="input-baku mt-1 block w-full">
+                    @foreach (\App\Models\Bidang::KELOMPOK as $k => $label)
+                        <option value="{{ $k }}" @selected(old('kelompok', 'harian') === $k)>{{ $label }}</option>
+                    @endforeach
+                </select>
+                <x-input-error :messages="$errors->get('kelompok')" class="mt-2" />
+            </div>
+
             <div class="flex items-start gap-2 rounded-lg border border-gray-200 bg-gray-50/50 px-3 py-2.5">
                 <input type="hidden" name="tampil_di_beranda" value="0">
                 <input id="tampil_di_beranda" name="tampil_di_beranda" type="checkbox" value="1" @checked(old('tampil_di_beranda'))

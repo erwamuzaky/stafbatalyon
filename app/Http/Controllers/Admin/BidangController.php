@@ -34,7 +34,10 @@ class BidangController extends Controller
      */
     public function store(StoreBidangRequest $request): RedirectResponse
     {
-        $bidang = Bidang::create($request->validated());
+        $data = $request->validated();
+        $data['kelompok'] = $data['kelompok'] ?? 'harian';
+
+        $bidang = Bidang::create($data);
 
         return redirect()->route('admin.bidang.index')
             ->with('success', 'Bidang '.$bidang->nama.' sudah ditambahkan.');
@@ -55,7 +58,10 @@ class BidangController extends Controller
      */
     public function update(UpdateBidangRequest $request, Bidang $bidang): RedirectResponse
     {
-        $bidang->update($request->validated());
+        $data = $request->validated();
+        $data['kelompok'] = $data['kelompok'] ?? $bidang->kelompok;
+
+        $bidang->update($data);
 
         return redirect()->route('admin.bidang.index')
             ->with('success', 'Bidang '.$bidang->nama.' sudah diperbarui.');

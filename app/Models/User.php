@@ -23,6 +23,8 @@ class User extends Authenticatable
     public const PESERTA_FILTER = [
         'semua' => 'Semua staf',
         'inti' => 'Staf inti saja',
+        'harian' => 'Staf harian (bidang harian)',
+        'kelas' => 'Staf kelas (poltar/poltir/danton/dst)',
         'bidang' => 'Per bidang',
     ];
 
@@ -112,6 +114,26 @@ class User extends Authenticatable
                 fn ($query) => $query->whereHas(
                     'stafProfile',
                     fn ($profil) => $profil->where('is_inti', true),
+                ),
+            )
+            ->when(
+                $filter === 'harian',
+                fn ($query) => $query->whereHas(
+                    'stafProfile',
+                    fn ($profil) => $profil->whereHas(
+                        'bidang',
+                        fn ($bidang) => $bidang->where('kelompok', 'harian'),
+                    ),
+                ),
+            )
+            ->when(
+                $filter === 'kelas',
+                fn ($query) => $query->whereHas(
+                    'stafProfile',
+                    fn ($profil) => $profil->whereHas(
+                        'bidang',
+                        fn ($bidang) => $bidang->where('kelompok', 'kelas'),
+                    ),
                 ),
             )
             ->when(

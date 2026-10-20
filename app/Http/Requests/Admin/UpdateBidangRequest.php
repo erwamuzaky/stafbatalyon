@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\Bidang;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -31,7 +32,9 @@ class UpdateBidangRequest extends FormRequest
                 Rule::unique('bidangs', 'nama')->ignore($this->route('bidang')->id),
             ],
             'tampil_di_beranda' => ['boolean'],
+            'kelompok' => ['nullable', Rule::in(array_keys(Bidang::KELOMPOK))],
         ];
+
     }
 
     /**
