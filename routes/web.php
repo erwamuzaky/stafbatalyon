@@ -90,6 +90,9 @@ Route::middleware(['auth', 'approved', 'role:admin'])->prefix('admin')->name('ad
 
     Route::post('/piket', [PiketController::class, 'store'])->name('piket.store');
     Route::post('/piket/salin', [PiketController::class, 'salin'])->name('piket.salin');
+    Route::get('/piket/otomatis', [PiketController::class, 'otomatis'])->name('piket.otomatis');
+    Route::post('/piket/otomatis/preview', [PiketController::class, 'otomatisPreview'])->name('piket.otomatis.preview');
+    Route::post('/piket/otomatis/simpan', [PiketController::class, 'otomatisSimpan'])->name('piket.otomatis.simpan');
     Route::get('/piket/{piket}/edit', [PiketController::class, 'edit'])->name('piket.edit');
     Route::patch('/piket/{piket}', [PiketController::class, 'update'])->name('piket.update');
     Route::delete('/piket/{piket}', [PiketController::class, 'destroy'])->name('piket.destroy');

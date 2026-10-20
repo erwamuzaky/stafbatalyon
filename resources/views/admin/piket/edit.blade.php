@@ -34,7 +34,12 @@
                 <select id="user_id" name="user_id" class="input-baku mt-1 block w-full">
                     @foreach ($stafPilihan as $staf)
                         <option value="{{ $staf->id }}" @selected((int) old('user_id', $piket->user_id) === $staf->id)>
-                            {{ $staf->name }} ({{ $staf->email }})
+                            {{ $staf->name }}
+                            @if ($staf->stafProfile)
+                                · {{ $staf->stafProfile->jabatan ?: 'Tanpa jabatan' }}
+                                · {{ $staf->stafProfile->bidang?->nama ?? 'Tanpa bidang' }}
+                                @if ($staf->stafProfile->kelas) · Kelas {{ $staf->stafProfile->kelas }} @endif
+                            @endif
                         </option>
                     @endforeach
                 </select>

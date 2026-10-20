@@ -41,6 +41,11 @@
                 Rekap &amp; pemerataan
             </a>
 
+            <a href="{{ route('admin.piket.otomatis') }}" class="btn btn-sekunder">
+                <x-icon name="tambah" class="h-4 w-4" />
+                Isi otomatis
+            </a>
+
             <form method="POST" action="{{ route('admin.piket.salin') }}"
                   onsubmit="return confirm('Salin jadwal minggu ini ke minggu berikutnya?')">
                 @csrf
@@ -74,9 +79,16 @@
                         @forelse ($entri as $baris)
                             <div class="mb-2 flex items-center justify-between gap-2 rounded-lg border border-laut-100 bg-white px-2.5 py-1.5 shadow-soft-sm last:mb-0">
                                 <span class="inline-flex min-w-0 items-center gap-2">
-                                    <x-avatar :name="$baris->user?->name ?? '?'" size="sm" />
                                     <span class="min-w-0">
                                         <span class="block truncate text-sm font-medium text-arang">{{ $baris->user?->name ?? 'Staf terhapus' }}</span>
+                                        @php $p = $baris->user?->stafProfile; @endphp
+                                        @if ($p)
+                                            <span class="block truncate text-xs text-gray-500">
+                                                {{ $p->jabatan ?: 'Tanpa jabatan' }}
+                                                · {{ $p->bidang?->nama ?? 'Tanpa bidang' }}
+                                                @if ($p->kelas) · Kelas {{ $p->kelas }} @endif
+                                            </span>
+                                        @endif
                                         @if ($baris->catatan)
                                             <span class="block truncate text-xs text-gray-500">{{ $baris->catatan }}</span>
                                         @endif
@@ -121,9 +133,16 @@
                         @forelse ($entriHp as $baris)
                             <div class="mt-2 flex items-center justify-between gap-2 rounded-lg border border-laut-100 bg-white px-3 py-2">
                                 <span class="inline-flex min-w-0 items-center gap-2">
-                                    <x-avatar :name="$baris->user?->name ?? '?'" size="sm" />
                                     <span class="min-w-0">
                                         <span class="block truncate text-sm font-medium text-arang">{{ $baris->user?->name ?? 'Staf terhapus' }}</span>
+                                        @php $p = $baris->user?->stafProfile; @endphp
+                                        @if ($p)
+                                            <span class="block truncate text-xs text-gray-500">
+                                                {{ $p->jabatan ?: 'Tanpa jabatan' }}
+                                                · {{ $p->bidang?->nama ?? 'Tanpa bidang' }}
+                                                @if ($p->kelas) · Kelas {{ $p->kelas }} @endif
+                                            </span>
+                                        @endif
                                         @if ($baris->catatan)
                                             <span class="block truncate text-xs text-gray-500">{{ $baris->catatan }}</span>
                                         @endif

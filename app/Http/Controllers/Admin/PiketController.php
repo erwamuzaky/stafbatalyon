@@ -245,7 +245,7 @@ class PiketController extends Controller
      */
     private function jadwalMinggu(Carbon $minggu, Carbon $akhir): array
     {
-        $entri = PiketGerbang::with('user')
+        $entri = PiketGerbang::with(['user.stafProfile.bidang'])
             ->whereBetween('tanggal', [
                 $minggu->copy()->startOfDay(),
                 $akhir->copy()->endOfDay(),
@@ -261,6 +261,190 @@ class PiketController extends Controller
         }
 
         return $jadwal;
+    }
+
+    /**
+     * Form pengisian otomatis jadwal piket untuk minggu atau bulan.
+     */
+    public function otomatis(Request $request): View
+    {
+        $minggu = $this->awalMinggu($request->query('minggu'));
+
+        return view('admin.piket.otomatis', [
+            'stafEligible' => $this->stafPilihan(),
+            'sesi' => self::SESI,
+            'mingguDefault' => $minggu->toDateString(),
+            'bulanDefault' => now()->format('Y-m'),
+        ]);
+    }
+
+    /**
+     * Buat pratinjau jadwal otomatis sebelum disimpan.
+     *
+     * Sistem membangun rancangan round-robin adil: staf berurut nama dirotasi
+     * agar tiap orang dapat jatah piket yang seimbang antar tanggal.
+     */
+    public function otomatisPreview(Request $request): View
+    {
+        $validated = $request->validate([
+            'scope' => ['required', 'in:minggu,bulan'],
+            'minggu' => ['nullable', 'date'],
+            'bulan' => ['nullable', 'date_format:Y-m'],
+            'per_day' => ['required', 'integer', 'min:1', 'max:5'],
+        ]);
+
+        $staf = $this->stafPilihan();
+        $tanggal = $this->tanggalOtomatis($validated['scope'], $validated['minggu'] ?? null, $validated['bulan'] ?? null);
+        $perHari = (int) $validated['per_day'];
+
+        $rencana = $this->buatRencana($staf, $tanggal, $perHari);
+
+        $petaSimpan = [];
+        foreach ($rencana as $baris) {
+            $petaSimpan[$baris['tanggal']] = $baris['user_ids'];
+        }
+
+        return view('admin.piket.otomatis', [
+            'stafEligible' => $staf,
+            'sesi' => self::SESI,
+            'mingguDefault' => $this->awalMinggu($request->input('minggu'))->toDateString(),
+            'bulanDefault' => now()->format('Y-m'),
+            'scope' => $validated['scope'],
+            'perDay' => $perHari,
+            'tanggalRencana' => $tanggal,
+            'rencana' => $rencana,
+            'rencanaEncoded' => base64_encode(json_encode($petaSimpan)),
+        ]);
+    }
+
+    /**
+     * Simpan jadwal otomatis dari rancangan yang sudah ditinjau.
+     */
+    public function otomatisSimpan(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'rencana' => ['required', 'string'],
+            'catatan' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $rencana = json_decode(base64_decode($validated['rencana']), true);
+
+        if (! is_array($rencana)) {
+            return back()->with('error', 'Rancangan jadwal tidak sah.');
+        }
+
+        $disimpan = 0;
+        $dilewati = 0;
+
+        foreach ($rencana as $tanggal => $userIds) {
+            if (! is_array($userIds)) {
+                continue;
+            }
+
+            foreach (array_values(array_unique($userIds)) as $userId) {
+                $sudahAda = PiketGerbang::whereDate('tanggal', $tanggal)
+                    ->where('sesi', 'harian')
+                    ->where('user_id', (int) $userId)
+                    ->exists();
+
+                if ($sudahAda) {
+                    $dilewati++;
+
+                    continue;
+                }
+
+                PiketGerbang::create([
+                    'tanggal' => $tanggal,
+                    'sesi' => 'harian',
+                    'user_id' => (int) $userId,
+                    'catatan' => $validated['catatan'] ?? null,
+                ]);
+
+                $disimpan++;
+            }
+        }
+
+        $pesan = $disimpan.' jadwal piket otomatis tersimpan.';
+
+        if ($dilewati > 0) {
+            $pesan .= ' '.$dilewati.' entri dilewati karena sudah ada.';
+        }
+
+        return redirect()->route('admin.piket.index')->with('success', $pesan);
+    }
+
+    /**
+     * Daftar tanggal target otomatis berdasarkan cakupan.
+     *
+     * @return list<Carbon>
+     */
+    private function tanggalOtomatis(string $scope, ?string $minggu, ?string $bulan): array
+    {
+        $hasil = [];
+
+        if ($scope === 'bulan' && is_string($bulan) && preg_match('/^\d{4}-\d{2}$/', $bulan)) {
+            $awal = Carbon::parse($bulan.'-01')->startOfMonth();
+            $akhir = $awal->copy()->endOfMonth();
+        } else {
+            $awal = $this->awalMinggu($minggu);
+            $akhir = $awal->copy()->addDays(self::JUMLAH_HARI - 1);
+        }
+
+        for ($tanggal = $awal; $tanggal <= $akhir; $tanggal = $tanggal->copy()->addDay()) {
+            if ($tanggal->dayOfWeek === Carbon::SUNDAY) {
+                continue;
+            }
+
+            $hasil[] = $tanggal->copy();
+        }
+
+        return $hasil;
+    }
+
+    /**
+     * Bangun rancangan piket otomatis berbasis round-robin adil.
+     *
+     * @return list<array{tanggal: string, tanggalLabel: string, hari: string, user_ids: list<int>, user_names: list<string>}>
+     */
+    private function buatRencana(Collection $staf, array $tanggal, int $perHari): array
+    {
+        $ids = $staf->pluck('id')->values()->toArray();
+        $names = $staf->pluck('name', 'id');
+        $jumlahStaf = count($ids);
+
+        if ($jumlahStaf === 0 || $perHari < 1) {
+            return [];
+        }
+
+        $slotTotal = count($tanggal) * $perHari;
+        $daftarSeq = [];
+
+        for ($i = 0; $i < $slotTotal; $i++) {
+            $daftarSeq[] = $ids[$i % $jumlahStaf];
+        }
+
+        $rencana = [];
+        $penunjuk = 0;
+
+        foreach ($tanggal as $tanggalCarbon) {
+            $userIds = [];
+
+            for ($i = 0; $i < $perHari; $i++) {
+                $userIds[] = $daftarSeq[$penunjuk++ % $slotTotal];
+            }
+
+            $userIds = array_values(array_unique($userIds));
+
+            $rencana[] = [
+                'tanggal' => $tanggalCarbon->toDateString(),
+                'tanggalLabel' => $tanggalCarbon->format('d/m/Y'),
+                'hari' => ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'][$tanggalCarbon->dayOfWeek] ?? '',
+                'user_ids' => array_values($userIds),
+                'user_names' => array_map(fn (int $id): string => (string) $names[$id], $userIds),
+            ];
+        }
+
+        return $rencana;
     }
 
     /**

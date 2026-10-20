@@ -26,17 +26,25 @@
                         Belum ada staf yang disetujui. Setujui akun staf dulu di menu Kelola Akun.
                     </x-alert>
                 @else
-                    <div class="mt-2 max-h-72 space-y-1 overflow-y-auto rounded-lg border border-gray-300 bg-white p-2">
+                    <div class="mt-2 max-h-80 space-y-1 overflow-y-auto rounded-lg border border-gray-300 bg-white p-2">
                         @foreach ($stafPilihan as $staf)
                             <label class="flex cursor-pointer items-start gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-laut-50">
                                 <input type="checkbox" name="user_ids[]" value="{{ $staf->id }}"
                                        @checked(in_array($staf->id, old('user_ids', [])))
                                        class="mt-0.5 rounded border-gray-300 text-laut-600 shadow-sm focus:ring-laut-500">
                                 <span class="flex items-center gap-2 text-sm">
-                                    <x-avatar :name="$staf->name" size="sm" />
-                                    <span>
+                                    <span class="min-w-0">
                                         <span class="block font-medium text-arang">{{ $staf->name }}</span>
-                                        <span class="block text-xs text-gray-500">{{ $staf->email }}</span>
+                                        <span class="block text-xs text-gray-500">
+                                            @php $profil = $staf->stafProfile; @endphp
+                                            @if ($profil)
+                                                {{ $profil->jabatan ?: 'Tanpa jabatan' }}
+                                                · {{ $profil->bidang?->nama ?? 'Tanpa bidang' }}
+                                                @if ($profil->kelas) · Kelas {{ $profil->kelas }} @endif
+                                            @else
+                                                Belum punya profil staf
+                                            @endif
+                                        </span>
                                     </span>
                                 </span>
                             </label>
