@@ -96,25 +96,31 @@
         }
 
         .kolom-no {
-            width: 7%;
+            width: 8%;
             text-align: center;
         }
 
-        .kolom-kelas {
-            width: 15%;
+        .kolom-nama {
+            width: 42%;
         }
 
-        .kolom-bidang {
-            width: 20%;
+        .kolom-jabatan {
+            width: 25%;
         }
 
         .kolom-ttd {
-            width: 32%;
+            width: 25%;
         }
 
         .kosong {
             color: #9ca3af;
             font-style: italic;
+        }
+
+        .bidang-judul {
+            font-size: 11px;
+            font-weight: bold;
+            margin: 10px 0 4px 0;
         }
 
         table.tanda-tangan {
@@ -171,49 +177,65 @@
         </tr>
     </table>
 
-    <table class="hadir">
-        <thead>
-            <tr>
-                <th class="kolom-no">No</th>
-                <th>Nama</th>
-                <th class="kolom-kelas">Kelas</th>
-                <th class="kolom-bidang">Bidang</th>
-                <th class="kolom-ttd">Tanda Tangan</th>
-            </tr>
-        </thead>
-        <tbody>
-            @php($nomor = 1)
-
-            @forelse ($peserta as $orang)
+    @if ($kelompokBidang->isEmpty())
+        <table class="hadir">
+            <thead>
                 <tr>
-                    <td class="kolom-no baris">{{ $nomor++ }}</td>
-                    <td class="baris">{{ $orang->name }}</td>
-                    <td class="kolom-kelas baris">{{ $orang->stafProfile?->kelas ?? '-' }}</td>
-                    <td class="kolom-bidang baris">{{ $orang->stafProfile?->bidang?->nama ?? '-' }}</td>
-                    <td class="kolom-ttd baris">&nbsp;</td>
+                    <th class="kolom-no">No</th>
+                    <th>Nama</th>
+                    <th class="kolom-jabatan">Jabatan</th>
+                    <th class="kolom-ttd">Tanda Tangan</th>
                 </tr>
-            @empty
+            </thead>
+            <tbody>
                 <tr>
                     <td class="kolom-no baris">1</td>
                     <td class="baris kosong">Belum ada peserta pada penyaring ini</td>
-                    <td class="kolom-kelas baris kosong">-</td>
-                    <td class="kolom-bidang baris kosong">-</td>
+                    <td class="kolom-jabatan baris kosong">-</td>
                     <td class="kolom-ttd baris">&nbsp;</td>
                 </tr>
-                @php($nomor = 2)
-            @endforelse
+            </tbody>
+        </table>
+    @else
+        @php($jumlahKelompok = $kelompokBidang->count())
+        @foreach ($kelompokBidang as $namaBidang => $daftar)
+            @php($nomor = 1)
+            @php($terakhir = $loop->last)
 
-            @for ($i = 0; $i < $barisKosong; $i++)
-                <tr>
-                    <td class="kolom-no baris">{{ $nomor++ }}</td>
-                    <td class="baris">&nbsp;</td>
-                    <td class="kolom-kelas baris">&nbsp;</td>
-                    <td class="kolom-bidang baris">&nbsp;</td>
-                    <td class="kolom-ttd baris">&nbsp;</td>
-                </tr>
-            @endfor
-        </tbody>
-    </table>
+            <p class="bidang-judul">Bidang {{ $namaBidang }}</p>
+            <table class="hadir">
+                <thead>
+                    <tr>
+                        <th class="kolom-no">No</th>
+                        <th>Nama</th>
+                        <th class="kolom-jabatan">Jabatan</th>
+                        <th class="kolom-ttd">Tanda Tangan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($daftar as $orang)
+                        <tr>
+                            <td class="kolom-no baris">{{ $nomor++ }}</td>
+                            <td class="baris">{{ $orang->name }}</td>
+                            <td class="kolom-jabatan baris">{{ $orang->stafProfile?->jabatan ?? '-' }}</td>
+                            <td class="kolom-ttd baris">&nbsp;</td>
+                        </tr>
+                    @endforeach
+
+                    @if ($terakhir)
+                        @for ($i = 0; $i < $barisKosong; $i++)
+                            <tr>
+                                <td class="kolom-no baris">{{ $nomor++ }}</td>
+                                <td class="baris">&nbsp;</td>
+                                <td class="kolom-jabatan baris">&nbsp;</td>
+                                <td class="kolom-ttd baris">&nbsp;</td>
+                            </tr>
+                        @endfor
+                    @endif
+                </tbody>
+            </table>
+        @endforeach
+    @endif
 
     <table class="tanda-tangan">
         <tr>

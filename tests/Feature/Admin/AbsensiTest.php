@@ -225,6 +225,9 @@ class AbsensiTest extends TestCase
             'tanggal' => now()->setDate(2026, 10, 13)->locale('id'),
             'keteranganPeserta' => 'Semua staf',
             'peserta' => User::pesertaAbsensi('semua'),
+            'kelompokBidang' => User::pesertaAbsensi('semua')->groupBy(
+                fn ($orang) => $orang->stafProfile?->bidang?->nama ?? 'Tanpa Bidang',
+            ),
             'barisKosong' => 2,
             'penandatangan' => 'Rina Marlina',
             'jabatan' => 'Sekretaris Batalyon',
@@ -237,8 +240,8 @@ class AbsensiTest extends TestCase
         $this->assertStringContainsString('Selasa, 13 Oktober 2026', $html);
         $this->assertStringContainsString('Semua staf', $html);
         $this->assertStringContainsString('Rina Absensi', $html);
-        $this->assertStringContainsString('Kelas', $html);
-        $this->assertStringContainsString('XI RPL 3', $html);
+        $this->assertStringContainsString('Jabatan', $html);
+        $this->assertStringContainsString('Anggota', $html);
         $this->assertStringContainsString('Humas', $html);
         $this->assertStringContainsString('Tanda Tangan', $html);
         $this->assertStringContainsString('Pariaman, 13 Oktober 2026', $html);

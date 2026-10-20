@@ -91,11 +91,16 @@ class AbsensiController extends Controller
         $bidangId = $request->integer('bidang_id');
         $tanggal = Carbon::parse((string) $request->input('tanggal'))->locale('id');
 
+        $peserta = User::pesertaAbsensi($filter, $bidangId > 0 ? $bidangId : null);
+
         return [
             'namaKegiatan' => (string) $request->input('nama_kegiatan'),
             'tanggal' => $tanggal,
             'keteranganPeserta' => $this->keteranganPeserta($filter, $request->namaBidang()),
-            'peserta' => User::pesertaAbsensi($filter, $bidangId > 0 ? $bidangId : null),
+            'peserta' => $peserta,
+            'kelompokBidang' => $peserta->groupBy(
+                fn (User $orang): string => $orang->stafProfile?->bidang?->nama ?? 'Tanpa Bidang',
+            ),
             'barisKosong' => (int) $request->input('baris_kosong', 0),
             'penandatangan' => $request->input('penandatangan'),
             'jabatan' => $request->input('jabatan') ?: self::JABATAN_DEFAULT,
