@@ -264,12 +264,15 @@ class PiketController extends Controller
     }
 
     /**
-     * Staf yang boleh dijadwalkan piket: role staf dan sudah disetujui.
+     * Staf yang boleh dijadwalkan piket: role staf, sudah disetujui, dan ikut
+     * piket gerbang. Staf yang belum punya profil tetap dianggap ikut.
      */
     private function stafPilihan(): Collection
     {
         return User::where('role', 'staf')
             ->where('status', 'approved')
+            ->whereDoesntHave('stafProfile', fn ($query) => $query->where('ikut_piket', false))
+            ->with('stafProfile.bidang')
             ->orderBy('name')
             ->get();
     }

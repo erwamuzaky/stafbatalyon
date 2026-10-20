@@ -115,6 +115,30 @@ class StafTest extends TestCase
         ]);
     }
 
+    public function test_admin_can_mark_staf_as_not_joining_piket(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $bidang = Bidang::create(['nama' => 'Sekretaris']);
+
+        $staf = User::factory()->create();
+        $staf->stafProfile()->create([
+            'bidang_id' => $bidang->id,
+            'kelas' => 'X RPL 1',
+            'ikut_piket' => true,
+        ]);
+
+        $response = $this->actingAs($admin)->patch(route('admin.staf.update', $staf), [
+            'bidang_id' => $bidang->id,
+            'kelas' => 'X RPL 1',
+            'ikut_piket' => '0',
+        ]);
+
+        $response->assertRedirect(route('admin.staf.index'));
+        $response->assertSessionHas('success');
+
+        $this->assertFalse($staf->stafProfile()->first()->ikut_piket);
+    }
+
     public function test_admin_can_open_edit_form(): void
     {
         $admin = User::factory()->admin()->create();

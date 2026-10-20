@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Models\Bidang;
 use App\Models\PiketGerbang;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -205,6 +206,57 @@ class PiketTest extends TestCase
         $response->assertOk();
         $response->assertSee('Staf Disetujui');
         $response->assertDontSee('Staf Menunggu');
+    }
+
+    /**
+     * Staf yang ditandai tidak ikut piket tidak muncul di pilihan piket.
+     */
+    public function test_staf_not_joining_piket_is_excluded_from_piket_choices(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $bidang = Bidang::create(['nama' => 'Sekretaris']);
+
+        $ikut = User::factory()->create(['name' => 'Staf Ikut Piket']);
+        $ikut->stafProfile()->create([
+            'bidang_id' => $bidang->id,
+            'kelas' => 'X RPL 1',
+            'ikut_piket' => true,
+        ]);
+
+        $tidakIkut = User::factory()->create(['name' => 'Staf Tanpa Piket']);
+        $tidakIkut->stafProfile()->create([
+            'bidang_id' => $bidang->id,
+            'kelas' => 'X RPL 2',
+            'ikut_piket' => false,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('admin.piket.create'));
+
+        $response->assertOk();
+        $response->assertSee('Staf Ikut Piket');
+        $response->assertDontSee('Staf Tanpa Piket');
+    }
+
+    /**
+     * Staf yang ditandai tidak ikut piket juga ditolak saat dijadwalkan manual.
+     */
+    public function test_staf_not_joining_piket_cannot_be_scheduled(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $staf = User::factory()->create();
+        $staf->stafProfile()->create([
+            'bidang_id' => Bidang::create(['nama' => 'Sekretaris'])->id,
+            'kelas' => 'X RPL 1',
+            'ikut_piket' => false,
+        ]);
+
+        $this->actingAs($admin)->post(route('admin.piket.store'), [
+            'tanggal' => '2026-10-13',
+            'sesi' => 'harian',
+            'user_ids' => [$staf->id],
+        ])->assertSessionHasErrors();
+
+        $this->assertDatabaseCount('piket_gerbang', 0);
     }
 
     /**

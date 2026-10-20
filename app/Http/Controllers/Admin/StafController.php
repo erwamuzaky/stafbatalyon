@@ -151,6 +151,7 @@ class StafController extends Controller
                 'jabatan' => $validated['jabatan'] ?? null,
                 'no_hp' => $validated['no_hp'] ?? null,
                 'is_inti' => $request->boolean('is_inti'),
+                'ikut_piket' => $request->boolean('ikut_piket'),
                 'urutan' => $validated['urutan'] ?? null,
                 'foto' => $fotoPath,
             ]);
@@ -165,6 +166,7 @@ class StafController extends Controller
                 'jabatan' => $validated['jabatan'] ?? null,
                 'no_hp' => $validated['no_hp'] ?? null,
                 'is_inti' => $request->boolean('is_inti'),
+                'ikut_piket' => $request->boolean('ikut_piket'),
                 'urutan' => $validated['urutan'] ?? null,
                 'foto' => null,
             ]);
@@ -175,6 +177,7 @@ class StafController extends Controller
                 'jabatan' => $validated['jabatan'] ?? null,
                 'no_hp' => $validated['no_hp'] ?? null,
                 'is_inti' => $request->boolean('is_inti'),
+                'ikut_piket' => $request->boolean('ikut_piket'),
                 'urutan' => $validated['urutan'] ?? null,
                 'foto' => $profile?->foto,
             ]);

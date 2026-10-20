@@ -32,6 +32,9 @@ class UpdatePiketRequest extends FormRequest
                 'required',
                 'integer',
                 Rule::exists('users', 'id')->where('role', 'staf')->where('status', 'approved'),
+                Rule::exists('users', 'id')->whereNotIn('id', function ($query) {
+                    $query->select('user_id')->from('staf_profiles')->where('ikut_piket', false);
+                }),
             ],
             'catatan' => ['nullable', 'string', 'max:1000'],
         ];

@@ -23,3 +23,7 @@ yarn-error.log
 /.zed
 /.playwright-mcp
 /.omo
+
+/*.png
+
+/temp_insert.php

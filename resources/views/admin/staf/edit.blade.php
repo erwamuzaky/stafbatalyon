@@ -57,6 +57,17 @@
                 <label for="is_inti" class="text-sm text-arang">Staf inti (pengurus)</label>
             </div>
 
+            <div class="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50/50 px-3 py-2.5">
+                <input type="hidden" name="ikut_piket" value="0">
+                <input id="ikut_piket" name="ikut_piket" type="checkbox" value="1"
+                       @checked(old('ikut_piket', $profile?->ikut_piket ?? true))
+                       class="rounded border-gray-300 text-laut-600 shadow-sm focus:ring-laut-500">
+                <label for="ikut_piket" class="text-sm text-arang">Ikut piket gerbang</label>
+            </div>
+            <p class="-mt-2 text-xs text-gray-500">
+                Hilangkan centang kalau staf ini tidak ikut piket gerbang, supaya namanya tidak muncul di pilihan jadwal piket.
+            </p>
+
             <div>
                 <x-input-label for="urutan" value="Urutan tampil (opsional)" />
                 <x-text-input id="urutan" name="urutan" type="number" min="1" class="mt-1 block w-full"

@@ -28,6 +28,7 @@ class UpdateStafRequest extends FormRequest
             'kelas' => ['required', 'string', 'max:255'],
             'jabatan' => ['nullable', 'string', 'max:255'],
             'is_inti' => ['nullable', 'boolean'],
+            'ikut_piket' => ['nullable', 'boolean'],
             'urutan' => ['nullable', 'integer', 'min:1', 'max:999'],
             'no_hp' => ['nullable', 'string', 'max:20'],
             'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],

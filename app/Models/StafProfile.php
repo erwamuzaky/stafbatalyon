@@ -28,6 +28,7 @@ class StafProfile extends Model
         'kelas',
         'jabatan',
         'is_inti',
+        'ikut_piket',
         'urutan',
         'no_hp',
         'foto',
@@ -42,6 +43,7 @@ class StafProfile extends Model
     {
         return [
             'is_inti' => 'boolean',
+            'ikut_piket' => 'boolean',
             'urutan' => 'integer',
         ];
     }
