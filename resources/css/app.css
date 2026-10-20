@@ -96,9 +96,10 @@
     }
 
     /* Bagan struktur bercabang: garis penghubung antar simpul.
-       Simpul = <li>, daftar anak = <ul> di dalam <li>. */
+       Simpul = <li>, daftar anak = <ul> di dalam <li>.
+       Desktop: bagan pohon horizontal. Mobile: daftar vertikal bertingkat. */
     .bagan ul {
-        @apply relative flex justify-center pt-6;
+        @apply relative flex justify-center pt-5;
         list-style: none;
         margin: 0;
         padding-left: 0;
@@ -106,8 +107,18 @@
     }
 
     .bagan li {
-        @apply relative flex flex-col items-center px-3 pt-6 sm:px-5;
+        @apply relative flex flex-col items-center px-2.5 pt-5 sm:px-4;
         list-style: none;
+    }
+
+    /* Garis mendatar barisan anak + siku turun ke tiap simpul. */
+    /* Urutan sumber sengaja begini: aturan dasar ditulis DULU, aturan
+       penyempitan (akar, anak tunggal, anak pertama/terakhir) ditulis
+       BELAKANGAN supaya menang tanpa perlu !important. */
+    .bagan li::before,
+    .bagan li::after {
+        content: '';
+        @apply absolute top-0 h-5 w-1/2 border-t-2 border-laut-200;
     }
 
     /* Simpul paling atas tidak butuh garis penghubung. */
@@ -122,13 +133,6 @@
     .bagan > ul > li::before,
     .bagan > ul > li::after {
         display: none;
-    }
-
-    /* Garis mendatar barisan anak + siku turun ke tiap simpul. */
-    .bagan li::before,
-    .bagan li::after {
-        content: '';
-        @apply absolute top-0 h-6 w-1/2 border-t-2 border-laut-200;
     }
 
     .bagan li::before {
@@ -166,7 +170,7 @@
     /* Garis turun dari induk ke barisan anaknya. */
     .bagan ul ul::before {
         content: '';
-        @apply absolute left-1/2 top-0 h-6 w-0 border-l-2 border-laut-200;
+        @apply absolute left-1/2 top-0 h-5 w-0 border-l-2 border-laut-200;
     }
 
     /* Varian bagan saat berlatar foto gelap: garis penghubung dibuat terang supaya tetap menyatu. */
@@ -174,5 +178,135 @@
     .bagan-terang li::after,
     .bagan-terang ul ul::before {
         @apply border-white/40;
+    }
+
+    /* --- HP: bagan tetap pohon, anak dipindah ke BAWAH induk dan berjajar.
+       Induk <li> jadi kolom: kartu, garis turun, lalu <ul> anak berjajar
+       mendatar dan garis sambung horizontal dibuat ulang. --- */
+    @media (max-width: 767px) {
+        /* Lepas width max-content supaya kartu & barisan anak boleh menyusut
+           (sebelumnya text-align). Selector digandakan (.bagan.bagan) karena
+           kelas utilitas "w-max" ada di markup dan, karena ditulis belakangan
+           di CSS hasil build, menang atas selektor ber-spesifisitas sama. */
+        .bagan.bagan {
+            width: max-content;
+            max-width: none;
+        }
+
+        .bagan ul {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 0;
+        }
+
+        .bagan li {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 1.5rem;
+        }
+
+        /* Kartu: potret sempit tapi tetap punya lebar minimum supaya teks
+           nama tiga baris tidak memaksa kolom melebar. */
+        .bagan li > div {
+            width: max-content;
+            max-width: 7.5rem;
+            min-width: 6.5rem;
+            margin-inline: auto;
+        }
+
+        /* Baris anak diberi jarak turun dari induk: ruang untuk garis turun
+           + siku, sekaligus barisan anak tidak menempel ke kartu induk. */
+        .bagan ul ul {
+            padding-top: 1.75rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Garis pohon mendatar: siku turun dari garis induk ke tiap kartu.
+           Sama seperti aturan dasar, urutan penyempitan ditulis belakangan.
+           Di HP garis dibuat 3px supaya tetap kebaca setelah bagan dikecilkan. */
+        .bagan li::before,
+        .bagan li::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            height: 1.75rem;
+            width: 50%;
+            border-top: 2px dashed theme('colors.laut.200');
+        }
+
+        .bagan li::before {
+            right: 50%;
+        }
+
+        .bagan li::after {
+            left: 50%;
+            border-left: 3px solid theme('colors.laut.300');
+        }
+
+        /* Akar & anak tunggal: tidak ada barisan untuk disambung. */
+        .bagan > ul > li::before,
+        .bagan > ul > li::after,
+        .bagan li:only-child::before,
+        .bagan li:only-child::after {
+            display: none;
+        }
+
+        /* Anak pertama tidak pakai garis ke kiri, anak terakhir tidak ke kanan. */
+        .bagan li:first-child::before,
+        .bagan li:last-child::after {
+            border: 0 none;
+        }
+
+        .bagan li:last-child::before {
+            border-top-right-radius: 1rem;
+            border-right: 3px solid theme('colors.laut.300');
+        }
+
+        .bagan li:first-child::after {
+            border-top-left-radius: 1rem;
+        }
+
+        /* Garis turun dari induk ke barisan anaknya: lebih gelap supaya arah
+           hierarki (turunan) terbaca, beda dari garis barisan anak. */
+        .bagan ul ul::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            height: 1.75rem;
+            width: 0;
+            border-left: 3px solid theme('colors.laut.400');
+        }
+
+        /* Titik simpul di ujung garis turun: penanda arah cabang. */
+        .bagan ul ul::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 1.75rem;
+            width: 0.4rem;
+            height: 0.4rem;
+            transform: translate(-50%, -50%);
+            border-radius: 9999px;
+            background-color: theme('colors.laut.400');
+        }
+
+        /* Varian latar foto gelap: garis dibuat terang supaya tetap menyatu. */
+        .bagan-terang li::before {
+            border-top-color: rgba(255, 255, 255, 0.45);
+        }
+
+        .bagan-terang li::after,
+        .bagan-terang li:last-child::before,
+        .bagan-terang ul ul::before {
+            border-color: rgba(255, 255, 255, 0.65);
+        }
+
+        .bagan-terang ul ul::after {
+            background-color: rgba(255, 255, 255, 0.65);
+        }
     }
 }

@@ -41,12 +41,49 @@
                     </div>
                 </header>
 
-                <main class="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+                <main class="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16" x-data="{
+                    skala: 1,
+                    muat: 1,
+                    ukur() {
+                        this.$nextTick(() => {
+                            const wadah = this.$refs.wadah;
+                            this.muat = 1;
+                            this.$nextTick(() => {
+                                if (! wadah) return;
+                                this.muat = Math.min(1, wadah.clientWidth / wadah.scrollWidth);
+                            });
+                        });
+                    },
+                }" x-init="ukur(); $watch('skala', () => ukur()); window.addEventListener('resize', () => ukur())">
                     @if ($bagan->isEmpty())
                         <x-empty title="Belum ada data staf" ikon="staf" />
                     @else
-                        <div class="overflow-x-auto">
-                            <div @class(['bagan mx-auto w-max px-2 py-4', 'bagan-terang' => $bagianBackground])>
+                        <div class="mb-4 hidden items-center justify-end gap-1.5 md:flex">
+                            <span @class([
+                                'min-w-[3.25rem] rounded-md border px-3 py-1.5 text-center text-xs font-medium',
+                                $bagianBackground ? 'border-white/25 bg-white/10 text-laut-100' : 'border-laut-200 bg-white text-laut-600',
+                            ]) x-text="Math.round(skala * 100) + '%'">100%</span>
+                            <button type="button" @click="skala = Math.max(0.5, +(skala - 0.1).toFixed(1))"
+                                @class([
+                                    'rounded-md border px-3 py-1.5 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emas-400',
+                                    $bagianBackground ? 'border-white/25 bg-white/10 text-laut-100 hover:bg-white/20' : 'border-laut-200 bg-white text-laut-600 hover:bg-laut-50',
+                                ]) aria-label="Perkecil bagan">&minus;</button>
+                            <button type="button" @click="skala = Math.min(1.5, +(skala + 0.1).toFixed(1))"
+                                @class([
+                                    'rounded-md border px-3 py-1.5 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emas-400',
+                                    $bagianBackground ? 'border-white/25 bg-white/10 text-laut-100 hover:bg-white/20' : 'border-laut-200 bg-white text-laut-600 hover:bg-laut-50',
+                                ]) aria-label="Perbesar bagan">&plus;</button>
+                            <button type="button" @click="skala = 1" x-show="skala !== 1" x-cloak
+                                @class([
+                                    'rounded-md border px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emas-400',
+                                    $bagianBackground ? 'border-white/25 bg-white/10 text-laut-100 hover:bg-white/20' : 'border-laut-200 bg-white text-laut-600 hover:bg-laut-50',
+                                ])>&#8634; Atur ulang</button>
+                        </div>
+
+                        {{-- Di HP bagan dikecilkan otomatis (zoom) supaya muat tanpa scroll
+                             ke samping; di layar lebar memakai skala tombol. --}}
+                        <div class="overflow-x-auto" x-ref="wadah">
+                            <div @class(['bagan mx-auto w-max px-2 py-4', 'bagan-terang' => $bagianBackground]) :style="'zoom: ' + (window.innerWidth < 768 ? muat : skala)">
                                 <ul>
                                     @foreach ($bagan as $simpul)
                                         <x-bagan-node :node="$simpul" />

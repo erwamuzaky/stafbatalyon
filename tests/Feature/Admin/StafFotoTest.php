@@ -93,6 +93,11 @@ class StafFotoTest extends TestCase
             'foto' => $path,
         ]);
 
+        $this->actingAs($admin)->get(route('admin.staf.edit', $staf))
+            ->assertOk()
+            ->assertSee('Hapus foto')
+            ->assertDontSee('Hapus foto saat ini');
+
         $response = $this->actingAs($admin)->patch(route('admin.staf.update', $staf), [
             'bidang_id' => $bidang->id,
             'kelas' => 'XI RPL 1',

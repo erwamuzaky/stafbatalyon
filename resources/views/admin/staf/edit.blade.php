@@ -66,9 +66,24 @@
             </div>
 
             @if ($profile?->foto_url)
-            <div class="rounded-lg border border-laut-100 bg-laut-50 p-4">
+            <div class="rounded-lg border border-laut-100 bg-laut-50 p-4" x-data="{ mauHapusFoto: false }">
                 <div class="mb-2 text-sm font-medium text-arang">Foto saat ini</div>
-                <x-avatar :name="$user->name" :foto="$profile->foto_url" size="lg" />
+                <div class="flex flex-wrap items-center gap-3">
+                    <x-avatar :name="$user->name" :foto="$profile->foto_url" size="lg" />
+                    <button type="button"
+                            class="btn btn-bahaya"
+                            x-show="!mauHapusFoto"
+                            x-bind:disabled="memproses"
+                            @click="mauHapusFoto = true"
+                            aria-label="Tandai foto untuk dihapus">
+                        Hapus foto
+                    </button>
+                    <div x-show="mauHapusFoto" x-cloak class="flex flex-wrap items-center gap-3">
+                        <span class="text-sm text-marun-600">Foto akan dihapus saat kamu simpan.</span>
+                        <button type="button" class="btn btn-sekunder" @click="mauHapusFoto = false">Batalkan</button>
+                    </div>
+                </div>
+                <input type="hidden" name="hapus_foto" :value="mauHapusFoto ? 1 : 0">
             </div>
             @endif
 
@@ -79,15 +94,6 @@
                 <p class="mt-1 text-xs text-gray-500">Format jpg/png/webp, maksimal 2 MB.</p>
                 <x-input-error :messages="$errors->get('foto')" class="mt-2" />
             </div>
-
-            @if ($profile?->foto_url)
-            <div class="flex items-center gap-2">
-                <input id="hapus_foto" name="hapus_foto" type="hidden" value="0">
-                <input id="hapus_foto_checkbox" name="hapus_foto" type="checkbox" value="1"
-                       class="rounded border-gray-300 text-laut-600 shadow-sm focus:ring-laut-500">
-                <label for="hapus_foto_checkbox" class="text-sm text-arang">Hapus foto saat ini</label>
-            </div>
-            @endif
 
             <div class="flex flex-wrap items-center gap-3 pt-2">
                 <x-primary-button x-bind:disabled="memproses">
